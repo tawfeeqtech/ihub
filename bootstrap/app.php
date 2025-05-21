@@ -23,9 +23,23 @@ return Application::configure(basePath: dirname(__DIR__))
         // Validation Error (422)
         $exceptions->render(function (\Illuminate\Validation\ValidationException $e, $request) use ($responder) {
             if ($request->expectsJson()) {
+                // استخراج كل رسائل الخطأ ودمجها في جملة واحدة
+                $fields = array_keys($e->errors());
+                // تحويل الحقول لأسماء مفهومة
+                $translatedFields = collect($fields)->map(function ($field) {
+                    return match ($field) {
+                        // 'phone' => 'الهاتف',
+                        // 'password' => 'كلمة المرور',
+                        // أضف باقي الحقول هنا إذا احتجت
+                        default => $field,
+                    };
+                })->implode('، ');
+
+                // الرسالة النهائية
+                $message = $translatedFields . " error";
                 return $responder->apiResponse(
-                    ['errors' => $e->errors()],
-                    'Validation error',
+                    null,
+                    $message,
                     \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY
                 );
             }
