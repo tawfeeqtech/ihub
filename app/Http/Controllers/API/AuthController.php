@@ -53,10 +53,12 @@ class AuthController extends Controller
             $user->phone_verification_code = null; // نمسح الكود بعد التحقق
             $user->save();
 
-            return response()->json([
-                'message' => 'Phone verified successfully',
-                'user' => $user
-            ]);
+            $data = [
+                'user' => $user,
+                'token' => $user->createToken('api_token')->plainTextToken
+            ];
+
+            return $this->apiResponse($data, "Phone verified successfully", 200);
         }
         return $this->apiResponse(null, "Invalid verification code", 422);
     }
