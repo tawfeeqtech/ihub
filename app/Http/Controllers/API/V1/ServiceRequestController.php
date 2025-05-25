@@ -19,12 +19,12 @@ class ServiceRequestController extends Controller
         $booking = Booking::findOrFail($bookingId);
 
         if ($booking->user_id !== auth()->id()) {
-            return $this->apiResponse(null, "غير مصرح", 403);
+            return $this->apiResponse(null, __('messages.not_authorized'), 403);
         }
 
         return $this->apiResponse(ServiceRequestResource::collection(
             $booking->serviceRequests()->latest()->get()
-        ), "Success", 200);
+        ), __('messages.success'), 200);
     }
 
     // إنشاء طلب خدمة جديد
@@ -33,11 +33,11 @@ class ServiceRequestController extends Controller
         $booking = Booking::findOrFail($bookingId);
 
         if ($booking->user_id !== auth()->id()) {
-            return $this->apiResponse(null, "غير مصرح", 403);
+            return $this->apiResponse(null, __('messages.not_authorized'), 403);
         }
 
         if ($booking->status !== 'confirmed') {
-            return $this->apiResponse(null, "يجب أن يكون الحجز مؤكدًا", 422);
+            return $this->apiResponse(null, __('messages.confirmed_request'), 422);
         }
 
         $validated = $request->validate([
@@ -53,7 +53,7 @@ class ServiceRequestController extends Controller
             ->first();
 
         if ($existing) {
-            return $this->apiResponse(null, "لديك طلب مشابه قيد التنفيذ بالفعل", 422);
+            return $this->apiResponse(null, __('messages.already_request'), 422);
         }
 
         // الإنشاء
@@ -65,6 +65,6 @@ class ServiceRequestController extends Controller
             'status' => 'pending',
         ]);
 
-        return $this->apiResponse(new ServiceRequestResource($serviceRequest), "Success", 200);
+        return $this->apiResponse(new ServiceRequestResource($serviceRequest), __('messages.success'), 200);
     }
 }

@@ -31,7 +31,7 @@ class BookingController extends Controller
         }
 
         $bookings = $query->latest()->get();
-        return $this->apiResponse(BookingResource::collection($bookings), "Success", 200);
+        return $this->apiResponse(BookingResource::collection($bookings), __('messages.success'), 200);
     }
 
     public function show($id)
@@ -50,9 +50,9 @@ class BookingController extends Controller
             !in_array($user->role, ['admin', 'secretary']) ||
             ($user->role === 'secretary' && $user->workspace_id !== $booking->workspace_id)
         ) {
-            return $this->apiResponse(null, "غير مصرح", 403);
+            return $this->apiResponse(null, __('messages.not_authorized'), 403);
         }
-        return $this->apiResponse(new BookingResource($booking), "Success", 200);
+        return $this->apiResponse(new BookingResource($booking), __('messages.success'), 200);
     }
 
 
@@ -116,6 +116,6 @@ class BookingController extends Controller
             'status' => 'pending',
         ]);
 
-        return $this->apiResponse(new BookingResource($booking), "Success", 200);
+        return $this->apiResponse(new BookingResource($booking), __('messages.success'), 200);
     }
 }

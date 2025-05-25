@@ -31,6 +31,6 @@ class ServiceController extends Controller
             'workspace_id' => $workspace->id,
             'services' => $services,
         ];
-        return $this->apiResponse($data, "Success", 200);
+        return $this->apiResponse($data, __('messages.success'), 200);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\App;
 
 class WorkspaceResource extends JsonResource
 {
@@ -14,11 +15,13 @@ class WorkspaceResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $lang = App::getLocale(); // اللغة المفعّلة من الهيدر
+
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'location' => $this->location,
-            'description' => $this->description,
+            'name' => $this->name[$lang] ?? $this->name['en'] ?? '',
+            'location' => $this->location[$lang] ?? $this->location['en'] ?? '',
+            'description' => $this->description[$lang] ?? $this->description['en'] ?? '',
             'logo' => $this->logo ? asset('storage/' . $this->logo) : null,
         ];
     }

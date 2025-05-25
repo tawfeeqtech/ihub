@@ -10,12 +10,15 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\App;
 
 class SettingResource extends Resource
 {
+
     protected static ?string $model = Setting::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
@@ -27,6 +30,9 @@ class SettingResource extends Resource
 
     public static function form(Form $form): Form
     {
+
+        $languages = config('app.supported_locales', ['ar', 'en']);
+
         return $form
             ->schema([
                 Forms\Components\Select::make('key')
@@ -37,11 +43,25 @@ class SettingResource extends Resource
                     ])
                     ->required(),
 
-                Forms\Components\Textarea::make('value')
-                    ->label('المحتوى')
-                    ->rows(10)
-                    ->required(),
+                Forms\Components\Repeater::make('value_translations')
+                    ->label('المحتوى متعدد اللغات')
+                    ->addActionLabel('إضافة لغة')
+                    ->schema([
+                        Forms\Components\Select::make('locale')
+                            ->label('اللغة')
+                            ->options($languages)
+                            ->required()->columnSpan('full'),
 
+                        Forms\Components\Textarea::make('value')
+                            ->label('المحتوى')
+                            ->columnSpan('full')
+                            ->required(),
+                    ])
+                    ->default([
+                        ['locale' => 'ar', 'value' => ''],
+                    ])
+                    ->columns(2)->grid(2)
+                    ->columnSpan('full'),
             ]);
     }
 
@@ -49,7 +69,20 @@ class SettingResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('key')
+                    ->label('title'),
+
+                TextColumn::make('value')
+                    ->label('description')
+                    ->formatStateUsing(function ($state) {
+                        if (!is_array($state)) {
+                            return $state;
+                        }
+                        return collect($state)
+                            ->map(fn($val, $locale) => strtoupper($locale) . ": " . $val)
+                            ->implode(' | ');
+                    })->wrap()
+                    ->limit(80),
             ])
             ->filters([
                 //

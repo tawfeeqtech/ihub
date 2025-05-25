@@ -77,6 +77,10 @@ return [
     | set to any locale for which you plan to have translation strings.
     |
     */
+    'supported_locales' => [
+        'ar' => 'ar',
+        'en' => 'en',
+    ],
 
     'locale' => env('APP_LOCALE', 'en'),
 

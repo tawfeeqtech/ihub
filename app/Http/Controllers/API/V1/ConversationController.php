@@ -15,7 +15,7 @@ class ConversationController extends Controller
     public function index()
     {
         $conversations = Conversation::where('user_id', auth()->id())->latest()->get();
-        return $this->apiResponse(ConversationResource::collection($conversations), "success", 200);
+        return $this->apiResponse(ConversationResource::collection($conversations), __('messages.success'), 200);
     }
 
     public function destroy($id)
@@ -23,11 +23,11 @@ class ConversationController extends Controller
         $conversation = Conversation::findOrFail($id);
 
         if ($conversation->user_id !== auth()->id()) {
-            return $this->apiResponse(null, "غير مصرح", 403);
+            return $this->apiResponse(null, __('messages.not_authorized'), 403);
         }
 
         $conversation->delete();
-        return $this->apiResponse(null, "تم حذف المحادثة بنجاح", 200);
+        return $this->apiResponse(null, __('messages.success'), 200);
     }
 
 
@@ -47,6 +47,6 @@ class ConversationController extends Controller
             'conversation_id' => $conversation->id,
         ];
 
-        return $this->apiResponse($data, "Conversation created successfully", 200);
+        return $this->apiResponse($data, __('messages.success'), 200);
     }
 }

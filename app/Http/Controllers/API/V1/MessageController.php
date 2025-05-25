@@ -23,16 +23,16 @@ class MessageController extends Controller
         try {
             $conversation = Conversation::findOrFail($conversationId);
         } catch (ModelNotFoundException $e) {
-            return $this->apiResponse(null, "not found", 404);
+            return $this->apiResponse(null, __('messages.not_found'), 404);
         }
 
         if ($conversation->user_id !== auth()->id()) {
-            return $this->apiResponse(null, "غير مصرح", 403);
+            return $this->apiResponse(null, __('messages.not_authorized'), 403);
         }
 
         return $this->apiResponse(MessageResource::collection(
             $conversation->messages()->latest()->get()
-        ), "success", 200);
+        ), __('messages.success'), 200);
     }
 
     // إرسال رسالة جديدة
@@ -41,11 +41,11 @@ class MessageController extends Controller
         try {
             $conversation = Conversation::findOrFail($conversationId);
         } catch (ModelNotFoundException $e) {
-            return $this->apiResponse(null, "not found", 404);
+            return $this->apiResponse(null, __('messages.not_found'), 404);
         }
 
         if ($conversation->user_id !== auth()->id()) {
-            return $this->apiResponse(null, "غير مصرح", 403);
+            return $this->apiResponse(null, __('messages.not_authorized'), 403);
         }
         $validated = $request->validate([
             'body' => 'nullable|string',
@@ -68,6 +68,6 @@ class MessageController extends Controller
         }
 
         $message = Message::create($data);
-        return $this->apiResponse(new MessageResource($message), "Success", 200);
+        return $this->apiResponse(new MessageResource($message), __('messages.success'), 200);
     }
 }

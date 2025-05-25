@@ -17,7 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
 
-    ->withMiddleware(function (Middleware $middleware) {})
+    ->withMiddleware(function (Middleware $middleware) {
+        $middleware->append(\App\Http\Middleware\SetAppLocaleFromHeader::class);
+    })
     ->withExceptions(function (Exceptions $exceptions) {
         $responder = new class {
             use \App\Traits\ApiResponseTrait;

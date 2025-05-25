@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Traits\JsonSearchable;
 use Illuminate\Database\Eloquent\Model;
 
 class Workspace extends Model
 {
+    use JsonSearchable;
     protected $fillable = [
         'name',
         'location',
@@ -17,8 +19,21 @@ class Workspace extends Model
     ];
 
     protected $casts = [
+        'name' => 'array',
+        'location' => 'array',
+        'description' => 'array',
         'features' => 'array',
     ];
+
+    public $translatable = ['name', 'location', 'description'];
+
+    protected static function booted()
+    {
+        static::creating(function ($workspace) {
+            logger()->info('جاري إنشاء Workspace', request()->all());
+        });
+    }
+
 
     public function images()
     {

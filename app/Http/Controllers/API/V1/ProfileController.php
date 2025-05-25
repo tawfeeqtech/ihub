@@ -15,7 +15,7 @@ class ProfileController extends Controller
     public function show(Request $request)
     {
         $user = $request->user();
-        return $this->apiResponse(new UserProfileResource($user), "Success", 200);
+        return $this->apiResponse(new UserProfileResource($user), __('messages.success'), 200);
     }
 
     // تحديث البيانات الشخصية
@@ -37,7 +37,7 @@ class ProfileController extends Controller
         // }
 
         $user->update($validated);
-        return $this->apiResponse(new UserProfileResource($user), "Profile updated successfully", 201);
+        return $this->apiResponse(new UserProfileResource($user), __('messages.success'), 201);
     }
 
     public function uploadProfileImage(Request $request)
@@ -47,14 +47,14 @@ class ProfileController extends Controller
         ]);
 
         if (!$request->hasFile('image') || !$request->file('image')->isValid()) {
-            return $this->apiResponse(null, "فشل في تحميل الصورة", 422);
+            return $this->apiResponse(null, __('messages.image_failed'), 422);
         }
 
         $file = $request->file('image');
 
 
         if (!$file || !$file->isValid()) {
-            return $this->apiResponse(null, "فشل في رفع الصورة", 422);
+            return $this->apiResponse(null, __('messages.image_failed_upload'), 422);
         }
 
 
@@ -68,6 +68,6 @@ class ProfileController extends Controller
         $data = [
             'profile_image' => asset($user->profile_image),
         ];
-        return $this->apiResponse($data, "تم تحديث صورة الملف الشخصي", 200);
+        return $this->apiResponse($data, __('messages.success'), 200);
     }
 }

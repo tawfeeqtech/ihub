@@ -8,6 +8,7 @@ use App\Http\Resources\WorkspaceResource;
 use App\Http\Resources\WorkspaceShowResource;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 
 class WorkspaceController extends Controller
 {
@@ -19,7 +20,7 @@ class WorkspaceController extends Controller
         $query = Workspace::query();
         // فلترة حسب الموقع
         if ($request->filled('location')) {
-            $query->where('location', 'like', '%' . $request->location . '%');
+            $query->searchJsonField('location', $request->location);
         }
         // فلترة حسب آلية الدفع
         if ($request->filled('bank_payment_supported') && $request->bank_payment_supported == true) {
@@ -27,14 +28,14 @@ class WorkspaceController extends Controller
         }
         // بحث بالنص
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            $query->searchJsonField('name', $request->search);
         }
         $workspaces = $query->latest()->get();
-        return $this->apiResponse(WorkspaceResource::collection($workspaces), "Success", 200);
+        return $this->apiResponse(WorkspaceResource::collection($workspaces),  __('messages.success'), 200);
     }
     public function show($id)
     {
         $workspace = Workspace::with(['secretary', 'images'])->findOrFail($id);
-        return $this->apiResponse(new WorkspaceShowResource($workspace), "Success", 200);
+        return $this->apiResponse(new WorkspaceShowResource($workspace), __('messages.success'), 200);
     }
 }

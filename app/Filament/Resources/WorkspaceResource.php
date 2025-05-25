@@ -3,21 +3,22 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\WorkspaceResource\Pages;
-use App\Filament\Resources\WorkspaceResource\RelationManagers;
 use App\Helpers\FilamentAccess;
 use App\Models\Workspace;
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Actions\Action;
 
-use Filament\Forms\Components\FileUpload;
 
-
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
 
 class WorkspaceResource extends Resource
 {
@@ -33,40 +34,109 @@ class WorkspaceResource extends Resource
 
     public static function form(Form $form): Form
     {
+        $languages = config('app.supported_locales', ['ar', 'en']);
+
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')->required(),
-                Forms\Components\TextInput::make('location')->required(),
-
-                Forms\Components\Section::make('معلومات الدفع')
+                Section::make('معلومات عامة')
                     ->schema([
-                        Forms\Components\Toggle::make('bank_payment_supported')
+                        Repeater::make('name_translations')
+                            ->label('الاسم متعدد اللغات')
+                            ->addActionLabel('إضافة لغة أخرى')
+                            ->schema([
+                                Select::make('locale')
+                                    ->label('اللغة')
+                                    ->options(fn() => $languages)
+                                    ->required()
+                                    ->columnSpan(1),
+
+                                TextInput::make('value')
+                                    ->label('الاسم')
+                                    ->required()
+                                    ->columnSpan(1),
+                            ])
+                            ->default([
+                                ['locale' => 'en', 'value' => ''],
+                            ])
+                            ->columns(2)
+                            ->grid(2)
+                            ->columnSpan('full'),
+
+
+                        Repeater::make('location_translations')
+                            ->label('العنوان متعدد اللغات')
+                            ->addActionLabel('إضافة لغة أخرى')
+                            ->schema([
+                                Select::make('locale')
+                                    ->label('اللغة')
+                                    ->options(fn() => $languages)
+                                    ->required()
+                                    ->columnSpan(1),
+
+                                TextInput::make('value')
+                                    ->label('العنوان')
+                                    ->required()
+                                    ->columnSpan(1),
+                            ])
+                            ->default([
+                                ['locale' => 'en', 'value' => ''],
+                            ])
+                            ->columns(2)
+                            ->grid(2)
+                            ->columnSpan('full'),
+
+
+                        Repeater::make('description_translations')
+                            ->label('الوصف متعدد اللغات')
+                            ->addActionLabel('إضافة لغة أخرى')
+                            ->schema([
+                                Select::make('locale')
+                                    ->label('اللغة')
+                                    ->options(fn() => $languages)
+                                    ->required()
+                                    ->columnSpan(1),
+
+                                Textarea::make('value')
+                                    ->label('الوصف')
+                                    ->required()
+                                    ->columnSpan(1),
+                            ])
+                            ->default([
+                                ['locale' => 'en', 'value' => ''],
+                            ])
+                            ->columns(2)
+                            ->grid(2)
+                            ->columnSpan('full'),
+
+                    ]),
+
+                Section::make('معلومات الدفع')
+                    ->schema([
+                        Toggle::make('bank_payment_supported')
                             ->label('هل تدعم التحويل البنكي؟')
                             ->default(false)
                             ->reactive(),
 
-                        Forms\Components\Grid::make(2)
-                            ->schema([
-                                Forms\Components\TextInput::make('bank_account_number')
-                                    ->label('رقم الحساب البنكي')
-                                    ->nullable()
-                                    ->visible(fn($livewire) => ($livewire->data['bank_payment_supported'] ?? false) === true),
+                        Grid::make(2)->schema([
+                            TextInput::make('bank_account_number')
+                                ->label('رقم الحساب البنكي')
+                                ->nullable()
+                                ->visible(fn($livewire) => ($livewire->data['bank_payment_supported'] ?? false) === true),
 
-                                Forms\Components\TextInput::make('mobile_payment_number')
-                                    ->label('رقم الجوال البنكي')
-                                    ->nullable()
-                                    ->visible(fn($livewire) => ($livewire->data['bank_payment_supported'] ?? false) === true),
-                            ]),
+                            TextInput::make('mobile_payment_number')
+                                ->label('رقم الجوال البنكي')
+                                ->nullable()
+                                ->visible(fn($livewire) => ($livewire->data['bank_payment_supported'] ?? false) === true),
+                        ]),
                     ]),
 
-                Forms\Components\Textarea::make('description'),
 
-                FileUpload::make('logo'),
+                // FileUpload::make('logo'),
 
 
-                Forms\Components\Repeater::make('features')
+                Repeater::make('features')
                     ->schema([
-                        Forms\Components\TextInput::make('value')
+                        TextInput::make('value')
                             ->label('الميزة')
                             ->required()->columnSpan('full'),
                     ])
@@ -77,28 +147,6 @@ class WorkspaceResource extends Resource
                     ->grid(4)
                     ->columnSpan('full')
                     ->itemLabel(null),
-
-                // Forms\Components\Repeater::make('images')
-                //     ->relationship()
-                //     ->label('معرض الصور')
-                //     ->addActionLabel('إضافة صورة')
-                //     ->schema([
-                //         FileUpload::make('image')
-                //             ->label('الصورة')
-                //             ->image()
-                //             ->disk('public') // تأكد إنها نفس القرص المضبوط في config/filesystems.php
-                //             ->directory('workspace_gallery')
-                //             ->visibility('public')
-                //             ->preserveFilenames()
-                //             ->imagePreviewHeight('200') // اختياري
-                //             ->loadingIndicatorPosition('left')
-                //             ->panelAspectRatio('1:1')
-                //             ->removeUploadedFileButtonPosition('right'),
-                //     ])
-                //     ->columns(1)
-                //     ->collapsible()
-                //     ->defaultItems(0),
-
             ]);
     }
 
@@ -124,13 +172,6 @@ class WorkspaceResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array

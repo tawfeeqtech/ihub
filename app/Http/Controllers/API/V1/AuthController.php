@@ -36,7 +36,7 @@ class AuthController extends Controller
             'code' => $phone_verification_code,
         ];
 
-        return $this->apiResponse($data, "Phone Verification Code", 200);
+        return $this->apiResponse($data, __('messages.success'), 200);
     }
 
     public function verifyPhone(Request $request)
@@ -53,14 +53,22 @@ class AuthController extends Controller
             $user->phone_verification_code = null; // نمسح الكود بعد التحقق
             $user->save();
 
+            $userData = [
+                'id' => $user['id'],
+                'name' => $user['name'],
+                'phone' => $user['phone'],
+                'specialty' => $user['specialty'],
+                'profile_image' => null,
+            ];
+
             $data = [
-                'user' => $user,
+                'user' => $userData,
                 'token' => $user->createToken('api_token')->plainTextToken
             ];
 
-            return $this->apiResponse($data, "Phone verified successfully", 200);
+            return $this->apiResponse($data, __('messages.success'), 200);
         }
-        return $this->apiResponse(null, "Invalid verification code", 422);
+        return $this->apiResponse(null, __('messages.not_found'), 422);
     }
 
 
@@ -85,6 +93,7 @@ class AuthController extends Controller
             'name' => $user['name'],
             'phone' => $user['phone'],
             'specialty' => $user['specialty'],
+            'profile_image' => null,
         ];
         $data = [
             'token' => $token,
@@ -92,13 +101,13 @@ class AuthController extends Controller
         ];
 
 
-        return $this->apiResponse($data, "Login successfully", 200);
+        return $this->apiResponse($data, __('messages.success'), 200);
     }
 
     // تسجيل الخروج
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
-        return $this->apiResponse(null, "Logged out successfully", 200);
+        return $this->apiResponse(null, __('messages.success'), 200);
     }
 }
