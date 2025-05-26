@@ -8,4 +8,5 @@ return [
     'image_failed' => 'Image loading failed.!',
     'image_failed_upload' => 'Failed to upload image .!',
     'success' => 'success',
+    'change_seat' => 'Change seat',
 ];

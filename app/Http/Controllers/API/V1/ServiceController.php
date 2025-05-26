@@ -16,7 +16,7 @@ class ServiceController extends Controller
 
         // نبدأ بإضافة خدمة تغيير المقعد يدويًا
         $services = collect([
-            ['name' => 'تغيير المقعد', 'type' => 'seat_change']
+            ['name' => __('messages.change_seat'), 'type' => 'seat_change']
         ]);
 
         // نضيف باقي الخدمات المخزنة من السكرتيرة

@@ -17,7 +17,7 @@ class WorkspaceController extends Controller
     // عرض قائمة المساحات مع إمكانية الفلترة
     public function index(Request $request)
     {
-        $query = Workspace::query();
+        $query = Workspace::query()->with('images');
         // فلترة حسب الموقع
         if ($request->filled('location')) {
             $query->searchJsonField('location', $request->location);

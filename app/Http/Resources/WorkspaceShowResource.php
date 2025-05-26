@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\App;
 
 class WorkspaceShowResource extends JsonResource
 {
@@ -14,15 +15,14 @@ class WorkspaceShowResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $lang = App::getLocale();
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'location' => $this->location,
-            'description' => $this->description,
+            'name' => $this->name[$lang] ?? $this->name['en'] ?? '',
+            'location' => $this->location[$lang] ?? $this->location['en'] ?? '',
+            'description' => $this->description[$lang] ?? $this->description['en'] ?? '',
             'logo' => $this->logo ? asset('storage/' . $this->logo) : null,
-            'images' => $this->images->map(function ($img) {
-                return asset($img->image); // إذا كان في public/uploads
-            }),
+            'images' => WorkspaceImageResource::collection($this->whenLoaded('images')), // <--- استخدمه هنا أيضاً
             'features' => $this->features ?? [],
             'short_services' => $this->services
                 ->pluck('category')

@@ -8,4 +8,5 @@ return [
     'image_failed' => 'فشل في تحميل الصورة.!',
     'image_failed_upload' => 'فشل في رفع الصورة.!',
     'success' => 'نجاح',
+    'change_seat' => 'تغيير المقعد',
 ];

@@ -23,6 +23,7 @@ class WorkspaceResource extends JsonResource
             'location' => $this->location[$lang] ?? $this->location['en'] ?? '',
             'description' => $this->description[$lang] ?? $this->description['en'] ?? '',
             'logo' => $this->logo ? asset('storage/' . $this->logo) : null,
+            'images' => WorkspaceImageResource::collection($this->whenLoaded('images')), // <--- استخدمه هنا
         ];
     }
 }
