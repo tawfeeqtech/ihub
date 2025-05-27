@@ -11,4 +11,15 @@ class Service extends Model
         'category',
         'name',
     ];
+
+    protected $casts = [
+        'name' => 'array',
+        'category' => 'array',
+    ];
+
+    public array $translatable = ['name', 'category'];
+    public function workspace()
+    {
+        return $this->belongsTo(Workspace::class);
+    }
 }

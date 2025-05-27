@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\Controller;
 use App\Models\Workspace;
 use App\Traits\ApiResponseTrait;
+use Illuminate\Support\Facades\App;
 
 class ServiceController extends Controller
 {
@@ -12,18 +13,22 @@ class ServiceController extends Controller
 
     public function index($workspaceId)
     {
+        $lang = App::getLocale(); // اللغة المفعّلة من الهيدر
+
         $workspace = Workspace::with('services')->findOrFail($workspaceId);
 
-        // نبدأ بإضافة خدمة تغيير المقعد يدويًا
         $services = collect([
-            ['name' => __('messages.change_seat'), 'type' => 'seat_change']
+            [
+                'id' => 0,
+                'name' => __('messages.change_seat'),
+                'type' => 'seat_change'
+            ]
         ]);
 
-        // نضيف باقي الخدمات المخزنة من السكرتيرة
         foreach ($workspace->services as $service) {
             $services->push([
                 'id' => $service->id,
-                'name' => $service->name,
+                'name' => $service->name[$lang] ?? $service->name['en'] ?? '',
                 'type' => 'cafe_request',
             ]);
         }
