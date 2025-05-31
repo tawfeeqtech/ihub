@@ -3,19 +3,25 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ConversationResource\Pages;
-use App\Filament\Resources\ConversationResource\RelationManagers;
 use App\Models\Conversation;
-use Filament\Forms;
+use App\Models\Message; // استيراد موديل Message
+use App\Models\User; // استيراد موديل User
+use App\Events\MessageSent; // استيراد الحدث MessageSent
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\Auth;
+use Filament\Tables\Actions\Action; // استيراد Action
+use Filament\Forms\Components\Textarea; // استيراد Textarea
+use Illuminate\Support\Facades\Auth; // للحصول على السكرتير الحالي
+use Filament\Notifications\Notification; // لإظهار إشعار
 
 class ConversationResource extends Resource
 {
+    protected static ?int $unreadCountCache = null;
+
+
     protected static ?string $model = Conversation::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
@@ -31,6 +37,18 @@ class ConversationResource extends Resource
         return $query;
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        // return static::getModel()::count();
+        // $count = auth()->user()?->getAllUnreadMessagesCount();
+        // return $count > 0 ? (string) $count : null;
+        // static::$unreadCountCache = auth()->user()?->getAllUnreadMessagesCount();
+        // return static::$unreadCountCache > 0 ? (string) static::$unreadCountCache : null;
+
+        $count = auth()->user()?->getAllUnreadMessagesCount() ?? 0;
+        return $count > 0 ? (string) $count : null;
+    }
+
 
     public static function form(Form $form): Form
     {
@@ -44,13 +62,28 @@ class ConversationResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('id')->label('رقم المحادثة'),
+                // Tables\Columns\TextColumn::make('user.name')->label('اسم المستخدم'), // اسم مستخدم التطبيق
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('اسم المستخدم')
+                    ->extraAttributes([
+                        'x-data' => '{}',
+                        'x-init' => 'window.addEventListener("new-message-received", () => {$store.messages.incrementUnread();});',
+                    ])
+                    ->formatStateUsing(function ($state, Conversation $record) {
+                        $count = $record->getUnreadMessagesCountForAuth();
+                        return $state . ($count > 0 ? " 🔴 ($count)" : '');
+                    })
+
+
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('view_chat')
+                    ->label('عرض المحادثة')
+                    ->url(fn(Conversation $record): string => static::getUrl('view', ['record' => $record])),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -70,8 +103,7 @@ class ConversationResource extends Resource
     {
         return [
             'index' => Pages\ListConversations::route('/'),
-            'create' => Pages\CreateConversation::route('/create'),
-            'edit' => Pages\EditConversation::route('/{record}/edit'),
+            'view' => Pages\ViewConversationChat::route('/{record}'),
         ];
     }
 }

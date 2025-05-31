@@ -39,6 +39,8 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
+                \App\Filament\Widgets\UnreadMessagesWidget::class,
+
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -51,9 +53,10 @@ class AdminPanelProvider extends PanelProvider
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
             ])
+
             ->authMiddleware([
                 Authenticate::class,
-                \App\Http\Middleware\EnsureUserIsAdmin::class, // ✅ أضف هذا السطر
+                \App\Http\Middleware\EnsureUserIsAdmin::class,
             ]);
     }
 }

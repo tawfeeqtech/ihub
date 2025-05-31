@@ -26,7 +26,8 @@ class WorkspaceShowResource extends JsonResource
             'features' => $this->features ?? [],
             'short_services' => $this->services
                 ->pluck('category')
-                ->unique()
+                ->unique(fn($item) => $item[$lang] ?? $item['en'] ?? $item['ar'] ?? null)
+                ->map(fn($item) => $item[$lang] ?? $item['en'] ?? $item['ar'] ?? '')
                 ->values(),
             'secretary' => $this->secretary ? [
                 'id' => $this->secretary->id,

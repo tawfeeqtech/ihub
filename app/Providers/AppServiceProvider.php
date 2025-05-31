@@ -21,11 +21,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Storage::disk('custom_public')->setVisibility('uploads/logo.png', 'public');
+        // Storage::disk('custom_public')->setVisibility('uploads/logo.png', 'public');
 
-        Log::info('File upload attempted', [
-            'disk' => 'custom_public',
-            'path' => 'uploads/logo.png',
-        ]);
+        // Log::info('File upload attempted', [
+        //     'disk' => 'custom_public',
+        //     'path' => 'uploads/logo.png',
+        // ]);
     }
 }

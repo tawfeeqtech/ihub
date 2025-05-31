@@ -8,11 +8,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/check', function () {
-    $filePath = 'test.txt';
-    Storage::disk('custom_public')->put($filePath, 'Hello World!');
-    return 'File uploaded to: ' . public_path('uploads/' . $filePath);
-});
+// Route::get('/check', function () {
+//     $filePath = 'test.txt';
+//     Storage::disk('custom_public')->put($filePath, 'Hello World!');
+//     return 'File uploaded to: ' . public_path('uploads/' . $filePath);
+// });
+
+// Route::get('/test-broadcast', function () {
+//     broadcast(new \App\Events\MessageSent(\App\Models\Message::latest()->first()));
+// });
 
 
 Route::middleware(['auth'])->group(function () {

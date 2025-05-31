@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\API\V1;
 
-use App\Events\MessageSent;
 use App\Http\Controllers\Controller;
 use App\Models\Message;
 use App\Models\Conversation;
@@ -45,7 +44,7 @@ class MessageController extends Controller
             return $this->apiResponse(null, __('messages.not_found'), 404);
         }
 
-        if ((int) $conversation->user_id !== (int) auth()->id()) {
+        if ($conversation->user_id !== auth()->id()) {
             return $this->apiResponse(null, __('messages.not_authorized'), 403);
         }
         $validated = $request->validate([
@@ -53,24 +52,22 @@ class MessageController extends Controller
             'attachment' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:2048',
         ]);
 
-        $messageData = [
+        $data = [
             'conversation_id' => $conversationId,
             'sender_id' => auth()->id(),
             'body' => $validated['body'] ?? null,
+
         ];
 
         if ($request->hasFile('attachment')) {
             $file = $request->file('attachment');
             if ($file->isValid()) {
                 $path = 'uploads/' . $conversationId . "/" . auth()->id();
-                $messageData['attachment'] = $this->uploadImage($path, $request, 'attachment');
+                $data['attachment'] = $this->uploadImage($path, $request, 'attachment');
             }
         }
 
-        $message = Message::create($messageData);
-
-        broadcast(new MessageSent($message))->toOthers();
-
+        $message = Message::create($data);
         return $this->apiResponse(new MessageResource($message), __('messages.success'), 200);
     }
 }

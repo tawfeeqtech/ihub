@@ -16,4 +16,17 @@ class ListConversations extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+
+    // protected function registerScripts(): array
+    // {
+    //     return [
+    //         <<<JS
+    //             Echo.private("conversations." + {{ auth()->id() }})
+    //                 .listen(".message.sent", (e) => {
+    //                     console.log("📥 رسالة جديدة وصلت:", e);
+    //                     window.dispatchEvent(new CustomEvent('new-message-received', { detail: e }));
+    //                 });
+    //         JS,
+    //     ];
+    // }
 }

@@ -1,4 +1,8 @@
 <?php
+// php artisan queue:work
+
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -16,22 +20,41 @@ use App\Http\Controllers\API\V1\{
     SettingController
 };
 
+
+RateLimiter::for('auth', function ($request) {
+    return Limit::perMinute(10)->by($request->ip());
+});
+
+RateLimiter::for('public-api', function ($request) {
+    return Limit::perMinute(60)->by($request->ip());
+});
+
+RateLimiter::for('user-api', function ($request) {
+    return Limit::perMinute(100)->by(optional($request->user())->id ?: $request->ip());
+});
+
 Route::prefix('v1')->group(function () {
 
     Route::prefix('auth')->group(function () {
-        Route::post('/register', [AuthController::class, 'register']);
-        Route::post('/login', [AuthController::class, 'login']);
+        Route::middleware('throttle:auth')->group(function () {
+            Route::post('/register', [AuthController::class, 'register']);
+            Route::post('/login', [AuthController::class, 'login']);
+        });
+
         Route::delete('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
         Route::post('/phone/verify', [AuthController::class, 'verifyPhone']);
     });
 
 
-    Route::get('/workspaces', [WorkspaceController::class, 'index']);
-    Route::get('/workspaces/{workspace}', [WorkspaceController::class, 'show']);
-    Route::get('/workspaces/{workspace}/packages', [PackageController::class, 'index']);
-    Route::get('/workspaces/{workspace}/services', [ServiceController::class, 'index']);
+    Route::middleware('throttle:public-api')->group(function () {
+        Route::get('/workspaces', [WorkspaceController::class, 'index']);
+        Route::get('/workspaces/{workspace}', [WorkspaceController::class, 'show']);
+        Route::get('/workspaces/{workspace}/packages', [PackageController::class, 'index']);
+        Route::get('/workspaces/{workspace}/services', [ServiceController::class, 'index']);
+    });
 
-    Route::middleware('auth:sanctum')->group(function () {
+
+    Route::middleware(['auth:sanctum', 'throttle:user-api'])->group(function () {
 
         Route::get('/users/me', [ProfileController::class, 'show']);
         Route::put('/users/me', [ProfileController::class, 'update']);
