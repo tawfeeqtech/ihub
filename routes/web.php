@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\WorkspaceImageController;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
@@ -18,6 +19,8 @@ Route::get('/', function () {
 //     broadcast(new \App\Events\MessageSent(\App\Models\Message::latest()->first()));
 // });
 
+Broadcast::routes(['middleware' => ['web', 'auth']]);
+// Broadcast::routes(); // تم إزالة الـ middleware بشكل كامل مؤقتاً
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin/workspaces/{workspace}/upload-images', [WorkspaceImageController::class, 'create'])

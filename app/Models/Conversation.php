@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\HasUnreadMessages;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Log;
 
 class Conversation extends Model
 {
@@ -41,10 +42,10 @@ class Conversation extends Model
             return 0;
         }
 
-        // احسب الرسائل غير المقروءة في هذه المحادثة فقط
-        return $this->messages()
-            ->whereNull('read_at')
-            ->where('sender_id', '!=', $auth->id) // فقط الرسائل من الطرف الآخر
+        $unreadCount = $this->messages()
+            ->where('sender_id', '!=', $auth->id) // الرسائل التي لم يرسلها السكرتير
+            ->whereNull('read_at') // الرسائل التي لم يتم تحديد أنها مقروءة
             ->count();
+        return $unreadCount;
     }
 }

@@ -63,17 +63,16 @@ class ConversationResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')->label('رقم المحادثة'),
-                // Tables\Columns\TextColumn::make('user.name')->label('اسم المستخدم'), // اسم مستخدم التطبيق
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('اسم المستخدم')
-                    ->extraAttributes([
-                        'x-data' => '{}',
-                        'x-init' => 'window.addEventListener("new-message-received", () => {$store.messages.incrementUnread();});',
-                    ])
+                    ->html()
                     ->formatStateUsing(function ($state, Conversation $record) {
-                        $count = $record->getUnreadMessagesCountForAuth();
-                        return $state . ($count > 0 ? " 🔴 ($count)" : '');
-                    })
+                        return view('components.conversation-user-with-badge', ['conversation' => $record,])->render();
+                    }),
+
+
+
+
 
 
             ])
@@ -91,6 +90,39 @@ class ConversationResource extends Resource
                 ]),
             ]);
     }
+
+    // public static function table(Table $table): Table
+    // {
+    //     return $table
+    //         ->columns([
+    //             Tables\Columns\TextColumn::make('id')->label('رقم المحادثة'),
+    //             Tables\Columns\TextColumn::make('user.name')
+    //                 ->label('اسم المستخدم')
+    //                 ->extraAttributes([
+    //                     'x-data' => '{}',
+    //                     'x-init' => 'window.addEventListener("new-message-received", () => {$store.messages.incrementUnread();});',
+    //                 ])
+    //                 ->formatStateUsing(function ($state, Conversation $record) {
+    //                     $count = $record->getUnreadMessagesCountForAuth();
+    //                     return $state . ($count > 0 ? " 🔴 ($count)" : '');
+    //                 })
+
+
+    //         ])
+    //         ->filters([
+    //             //
+    //         ])
+    //         ->actions([
+    //             Tables\Actions\Action::make('view_chat')
+    //                 ->label('عرض المحادثة')
+    //                 ->url(fn(Conversation $record): string => static::getUrl('view', ['record' => $record])),
+    //         ])
+    //         ->bulkActions([
+    //             Tables\Actions\BulkActionGroup::make([
+    //                 Tables\Actions\DeleteBulkAction::make(),
+    //             ]),
+    //         ]);
+    // }
 
     public static function getRelations(): array
     {

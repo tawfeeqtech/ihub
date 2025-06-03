@@ -8,36 +8,27 @@ use App\Models\Message;
 use App\Events\MessageSent;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Collection; // لاستخدام Collection
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage; // For image URLs
 use Livewire\Attributes\On;
 
 class ChatInterface extends Component
 {
-    // protected $listeners = ['refreshUnreadCount' => '$refresh'];
-
-
     public Conversation $conversation;
     public array $messages = [];
     public string $newMessageBody = '';
 
-    // يتم استدعاؤها عند تحميل المكون لأول مرة
+    // protected $listeners = [];
     public function mount(Conversation $conversation)
     {
         $this->conversation = $conversation;
-        // تعيين الرسائل كمقروءة إذا كانت موجهة للمستخدم الحالي
         Auth::user()->markMessagesAsRead($conversation->id);
-
         $this->loadMessages();
+        // $this->listeners["echo-private:conversations.{$this->conversation->id},.message.sent"] = 'handleIncomingMessage';
     }
 
-    // لتحميل الرسائل من قاعدة البيانات
     public function loadMessages()
     {
-        // $this->messages = $this->conversation->messages()
-        //     ->with('sender') // تحميل بيانات المرسل مع كل رسالة
-        //     ->orderBy('created_at', 'asc') // ترتيب الرسائل حسب تاريخ الإنشاء
-        //     ->get()->toArray();
-
         $this->messages = $this->conversation->messages()
             ->with('sender')
             ->orderBy('created_at', 'asc')
@@ -54,14 +45,12 @@ class ChatInterface extends Component
                     'created_at' => $message->created_at?->toDateTimeString(),
                     'attachment' => $message->attachment,
                 ];
-            })->toArray(); // ✅ هذا يحل المشكلة
+            })->toArray();
     }
 
-    // للاستماع لأحداث Pusher
     public function getListeners()
     {
         return [
-            // استمع للحدث 'message.sent' على القناة الخاصة لهذه المحادثة
             "echo-private:conversations.{$this->conversation->id},.message.sent" => 'handleIncomingMessage',
         ];
     }
@@ -69,41 +58,53 @@ class ChatInterface extends Component
     // لمعالجة الرسائل الواردة من Pusher (التي يرسلها المستخدم من الموبايل)
     public function handleIncomingMessage($eventData)
     {
-        // تحقق إذا كانت الرسالة بالفعل موجودة لتجنب الازدواجية في حالة إعادة تشغيل المكون أو أي مشكلة
-        if (collect($this->messages)->contains('id', $eventData['id'])) {
+        // تأكد من المسار الصحيح للـ ID والـ sender_id
+        $messageSenderId = $eventData['event']['sender']['id'] ?? null;
+        $currentAuthId = Auth::id();
+        // Log::info('messageSenderId: ' . $messageSenderId);
+        if ($messageSenderId == $currentAuthId) {
             return;
         }
 
-        // $eventData هي البيانات التي أرسلتها مع broadcastWith() في MessageSent
-        // إنشاء كائن رسالة جديد من البيانات المستلمة
+        if (collect($this->messages)->contains('id', $eventData['id'])) {
+            return;
+        }
         $newMessage = new Message([
-            'id' => $eventData['id'], // استخدم id من الحدث لضمان التوافق
+            'id' => $eventData['id'],
             'conversation_id' => $this->conversation->id,
             'sender_id' => $eventData['sender']['id'],
             'body' => $eventData['body'],
-            'attachment' => $eventData['attachment'] ?? null, // إذا كنت ترسل المرفقات
-            'created_at' => \Carbon\Carbon::parse($eventData['created_at']), // تحويل السلسلة إلى تاريخ
+            'attachment' => $eventData['attachment'] ?? null,
+            'created_at' => \Carbon\Carbon::parse($eventData['created_at']),
         ]);
-        // تعيين علاقة المرسل يدويًا بناءً على بيانات الحدث
-        // $newMessage->setRelation('sender', (object) $eventData['sender']);
         $newMessageArray = $newMessage->toArray();
         $newMessageArray['sender'] = $eventData['sender'];
-        Auth::user()->markMessagesAsRead($this->conversation->id);
-        // إضافة الرسالة الجديدة إلى قائمة الرسائل
+
         $this->messages[] = $newMessageArray;
-        // (اختياري) يمكنك إضافة JavaScript لتمرير الشاشة لأسفل تلقائيًا
-        $this->dispatch('scroll-chat-to-bottom');
+        Auth::user()->markMessagesAsRead($this->conversation->id);
+        // $this->dispatch('scroll-chat-to-bottom');
+        $this->js(<<<'JS'
+            window.dispatchEvent(new CustomEvent('scroll-chat-to-bottom'));
+        JS);
+
+        // $this->js(<<<"JS"
+        //     window.dispatchEvent(new CustomEvent('message-received-for-conversation', {
+        //         detail: { conversationId: {$this->conversation->id} }
+        //     }));
+        // JS);
+        // Log::info('message-received-for-conversation: ' . $this->conversation->id);
+
+        // $this->dispatch('messageReceivedForConversation', ['conversationId' => $this->conversation->id])->to('conversation-unread-badge');
     }
 
     // لإرسال رسالة من السكرتير
     public function sendMessage()
     {
         $this->validate([
-            'newMessageBody' => 'required|string',
+            'newMessageBody' => 'required|string|max:1000',
         ]);
 
         $secretary = Auth::user();
-
         $message = Message::create([
             'conversation_id' => $this->conversation->id,
             'sender_id' => $secretary->id,
@@ -111,19 +112,26 @@ class ChatInterface extends Component
             // 'attachment' => ... // منطق رفع المرفقات إذا أردت
         ]);
 
-        $message->load('sender'); // تحميل بيانات السكرتير
+        $message->load('sender');
+        $this->messages[] = [
+            'id' => $message->id,
+            'body' => $message->body,
+            'sender_id' => $message->sender_id,
+            'sender' => [
+                'id' => $message->sender->id ?? null,
+                'name' => $message->sender->name ?? 'غير معروف',
+            ],
+            'created_at' => $message->created_at?->toDateTimeString(),
+            'attachment' => $message->attachment ?? null,
+        ];
 
-        // بث الحدث (ليستقبله المستخدم في الموبايل)
-        broadcast(new MessageSent($message))->toOthers();
+        broadcast(new MessageSent($message));
 
-        // إضافة الرسالة إلى الواجهة مباشرة (بدون انتظار Pusher)
-        // $this->messages->push($message);
-        // $this->messages[] = $message->toArray();
-
-        $this->newMessageBody = ''; // تفريغ حقل الإدخال
-
-        // (اختياري) يمكنك إضافة JavaScript لتمرير الشاشة لأسفل تلقائيًا
-        $this->dispatch('scroll-chat-to-bottom');
+        $this->newMessageBody = '';
+        // $this->dispatch('scroll-chat-to-bottom');
+        $this->js(<<<'JS'
+            window.dispatchEvent(new CustomEvent('scroll-chat-to-bottom'));
+        JS);
     }
 
     // دالة render لعرض واجهة المستخدم
@@ -132,12 +140,12 @@ class ChatInterface extends Component
         return view('livewire.chat-interface');
     }
 
-    #[On('incoming-message')]
-    public function addIncomingMessage($message)
-    {
-        if (!collect($this->messages)->contains('id', $message['id'])) {
-            $this->messages[] = $message;
-            $this->dispatch('scroll-chat-to-bottom');
-        }
-    }
+    // #[On('incoming-message')]
+    // public function addIncomingMessage($message)
+    // {
+    //     if (!collect($this->messages)->contains('id', $message['id'])) {
+    //         $this->messages[] = $message;
+    //         $this->dispatch('scroll-chat-to-bottom');
+    //     }
+    // }
 }

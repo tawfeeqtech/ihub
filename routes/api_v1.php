@@ -19,7 +19,7 @@ use App\Http\Controllers\API\V1\{
     ServiceRequestController,
     SettingController
 };
-
+use Illuminate\Support\Facades\Broadcast;
 
 RateLimiter::for('auth', function ($request) {
     return Limit::perMinute(10)->by($request->ip());

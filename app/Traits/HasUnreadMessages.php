@@ -43,9 +43,9 @@ trait HasUnreadMessages
     public function markMessagesAsRead(int $conversationId): void
     {
         $auth = Auth::user();
-        if (!$auth) {
-            return;
-        }
+        // if (!$auth) {
+        //     return;
+        // }
         // Message::whereNull('read_at')
         //     ->join('conversations', 'messages.conversation_id', '=', 'conversations.id')
         //     ->where(function ($query) use ($auth) {

@@ -98,21 +98,78 @@
         }
     </style>
 
-    @push('scripts')
+    @push("scripts")
     <script>
-        document.addEventListener('livewire:navigated', () => {
+        function scrollToBottom() {
             const container = document.querySelector('.chat-messages');
             if (container) {
                 container.scrollTop = container.scrollHeight;
+                console.log("🔽 Scrolled to bottom. scrollTop:", container.scrollTop);
+            } else {
+                console.warn("❌ chat-messages container not found");
             }
-        });
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const container = document.querySelector('.chat-messages');
-            if (container) {
-                container.scrollTop = container.scrollHeight;
-            }
+            console.log("DOMContentLoaded", Livewire);
+            scrollToBottom();
+            window.addEventListener('scroll-chat-to-bottom', () => {
+                console.log("📩 scroll-chat-to-bottom event received");
+                requestAnimationFrame(() => {
+                    const container = document.querySelector('.chat-messages');
+                    if (container) {
+                        container.scrollTo({
+                            top: container.scrollHeight,
+                            behavior: 'smooth'
+                        });
+                        console.log("🔽 Smooth scroll done to:", container.scrollHeight);
+                    }
+                });
+            });
         });
+        
+        
+        // هذا المستمع يضمن التمرير لأسفل عند تحديث Livewire لأي سبب
+        // document.addEventListener('livewire:navigated', () => {
+        //     console.log("livewire:navigated", Livewire);
+
+        //     const container = document.querySelector('.chat-messages');
+        //     if (container) {
+        //         container.scrollTop = container.scrollHeight;
+        //     }
+        // });
+
+        // مستمع لحدث التمرير لأسفل الذي يتم إرساله من Livewire
+        // Livewire.on('scroll-chat-to-bottom', () => {
+        //     console.log("scroll-chat-to-bottom", Livewire);
+
+        //     const container = document.querySelector('.chat-messages');
+        //     if (container) {
+        //         container.scrollTop = container.scrollHeight;
+        //     }
+        // });
+
+        // *** التعديل الرئيسي هنا: انتظر حتى يكون Livewire جاهزاً ***
+        // document.addEventListener('livewire:initialized', () => {
+        //     console.log("livewire:initialized", Livewire);
+
+        //     const conversationId = document.getElementById('chat-messages-container')?.dataset?.conversationId;
+        //     console.log("Livewire Initialized. conversationId:", conversationId);
+
+        //     if (conversationId) {
+        //         console.log("livewire:initialized conversationId", Livewire);
+
+        //         window.Echo.private(`conversations.${conversationId}`)
+        //             .listen('message.sent', (e) => {
+        //                 console.log("livewire:initialized conversationId message.sent", Livewire);
+
+        //                 console.log('📥 وصلت رسالة جديدة:', e);
+        //                 Livewire.emit(`echo-private:conversations.${conversationId},message.sent`, e);
+        //             });
+        //     } else {
+        //         console.warn("❌ Livewire Initialized, but conversationId not found in DOM.");
+        //     }
+        // });
     </script>
     @endpush
 </div>

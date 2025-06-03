@@ -21,20 +21,21 @@ class MessageSent implements ShouldBroadcast
         $this->message = $message->load('sender');
     }
 
-    public function broadcastOn(): array
+    public function broadcastOn(): object
     {
-        // return new PrivateChannel('conversations.' . $this->message->conversation_id);
-        // return new PrivateChannel('secretary.' . $this->message->conversation->secretary_id);
-        return [
-            new PrivateChannel('conversations.' . $this->message->conversation_id),
-            new PrivateChannel('secretary.' . $this->message->conversation->secretary_id),
-        ];
+        return new PrivateChannel('conversations.' . $this->message->conversation_id);
+
+        // return [
+        //     new PrivateChannel('conversations.' . $this->message->conversation_id),
+        //     new PrivateChannel('secretary.' . $this->message->conversation->secretary_id),
+        // ];
     }
 
     public function broadcastWith(): array
     {
         return [
             'id' => $this->message->id,
+            // 'conversation_id' => $this->message->conversation_id,
             'body' => $this->message->body,
             'sender_id' => $this->message->sender_id,
             'sender' => [
@@ -42,7 +43,7 @@ class MessageSent implements ShouldBroadcast
                 'name' => $this->message->sender->name,
             ],
             'created_at' => $this->message->created_at->toDateTimeString(),
-            'attachment' => $this->message->attachment ?? null, // أضف هذا السطر إذا غير موجود
+            'attachment' => $this->message->attachment ?? null,
         ];
     }
 

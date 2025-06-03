@@ -11,7 +11,7 @@ use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-
+use Illuminate\Support\Facades\Log;
 
 class MessageController extends Controller
 {
@@ -68,8 +68,13 @@ class MessageController extends Controller
         }
 
         $message = Message::create($messageData);
+        $message->load('sender');
+        // broadcast(new MessageSent($message))->toOthers();
 
+        Log::info('Attempting to broadcast MessageSent event for conversation: ' . $conversation->id);
         broadcast(new MessageSent($message))->toOthers();
+        Log::info('MessageSent event broadcasted.');
+
 
         return $this->apiResponse(new MessageResource($message), __('messages.success'), 200);
     }

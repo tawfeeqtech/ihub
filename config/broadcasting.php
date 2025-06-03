@@ -2,7 +2,7 @@
 
 return [
 
-    'default' => env('BROADCAST_CONNECTION', 'pusher'),
+    'default' => env('BROADCAST_CONNECTION', 'null'),
 
     'connections' => [
 
@@ -16,6 +16,11 @@ return [
                 'useTLS' => true,
             ],
         ],
+
+        // 'ably' => [
+        //     'driver' => 'ably',
+        //     'key' => env('ABLY_KEY'),
+        // ],
 
         'log' => [
             'driver' => 'log',

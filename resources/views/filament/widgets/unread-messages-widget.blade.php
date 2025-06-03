@@ -12,7 +12,7 @@
     </x-filament::section>
 </x-filament-widgets::widget> -->
 
-<div
+<!-- <div
     x-data
     x-init="
         Echo.private(`secretary.{{ auth()->id() }}`)
@@ -26,4 +26,4 @@
 
         </div>
     </x-filament::card>
-</div>
+</div> -->
