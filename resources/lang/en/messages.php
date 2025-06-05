@@ -9,4 +9,5 @@ return [
     'image_failed_upload' => 'Failed to upload image .!',
     'success' => 'success',
     'change_seat' => 'Change seat',
+    'device_token' => 'Device token saved successfully!',
 ];

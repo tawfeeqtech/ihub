@@ -17,6 +17,7 @@ use App\Http\Controllers\API\V1\{
     ProfileController,
     ServiceController,
     ServiceRequestController,
+    DeviceTokenController,
     SettingController
 };
 use Illuminate\Support\Facades\Broadcast;
@@ -40,6 +41,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/register', [AuthController::class, 'register']);
             Route::post('/login', [AuthController::class, 'login']);
         });
+        Route::middleware('auth:sanctum')->post('/testSendNot', [DeviceTokenController::class, 'testSendNot']);
 
         Route::delete('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
         Route::post('/phone/verify', [AuthController::class, 'verifyPhone']);

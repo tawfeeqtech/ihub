@@ -9,4 +9,6 @@ return [
     'image_failed_upload' => 'فشل في رفع الصورة.!',
     'success' => 'نجاح',
     'change_seat' => 'تغيير المقعد',
+    'device_token' => 'تم حفظ رمز الجهاز بنجاح!',
+
 ];

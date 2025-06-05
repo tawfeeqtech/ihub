@@ -28,7 +28,8 @@ class User extends Authenticatable
         'role',
         'specialty',
         'password',
-        'phone_verification_code'
+        'phone_verification_code',
+        'device_token'
     ];
 
 
@@ -68,5 +69,10 @@ class User extends Authenticatable
     public function conversations()
     {
         return $this->hasMany(Conversation::class, 'user_id');
+    }
+
+    public function routeNotificationForFirebase()
+    {
+        return $this->device_token;
     }
 }

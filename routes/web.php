@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\DeviceTokenController;
 use App\Http\Controllers\WorkspaceImageController;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
@@ -22,7 +23,12 @@ Route::get('/', function () {
 Broadcast::routes(['middleware' => ['web', 'auth']]);
 // Broadcast::routes(); // تم إزالة الـ middleware بشكل كامل مؤقتاً
 
+
+
 Route::middleware(['auth'])->group(function () {
+    Route::post('/store-token', [DeviceTokenController::class, 'store']);
+
+
     Route::get('/admin/workspaces/{workspace}/upload-images', [WorkspaceImageController::class, 'create'])
         ->name('admin.upload-images.create');
     Route::post('/admin/workspaces/{workspace}/upload-images', [WorkspaceImageController::class, 'store'])
