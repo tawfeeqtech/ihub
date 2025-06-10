@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\Package;
 use App\Http\Resources\BookingResource;
+use App\Models\User;
+use App\Notifications\NewBookingNotification;
+use App\Services\NotificationService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -57,12 +60,12 @@ class BookingController extends Controller
 
 
     // إنشاء حجز جديد
-    public function store(Request $request)
+    public function store(Request $request, NotificationService $notificationService)
     {
         $validated = $request->validate([
             'workspace_id' => 'required|exists:workspaces,id',
             'package_id' => 'required|exists:packages,id',
-            'date' => 'required|date', // تاريخ الحجز دائمًا مطلوب
+            'date' => 'required|date',
             'time' => 'nullable|date_format:H:i', // الوقت فقط في حالة باقة الساعات
             'number_of_hours' => 'nullable|integer|min:1|max:12', // عدد الساعات إذا كانت باقة الساعة
         ]);
@@ -84,18 +87,15 @@ class BookingController extends Controller
             $hours = $validated['number_of_hours'] ?? 1;
             $endAt = $startAt->copy()->addHours($hours);
         } else {
-            // باقي الباقات: نأخذ فقط التاريخ كبداية من منتصف الليل
             $startAt = Carbon::parse($validated['date'])->startOfDay();
 
             $endAt = match ($package->name) {
                 'يوم' => $startAt->copy()->addDays($package->duration),
                 'أسبوع' => $startAt->copy()->addWeeks($package->duration),
                 'شهر' => $startAt->copy()->addMonths($package->duration),
-                default => $startAt->copy()->addDays(1), // fallback ليوم افتراضي
+                default => $startAt->copy()->addDays(1),
             };
         }
-
-        // التحقق من التكرار
         $existing = Booking::where('user_id', auth()->id())
             ->where('workspace_id', $validated['workspace_id'])
             ->where('package_id', $validated['package_id'])
@@ -105,8 +105,6 @@ class BookingController extends Controller
         if ($existing) {
             return $this->apiResponse(null, "لديك طلب مشابه قيد التنفيذ بالفعل", 422);
         }
-
-
         $booking = Booking::create([
             'user_id' => auth()->id(),
             'workspace_id' => $validated['workspace_id'],
@@ -115,7 +113,9 @@ class BookingController extends Controller
             'end_at' => $endAt,
             'status' => 'pending',
         ]);
-
+        // إرسال إشعار للسكرتير بعد إنشاء الحجز
+        $userName = auth()->user()->name ?? 'مستخدم التطبيق';
+        $notificationService->notifySecretaryOfNewBooking($userName, $validated['workspace_id']);
         return $this->apiResponse(new BookingResource($booking), __('messages.success'), 200);
     }
 }
