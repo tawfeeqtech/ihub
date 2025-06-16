@@ -56,6 +56,7 @@ class MessageController extends Controller
         $messageData = [
             'conversation_id' => $conversationId,
             'sender_id' => auth()->id(),
+            'receiver_id' => $conversation->secretary_id,
             'body' => $validated['body'] ?? null,
         ];
 

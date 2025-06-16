@@ -37,5 +37,7 @@ return [
 
     'fcm' => [
         'server_key' => env('FCM_SERVER_KEY'),
+        'project_id' => env('FIREBASE_PROJECT_ID'),
+        'url' => env('FCM_URL'),
     ],
 ];

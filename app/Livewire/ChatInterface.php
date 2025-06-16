@@ -38,6 +38,7 @@ class ChatInterface extends Component
                     'id' => $message->id,
                     'body' => $message->body,
                     'sender_id' => $message->sender_id,
+                    'receiver_id' => $message->receiver_id,
                     'sender' => [
                         'id' => $message->sender->id ?? null,
                         'name' => $message->sender->name ?? 'غير معروف',
@@ -108,6 +109,7 @@ class ChatInterface extends Component
         $message = Message::create([
             'conversation_id' => $this->conversation->id,
             'sender_id' => $secretary->id,
+            'receiver_id' => $this->conversation->user_id,
             'body' => $this->newMessageBody,
             // 'attachment' => ... // منطق رفع المرفقات إذا أردت
         ]);

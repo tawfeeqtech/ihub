@@ -70,6 +70,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Conversation::class, 'user_id');
     }
+    public function receivedMessages()
+    {
+        return $this->hasMany(Message::class, 'receiver_id');
+    }
 
     public function routeNotificationForFirebase()
     {

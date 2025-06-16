@@ -20,6 +20,11 @@ use Filament\Tables\Columns\ImageColumn;
 class BookingResource extends Resource
 {
     protected static ?string $model = Booking::class;
+    // protected function afterEdit(): void
+    // {
+    //     $credentialsFilePath = "path to your firebase.json";
+    //     dd($credentialsFilePath);
+    // }
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -28,21 +33,21 @@ class BookingResource extends Resource
         return false;
     }
 
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::count();
-    }
+    // public static function getNavigationBadge(): ?string
+    // {
+    //     return static::getModel()::count();
+    // }
 
-    public static function getEloquentQuery(): Builder
-    {
-        $query = parent::getEloquentQuery();
+    // public static function getEloquentQuery(): Builder
+    // {
+    //     $query = parent::getEloquentQuery();
 
-        if (Auth::user()->role === 'secretary') {
-            return $query->where('workspace_id', Auth::user()->workspace_id);
-        }
+    //     if (Auth::user()->role === 'secretary') {
+    //         return $query->where('workspace_id', Auth::user()->workspace_id);
+    //     }
 
-        return $query;
-    }
+    //     return $query;
+    // }
 
 
     public static function form(Form $form): Form

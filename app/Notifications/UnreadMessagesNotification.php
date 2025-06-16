@@ -2,50 +2,53 @@
 
 namespace App\Notifications;
 
-
-
+use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\DatabaseMessage;
-use Illuminate\Notifications\Messages\BroadcastMessage;
-
+use NotificationChannels\OneSignal\OneSignalChannel;
+use NotificationChannels\OneSignal\OneSignalMessage;
 
 class UnreadMessagesNotification extends Notification
 {
-    protected $userName;
-    protected $unreadCount;
+    use Queueable;
 
-    public function __construct(string $userName, int $unreadCount)
+    protected int $unreadCount;
+    protected string $userName;
+    protected string $secretaryName;
+
+    public function __construct(int $unreadCount, string $userName, string $secretaryName)
     {
-        $this->userName = $userName;
         $this->unreadCount = $unreadCount;
+        $this->userName = $userName;
+        $this->secretaryName = $secretaryName;
     }
 
+    // Add 'database' channel here
     public function via($notifiable)
     {
-        return ['database', 'broadcast', 'firebase']; // 'firebase' حسب تكاملك مع FCM
+        return [OneSignalChannel::class, 'database'];
     }
 
+    public function toOneSignal($notifiable)
+    {
+        if ($notifiable->isSecretary()) {
+            return OneSignalMessage::create()
+                ->subject("You have {$this->unreadCount} unread message(s) from {$this->userName}")
+                ->body("Please check your control panel messages.");
+        } else {
+            return OneSignalMessage::create()
+                ->subject("You have {$this->unreadCount} unread message(s) from {$this->secretaryName}")
+                ->body("Please check your app messages.");
+        }
+    }
+
+    // Store notification data in database
     public function toDatabase($notifiable)
     {
         return [
-            'message' => "لديك {$this->unreadCount} رسالة/رسائل غير مقروءة من {$this->userName}",
-        ];
-    }
-
-    public function toBroadcast($notifiable)
-    {
-        return new BroadcastMessage([
-            'message' => "لديك {$this->unreadCount} رسالة/رسائل غير مقروءة من {$this->userName}",
-        ]);
-    }
-
-    // مثال لإرسال عبر Firebase (حسب إعداداتك)
-    public function toFirebase($notifiable)
-    {
-        return [
-            'title' => 'رسائل جديدة',
-            'body' => "لديك {$this->unreadCount} رسالة/رسائل غير مقروءة من {$this->userName}",
-            'token' => $notifiable->device_token,
+            'message' => "You have {$this->unreadCount} unread message(s) from " . ($notifiable->isSecretary() ? $this->userName : $this->secretaryName),
+            'unread_count' => $this->unreadCount,
+            'sender' => $notifiable->isSecretary() ? $this->userName : $this->secretaryName,
+            'type' => 'unread_message',
         ];
     }
 }
