@@ -61,6 +61,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/users/me', [ProfileController::class, 'show']);
         Route::put('/users/me', [ProfileController::class, 'update']);
         Route::put('/users/me/avatar', [ProfileController::class, 'uploadProfileImage']);
+        Route::post('/store-lang', [ProfileController::class, 'updateUserLang']);
 
         Route::apiResource('bookings', BookingController::class)->only(['store', 'show']);
         Route::get('/bookings', [BookingController::class, 'index']); // with ?status=

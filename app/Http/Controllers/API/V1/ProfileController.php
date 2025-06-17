@@ -70,4 +70,20 @@ class ProfileController extends Controller
         ];
         return $this->apiResponse($data, __('messages.success'), 200);
     }
+
+    public function updateUserLang(Request $request)
+    {
+        $request->validate([
+            'lang' => 'required|string|regex:/^[a-z]{2}$/i',
+        ]);
+
+        $user = $request->user();
+        if (!$user) {
+            return $this->apiResponse(null, __('messages.not_authorized'), 403);
+        }
+
+        $user->locale = $request->lang;
+        $user->save();
+        return $this->apiResponse(null, __('messages.user_lang'), 200);
+    }
 }

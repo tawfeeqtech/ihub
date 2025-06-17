@@ -38,32 +38,46 @@ class EditBooking extends EditRecord
             $record->fill($data)->save();
 
             $user = $record->user;
+            $userLocale = $user->locale ?? config('app.locale');
+            $workspaceName = 'غير محددة';
+            if ($record->workspace && is_array($record->workspace->name)) {
+                if (isset($record->workspace->name[$userLocale])) {
+                    $workspaceName = $record->workspace->name[$userLocale];
+                } else {
+                    $workspaceName = $record->workspace->name[config('app.locale')] ?? array_values($record->workspace->name)[0] ?? 'غير محددة';
+                }
+            } else if ($record->workspace && is_string($record->workspace->name)) {
+                $workspaceName = $record->workspace->name;
+            }
+
             if ($user && $user->device_token) {
                 $notificationTitle = '';
                 $notificationBody = '';
                 $customData = [
                     'booking_id' => (string) $record->id,
                     'status' => (string) $record->status,
+                    'workspace_name' => (string) $workspaceName,
                 ];
 
                 switch ($record->status) {
                     case 'confirmed':
                         $notificationTitle = 'تم تأكيد حجزك!';
-                        $notificationBody = 'تم تأكيد حجزك رقم المقعد ' . $record->seat_number . ' بنجاح.';
+                        $notificationBody = 'تم تأكيد حجزك لمساحة العمل **' . $workspaceName . '** بنجاح، بإمكانك التحقق من اسم المستخدم وكلمة المرور.';
                         break;
                     case 'cancelled':
                         $notificationTitle = 'تم إلغاء حجزك!';
-                        $notificationBody = 'للأسف، تم إلغاء حجزك رقم المقعد ' . $record->seat_number . '.';
+                        $notificationBody = 'للأسف، تم إلغاء حجزك لمساحة العمل **' . $workspaceName . '** .';
                         break;
                     case 'pending':
                         $notificationTitle = 'حالة حجزك معلقة';
-                        $notificationBody = 'حجزك رقم المقعد ' . $record->seat_number . ' لا يزال بانتظار التأكيد.';
+                        $notificationBody = 'حجزك لمساحة العمل **' . $workspaceName . '** لا يزال بانتظار التأكيد.';
                         break;
                     default:
                         $notificationTitle = 'تحديث حالة الحجز';
-                        $notificationBody = 'تم تحديث حالة حجزك رقم المقعد ' . $record->seat_number . '.';
+                        $notificationBody = 'تم تحديث حالة حجزك لمساحة العمل **' . $workspaceName . '**.';
                         break;
                 }
+
 
                 $fcmResult = $this->sendFirebasePushNotification(
                     $user->device_token,

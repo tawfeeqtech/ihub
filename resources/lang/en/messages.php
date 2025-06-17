@@ -10,4 +10,5 @@ return [
     'success' => 'success',
     'change_seat' => 'Change seat',
     'device_token' => 'Device token saved successfully!',
+    'user_lang' => 'User language saved successfully!',
 ];

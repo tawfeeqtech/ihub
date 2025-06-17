@@ -40,7 +40,7 @@ trait PushNotificationTrait
             ];
 
             $message = [
-                // "token" => $fcmToken,
+                "token" => $fcmToken,
                 "notification" => [
                     "title" => $title,
                     "body" => $body,
