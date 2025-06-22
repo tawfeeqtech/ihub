@@ -6,11 +6,15 @@ use Livewire\Component;
 use App\Models\Conversation;
 use App\Models\Message;
 use App\Events\MessageSent;
+use App\Models\User;
+use App\Services\NotificationService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Collection; // لاستخدام Collection
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage; // For image URLs
 use Livewire\Attributes\On;
+
+use Filament\Notifications\Notification;
 
 class ChatInterface extends Component
 {
@@ -106,6 +110,16 @@ class ChatInterface extends Component
         ]);
 
         $secretary = Auth::user();
+        $recipient = User::find($this->conversation->user_id);
+        if (!$recipient) {
+            Log::error('Recipient not found for user_id: ' . $this->conversation->user_id);
+            Notification::make()
+                ->title('Error: Recipient not found')
+                ->danger()
+                ->send();
+            return;
+        }
+
         $message = Message::create([
             'conversation_id' => $this->conversation->id,
             'sender_id' => $secretary->id,
@@ -127,8 +141,25 @@ class ChatInterface extends Component
             'attachment' => $message->attachment ?? null,
         ];
 
-        broadcast(new MessageSent($message));
+        // Send notification to the recipient
+        try {
+            $notificationService = app(NotificationService::class);
+            $notificationService->sendUnreadMessageNotification($recipient, $secretary, false, $this->conversation->id);
+            Log::info('Notification sent to recipient', ['recipient_id' => $recipient->id]);
+        } catch (\Exception $e) {
+            Log::error('Failed to send notification', [
+                'error' => $e->getMessage(),
+                'recipient_id' => $recipient->id,
+                'credentials_path' => base_path() . '\storage\app\firebase\firebase-credentials.json',
+            ]);
+            Notification::make()
+                ->title('Failed to send notification')
+                ->danger()
+                ->send();
+        }
 
+        broadcast(new MessageSent($message));
+        Log::info('Recipient FCM token: ' . $recipient->device_token);
         $this->newMessageBody = '';
         // $this->dispatch('scroll-chat-to-bottom');
         $this->js(<<<'JS'

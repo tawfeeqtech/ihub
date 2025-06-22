@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Message;
 use App\Models\Conversation;
 use App\Http\Resources\MessageResource;
+use App\Models\User;
+use App\Services\NotificationService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -53,10 +55,13 @@ class MessageController extends Controller
             'attachment' => 'nullable|image|mimes:jpeg,jpg,png,gif|max:2048',
         ]);
 
+        $sender = auth()->user(); // App user
+        $recipient = User::find($request->receiver_id); // Secretary
+
         $messageData = [
             'conversation_id' => $conversationId,
-            'sender_id' => auth()->id(),
-            'receiver_id' => $conversation->secretary_id,
+            'sender_id' => $sender->id,
+            'receiver_id' => $recipient->id,
             'body' => $validated['body'] ?? null,
         ];
 
@@ -68,7 +73,17 @@ class MessageController extends Controller
             }
         }
 
+
         $message = Message::create($messageData);
+
+        // Send notification to the secretary
+        $notificationService = app(NotificationService::class);
+        $notificationService->sendUnreadMessageNotification(
+            $recipient, // Secretary
+            $sender,    // App user
+            true        // Secretary notification
+        );
+
         $message->load('sender');
         // broadcast(new MessageSent($message))->toOthers();
 

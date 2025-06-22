@@ -17,7 +17,7 @@ use App\Http\Controllers\API\V1\{
     ProfileController,
     ServiceController,
     ServiceRequestController,
-    DeviceTokenController,
+    FcmController,
     SettingController
 };
 use Illuminate\Support\Facades\Broadcast;
@@ -41,7 +41,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/register', [AuthController::class, 'register']);
             Route::post('/login', [AuthController::class, 'login']);
         });
-        Route::middleware('auth:sanctum')->post('/testSendNot', [DeviceTokenController::class, 'testSendNot']);
+        Route::middleware('auth:sanctum')->put('/update-device-token', [FcmController::class, 'updateDeviceToken']);
 
         Route::delete('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
         Route::post('/phone/verify', [AuthController::class, 'verifyPhone']);
@@ -80,13 +80,13 @@ Route::prefix('v1')->group(function () {
         Route::get('/static/{key}', [SettingController::class, 'show']);
 
 
-        Route::get('/notifications', function (Request $request) {
-            return $request->user()->notifications()->latest()->get();
-        });
+        // Route::get('/notifications', function (Request $request) {
+        //     return $request->user()->notifications()->latest()->get();
+        // });
 
-        Route::post('/notifications/mark-as-read', function (Request $request) {
-            $request->user()->unreadNotifications->markAsRead();
-            return response()->json(['message' => 'All notifications marked as read']);
-        });
+        // Route::post('/notifications/mark-as-read', function (Request $request) {
+        //     $request->user()->unreadNotifications->markAsRead();
+        //     return response()->json(['message' => 'All notifications marked as read']);
+        // });
     });
 });

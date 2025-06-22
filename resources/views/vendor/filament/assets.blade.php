@@ -10,6 +10,14 @@
     @endif
 @endforeach
 
+<script>
+    window.Laravel = {
+        user: {
+            id: {{ auth()->check() ? auth()->id() : 'null' }}
+        }
+    };
+</script>
+
 @livewire('notifications')
 
 <style>

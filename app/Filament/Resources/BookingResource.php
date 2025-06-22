@@ -20,11 +20,6 @@ use Filament\Tables\Columns\ImageColumn;
 class BookingResource extends Resource
 {
     protected static ?string $model = Booking::class;
-    // protected function afterEdit(): void
-    // {
-    //     $credentialsFilePath = "path to your firebase.json";
-    //     dd($credentialsFilePath);
-    // }
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -33,10 +28,10 @@ class BookingResource extends Resource
         return false;
     }
 
-    // public static function getNavigationBadge(): ?string
-    // {
-    //     return static::getModel()::count();
-    // }
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
 
     // public static function getEloquentQuery(): Builder
     // {

@@ -40,4 +40,7 @@ return [
         'project_id' => env('FIREBASE_PROJECT_ID'),
         'url' => env('FCM_URL'),
     ],
+    'firebase' => [
+        'credentials' => env('FIREBASE_CREDENTIALS', storage_path('app/firebase/firebase-credentials.json')),
+    ],
 ];

@@ -7,12 +7,14 @@ use App\Models\Booking;
 use App\Models\Package;
 use App\Http\Resources\BookingResource;
 use App\Models\User;
+use App\Models\Workspace;
 use App\Notifications\NewBookingNotification;
 use App\Services\NotificationService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Log;
 
 class BookingController extends Controller
 {
@@ -66,8 +68,8 @@ class BookingController extends Controller
             'workspace_id' => 'required|exists:workspaces,id',
             'package_id' => 'required|exists:packages,id',
             'date' => 'required|date',
-            'time' => 'nullable|date_format:H:i', // الوقت فقط في حالة باقة الساعات
-            'number_of_hours' => 'nullable|integer|min:1|max:12', // عدد الساعات إذا كانت باقة الساعة
+            'time' => 'nullable|date_format:H:i',
+            'number_of_hours' => 'nullable|integer|min:1|max:12',
         ]);
 
         $package = Package::where('id', $validated['package_id'])
@@ -114,8 +116,55 @@ class BookingController extends Controller
             'status' => 'pending',
         ]);
         // إرسال إشعار للسكرتير بعد إنشاء الحجز
-        $userName = auth()->user()->name ?? 'مستخدم التطبيق';
-        $notificationService->notifySecretaryOfNewBooking($userName, $validated['workspace_id']);
+        // $userName = auth()->user()->name ?? 'مستخدم التطبيق';
+        // $notificationService->notifySecretaryOfNewBooking($userName, $validated['workspace_id']);
+
+        // Send notifications
+        try {
+            $sender = auth()->user(); // The user making the booking
+            $workspace = Workspace::find($validated['workspace_id']);
+            $secretary = $workspace->secretary; // Use the workspace's secretary relationship
+
+            // Determine the locale from the request's Accept-Language header or fallback to 'en'
+            $locale = app()->getLocale();
+            $spaceName = $workspace->name[$locale] ?? $workspace->name['en'] ?? 'Unknown Workspace';
+
+            if (!$secretary) {
+                Log::warning('No secretary found for workspace', [
+                    'workspace_id' => $workspace->id,
+                    'booking_id' => $booking->id,
+                ]);
+            } else {
+                $notificationService->sendWorkspaceReservationNotification(
+                    $secretary, // Recipient (secretary)
+                    $sender,    // Sender (app user)
+                    $spaceName, // Space name
+                    true,       // Secretary notification
+                    $booking->id // Reservation ID
+                );
+            }
+
+            // Notify the user
+            // $notificationService->sendWorkspaceReservationNotification(
+            //     $sender,    // Recipient (app user)
+            //     $secretary ?: $sender, // Use sender as fallback if no secretary
+            //     $spaceName, // Space name
+            //     false,      // User notification
+            //     $booking->id // Reservation ID
+            // );
+
+            // Log::info('Workspace reservation notifications sent', [
+            //     'booking_id' => $booking->id,
+            //     'secretary_id' => $secretary?->id,
+            //     'space_name' => $spaceName,
+            //     'locale' => $locale,
+            // ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to send workspace reservation notifications', [
+                'booking_id' => $booking->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
         return $this->apiResponse(new BookingResource($booking), __('messages.success'), 200);
     }
 }

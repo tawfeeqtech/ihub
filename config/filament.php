@@ -13,7 +13,12 @@ return [
     | This will allow your users to receive real-time notifications.
     |
     */
-
+    'notifications' => [
+        'polling' => [
+            'enabled' => true,
+            'interval' => '2s', // Check every 2 seconds
+        ],
+    ],
     'broadcasting' => [
 
         // 'echo' => [

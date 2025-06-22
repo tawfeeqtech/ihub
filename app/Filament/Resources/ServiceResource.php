@@ -28,6 +28,10 @@ class ServiceResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
         $user = Auth::user();

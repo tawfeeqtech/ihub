@@ -4,9 +4,9 @@ namespace App\Providers;
 
 use App\Models\Booking;
 use App\Observers\BookingObserver;
+use App\Services\NotificationService;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
+use Kreait\Firebase\Contract\Messaging;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,7 +15,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(Messaging::class, function ($app) {
+            $factory = (new \Kreait\Firebase\Factory())
+                ->withServiceAccount(base_path() . '\storage\app\firebase\firebase-credentials.json');
+            return $factory->createMessaging();
+        });
+
+        $this->app->singleton(NotificationService::class, function ($app) {
+            return new NotificationService($app->make(Messaging::class));
+        });
     }
 
     /**
@@ -24,12 +32,5 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Booking::observe(BookingObserver::class);
-
-        // Storage::disk('custom_public')->setVisibility('uploads/logo.png', 'public');
-
-        // Log::info('File upload attempted', [
-        //     'disk' => 'custom_public',
-        //     'path' => 'uploads/logo.png',
-        // ]);
     }
 }

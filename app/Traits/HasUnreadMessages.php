@@ -8,21 +8,21 @@ use Illuminate\Support\Facades\Auth;
 trait HasUnreadMessages
 {
     // ضعه داخل User model أو Trait
-    public function getAllUnreadMessagesCount(): int
-    {
-        $auth = auth()->user();
+    // public function getAllUnreadMessagesCount(): int
+    // {
+    //     $auth = auth()->user();
 
-        if (!$auth) {
-            return 0;
-        }
+    //     if (!$auth) {
+    //         return 0;
+    //     }
 
-        return Message::whereNull('read_at')
-            ->join('conversations', 'messages.conversation_id', '=', 'conversations.id')
-            ->where(function ($query) use ($auth) {
-                $this->isMessageForCurrentUser($query, $auth);
-            })
-            ->count();
-    }
+    //     return Message::whereNull('read_at')
+    //         ->join('conversations', 'messages.conversation_id', '=', 'conversations.id')
+    //         ->where(function ($query) use ($auth) {
+    //             $this->isMessageForCurrentUser($query, $auth);
+    //         })
+    //         ->count();
+    // }
 
 
     // public function getUnreadMessagesCount(): int

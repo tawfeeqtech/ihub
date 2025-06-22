@@ -25,3 +25,11 @@ window.Echo = new Echo({
         },
     },
 });
+
+window.addEventListener("play-notification-sound", () => {
+    alert("aaaaaaaaaaaaa");
+    const audio = document.getElementById("notification-sound");
+    if (audio) {
+        audio.play().catch((e) => console.warn("Autoplay blocked:", e));
+    }
+});

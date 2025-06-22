@@ -39,14 +39,14 @@ class ConversationResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        // return static::getModel()::count();
+        return static::getModel()::count();
         // $count = auth()->user()?->getAllUnreadMessagesCount();
         // return $count > 0 ? (string) $count : null;
         // static::$unreadCountCache = auth()->user()?->getAllUnreadMessagesCount();
         // return static::$unreadCountCache > 0 ? (string) static::$unreadCountCache : null;
 
-        $count = auth()->user()?->getAllUnreadMessagesCount() ?? 0;
-        return $count > 0 ? (string) $count : null;
+        // $count = auth()->user()?->getAllUnreadMessagesCount() ?? 0;
+        // return $count > 0 ? (string) $count : null;
     }
 
 
