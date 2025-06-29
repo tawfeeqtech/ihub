@@ -24,7 +24,23 @@ class ConversationResource extends Resource
 
     protected static ?string $model = Conversation::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-right';
+    protected static ?int $navigationSort = 2;
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.Conversation.label');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.Conversation.label');
+    }
+
+    public static function canCreate(): bool
+    {
+        return false;
+    }
 
     public static function getEloquentQuery(): Builder
     {
@@ -39,14 +55,15 @@ class ConversationResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
-        // $count = auth()->user()?->getAllUnreadMessagesCount();
-        // return $count > 0 ? (string) $count : null;
-        // static::$unreadCountCache = auth()->user()?->getAllUnreadMessagesCount();
-        // return static::$unreadCountCache > 0 ? (string) static::$unreadCountCache : null;
+        return static::getModel()::where('secretary_id', auth()->user()->id)->count();
 
-        // $count = auth()->user()?->getAllUnreadMessagesCount() ?? 0;
-        // return $count > 0 ? (string) $count : null;
+        // return static::getModel()::count();
+    }
+    public static function getNavigationBadgeColor(): string | array | null
+    {
+        $count = static::getNavigationBadge();
+
+        return $count > 0 ? 'primary' : 'gray';
     }
 
 
@@ -62,9 +79,9 @@ class ConversationResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id')->label('رقم المحادثة'),
+                Tables\Columns\TextColumn::make('id')->label(__('filament.table.id')),
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label('اسم المستخدم')
+                    ->label(__('filament.table.username'))
                     ->html()
                     ->formatStateUsing(function ($state, Conversation $record) {
                         return view('components.conversation-user-with-badge', ['conversation' => $record,])->render();
@@ -81,7 +98,7 @@ class ConversationResource extends Resource
             ])
             ->actions([
                 Tables\Actions\Action::make('view_chat')
-                    ->label('عرض المحادثة')
+                    ->label(__('filament.Conversation.table.show_conversation'))
                     ->url(fn(Conversation $record): string => static::getUrl('view', ['record' => $record])),
             ])
             ->bulkActions([

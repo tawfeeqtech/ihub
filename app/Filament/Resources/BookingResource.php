@@ -21,7 +21,19 @@ class BookingResource extends Resource
 {
     protected static ?string $model = Booking::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
+    protected static ?int $navigationSort = 1;
+
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.booking.sidebar.label'); // مثال: "الحجوزات"
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.booking.sidebar.label');
+    }
 
     public static function canCreate(): bool
     {
@@ -30,8 +42,17 @@ class BookingResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+        return static::getModel()::where('status', '!=', 'confirmed')->count();
+
+        // return static::getModel()::count();
     }
+    public static function getNavigationBadgeColor(): string | array | null
+    {
+        $count = static::getNavigationBadge();
+
+        return $count > 0 ? 'primary' : 'gray';
+    }
+
 
     // public static function getEloquentQuery(): Builder
     // {
@@ -50,22 +71,22 @@ class BookingResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('seat_number')
-                    ->label('رقم المقعد')
+                    ->label(__("filament.BookingResource.form.seat_number"))
                     ->required(fn($record) => $record->status === 'pending'),
 
                 Forms\Components\TextInput::make('wifi_username')
-                    ->label('اسم مستخدم الوايفاي')
+                    ->label(__("filament.BookingResource.form.wifi_username"))
                     ->required(fn($record) => $record->status === 'pending'),
 
                 Forms\Components\TextInput::make('wifi_password')
-                    ->label('كلمة مرور الوايفاي')
+                    ->label(__("filament.BookingResource.form.wifi_password"))
                     ->required(fn($record) => $record->status === 'pending'),
 
                 Forms\Components\Select::make('status')
                     ->options([
-                        'pending' => 'بانتظار التأكيد',
-                        'confirmed' => 'تم التأكيد',
-                        'cancelled' => 'تم الإلغاء',
+                        'pending' => __("filament.BookingResource.form.status.pending"),
+                        'confirmed' => __("filament.BookingResource.form.status.confirmed"),
+                        'cancelled' => __("filament.BookingResource.form.status.cancelled"),
                     ])
                     ->required(),
 
@@ -74,13 +95,19 @@ class BookingResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $currentLocale = auth()->user()?->current_locale;
+
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user.name'),
-                Tables\Columns\TextColumn::make('workspace.name'),
-                Tables\Columns\TextColumn::make('package.name'),
-                Tables\Columns\TextColumn::make('payment_method'),
-                Tables\Columns\TextColumn::make('status'),
+                Tables\Columns\TextColumn::make('user.name')->label(__('filament.table.username')),
+                Tables\Columns\TextColumn::make('workspace.name.' . $currentLocale)->label(__('filament.booking.table.workspace')),
+                Tables\Columns\TextColumn::make('package.name')->label(__('filament.booking.table.package')),
+                Tables\Columns\TextColumn::make('status')->label(__('filament.table.status'))->formatStateUsing(fn(?string $state) =>  $state ? __("filament.BookingResource.form.status.{$state}") : '-')->badge()->color(fn(?string $state): string => match ($state) {
+                    'pending' => 'warning',   // لون أصفر
+                    'confirmed' => 'success', // لون أخضر
+                    'cancelled' => 'danger',  // لون أحمر
+                    default => 'gray',        // لون افتراضي إذا لم يكن هناك حالة
+                }),
                 // ImageColumn::make('payment_attachment')
                 //     ->disk('public')
                 //     ->directory('payment_attachments')
@@ -90,8 +117,11 @@ class BookingResource extends Resource
             ->filters([
                 //
             ])
+            ->recordUrl(fn($record) => $record->status !== 'confirmed'
+                ? static::getUrl('edit', ['record' => $record])
+                : null)
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->visible(fn($record) => $record->status !== 'confirmed'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

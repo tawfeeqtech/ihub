@@ -1,0 +1,27 @@
+[dir="rtl"] {
+    direction: rtl;
+    font-family: 'Cairo', sans-serif;
+    /* Example Arabic font */
+}
+
+[dir="rtl"] .fi-color-primary {
+    background-color: #3b82f6;
+    /* Default Filament primary color */
+    color: #ffffff;
+}
+
+.language-switcher button {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.language-switcher button:hover {
+    background-color: #2563eb;
+    /* Darker primary on hover */
+    color: #ffffff;
+}
+
+[dir="rtl"] .fi-pagination {
+    direction: ltr;
+    /* Pagination might need LTR for numbers */
+}

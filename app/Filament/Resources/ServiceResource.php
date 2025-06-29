@@ -5,7 +5,9 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ServiceResource\Pages;
 use App\Filament\Resources\ServiceResource\RelationManagers;
 use App\Models\Service;
+use App\Traits\TranslatableColumn;
 use Closure;
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
@@ -26,11 +28,30 @@ class ServiceResource extends Resource
 
     protected static ?string $model = Service::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
+    protected static ?int $navigationSort = 4;
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+        return static::getModel()::where('workspace_id', auth()->user()->workspace_id)->count();
+
+        // return static::getModel()::count();
+    }
+    public static function getNavigationBadgeColor(): string | array | null
+    {
+        $count = static::getNavigationBadge();
+
+        return $count > 0 ? 'primary' : 'gray';
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.Service.label');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.Service.label');
     }
     public static function getEloquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
@@ -43,43 +64,45 @@ class ServiceResource extends Resource
 
         return parent::getEloquentQuery();
     }
+    public static function getLabel(): ?string
+    {
+        return __('filament.Service.label');
+    }
 
 
     public static function form(Form $form): Form
     {
         $languages = config('app.supported_locales', ['ar', 'en']);
 
-        $predefinedCategories = [
-            'en' => ['hot drinks', 'cold drinks', 'sweets'],
-            'ar' => ['مشروبات ساخنة', 'مشروبات باردة', 'حلويات'],
-        ];
+        $predefinedCategoryKeys = ['hot', 'cold', 'sweets'];
+
 
         return $form
             ->schema([
-                Section::make('معلومات عامة')
+                Section::make(__('filament.Service.form.Section'))
                     ->schema([
                         Repeater::make('category_translations')
-                            ->label('التصنيف متعدد اللغات')
-                            ->addActionLabel('إضافة لغة أخرى')
+                            ->label(__('filament.Service.form.category_translations.label'))
+                            ->addActionLabel(__('filament.Service.form.addActionLabel'))
                             ->schema([
                                 Select::make('locale')
-                                    ->label('اللغة')
+                                    ->label(__('filament.Service.form.locale'))
                                     ->options(fn() => $languages)
                                     ->required()
                                     ->columnSpan(1),
 
                                 Select::make('predefined')
-                                    ->label('اختيار تصنيف جاهز')
-                                    ->options(function (Get $get) use ($predefinedCategories) {
-                                        $locale = $get('locale') ?? 'en';
-                                        return collect($predefinedCategories[$locale] ?? [])->mapWithKeys(fn($item) => [$item => $item]);
+                                    ->label(__('filament.Service.form.category_translations.predefined.label'))
+                                    ->options(function () use ($predefinedCategoryKeys) {
+                                        return collect($predefinedCategoryKeys)
+                                            ->mapWithKeys(fn($key) => [$key => __('filament.Service.form.Categories.' . $key)]);
                                     })
                                     ->searchable()
-                                    ->placeholder('اختر من التصنيفات الجاهزة')
+                                    ->placeholder(__('filament.Service.form.category_translations.predefined.placeholder'))
                                     ->columnSpan(1),
 
                                 TextInput::make('custom')
-                                    ->label('أو أدخل تصنيف جديد')
+                                    ->label(__('filament.Service.form.category_translations.custom'))
                                     ->maxLength(255)
                                     ->columnSpan(1),
                             ])
@@ -92,17 +115,17 @@ class ServiceResource extends Resource
 
 
                         Repeater::make('name_translations')
-                            ->label('الاسم متعدد اللغات')
-                            ->addActionLabel('إضافة لغة أخرى')
+                            ->label(__('filament.Service.form.name_translations.lable'))
+                            ->addActionLabel(__('filament.Service.form.addActionLabel'))
                             ->schema([
                                 Select::make('locale')
-                                    ->label('اللغة')
+                                    ->label(__('filament.Service.form.locale'))
                                     ->options(fn() => $languages)
                                     ->required()
                                     ->columnSpan(1),
 
                                 TextInput::make('value')
-                                    ->label('الاسم')
+                                    ->label(__('filament.Service.form.name_translations.value'))
                                     ->required()->maxLength(255)
                                     ->columnSpan(1),
                             ])
@@ -127,10 +150,11 @@ class ServiceResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $currentLocale = auth()->user()?->current_locale;
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('category')->label('التصنيف'),
-                Tables\Columns\TextColumn::make('name')->label('اسم الخدمة'),
+                Tables\Columns\TextColumn::make('name.' . $currentLocale)->label(__('filament.Service.table.name')),
+                Tables\Columns\TextColumn::make('category.' . $currentLocale)->label(__('filament.Service.table.category')),
             ])
             ->filters([
                 //

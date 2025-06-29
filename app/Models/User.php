@@ -80,4 +80,9 @@ class User extends Authenticatable
     {
         return $this->device_token;
     }
+
+    public function getCurrentLocaleAttribute(): string
+    {
+        return $this->locale ?? config('app.locale', 'en');
+    }
 }

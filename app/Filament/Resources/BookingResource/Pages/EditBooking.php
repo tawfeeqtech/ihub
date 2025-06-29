@@ -38,13 +38,15 @@ class EditBooking extends EditRecord
             $record->fill($data)->save();
 
             $user = $record->user;
+            Log::info("userlocale:: " . $user->locale);
             $userLocale = $user->locale ?? config('app.locale');
-            $workspaceName = 'غير محددة';
+            app()->setLocale($user?->current_locale);
+            $workspaceName = __('notifications.EditBooking.defaultWorkspaceName');
             if ($record->workspace && is_array($record->workspace->name)) {
                 if (isset($record->workspace->name[$userLocale])) {
                     $workspaceName = $record->workspace->name[$userLocale];
                 } else {
-                    $workspaceName = $record->workspace->name[config('app.locale')] ?? array_values($record->workspace->name)[0] ?? 'غير محددة';
+                    $workspaceName = $record->workspace->name[config('app.locale')] ?? array_values($record->workspace->name)[0] ?? __('notifications.EditBooking.defaultWorkspaceName');
                 }
             } else if ($record->workspace && is_string($record->workspace->name)) {
                 $workspaceName = $record->workspace->name;
@@ -61,20 +63,28 @@ class EditBooking extends EditRecord
 
                 switch ($record->status) {
                     case 'confirmed':
-                        $notificationTitle = 'تم تأكيد حجزك!';
-                        $notificationBody = 'تم تأكيد حجزك لمساحة العمل **' . $workspaceName . '** بنجاح، بإمكانك التحقق من اسم المستخدم وكلمة المرور.';
+                        $notificationTitle =  __('notifications.notificationTitle.confirmed');
+                        $notificationBody = __('notifications.notificationBody.confirmed', [
+                            'workspaceName' => $workspaceName
+                        ]);
                         break;
                     case 'cancelled':
-                        $notificationTitle = 'تم إلغاء حجزك!';
-                        $notificationBody = 'للأسف، تم إلغاء حجزك لمساحة العمل **' . $workspaceName . '** .';
+                        $notificationTitle = __('notifications.notificationTitle.cancelled');
+                        $notificationBody = __('notifications.notificationBody.cancelled', [
+                            'workspaceName' => $workspaceName
+                        ]);
                         break;
                     case 'pending':
-                        $notificationTitle = 'حالة حجزك معلقة';
-                        $notificationBody = 'حجزك لمساحة العمل **' . $workspaceName . '** لا يزال بانتظار التأكيد.';
+                        $notificationTitle = __('notifications.notificationTitle.pending');
+                        $notificationBody = __('notifications.notificationBody.pending', [
+                            'workspaceName' => $workspaceName
+                        ]);
                         break;
                     default:
-                        $notificationTitle = 'تحديث حالة الحجز';
-                        $notificationBody = 'تم تحديث حالة حجزك لمساحة العمل **' . $workspaceName . '**.';
+                        $notificationTitle = __('notifications.notificationTitle.default');
+                        $notificationBody = __('notifications.notificationBody.default', [
+                            'workspaceName' => $workspaceName
+                        ]);
                         break;
                 }
 
@@ -88,17 +98,18 @@ class EditBooking extends EditRecord
 
                 if ($fcmResult !== true) {
                     $fcmResultError = $fcmResult;
-                    throw new Exception('فشل إرسال إشعار الدفع للمستخدم. السبب: ' . $fcmResult);
+                    throw new Exception(__('notifications.fcmResultErrorException') . $fcmResult);
                 }
             } else {
-                throw new Exception('لا يمكن إرسال إشعار الدفع: المستخدم غير موجود أو لا يوجد رمز جهاز FCM.');
+                throw new Exception(__('notifications.ErrorException'));
             }
 
             DB::commit();
+            app()->setLocale(auth()->user()?->current_locale);
 
             Notification::make()
-                ->title('تم حفظ التغييرات بنجاح!')
-                ->body('تم تحديث حجز رقم المقعد: ' . $record->seat_number)
+                ->title(__('notifications.EditBooking.notificationTitle'))
+                ->body(__('notifications.EditBooking.notificationBody') . $record->seat_number)
                 ->success()
                 ->send();
 
@@ -107,10 +118,10 @@ class EditBooking extends EditRecord
         } catch (Exception $e) {
             DB::rollBack();
 
-            Log::error("Booking update or FCM failed and transaction rolled back: " . $e->getMessage(), ['booking_id' => $record->id ?? 'N/A']);
+            // Log::error("Booking update or FCM failed and transaction rolled back: " . $e->getMessage(), ['booking_id' => $record->id ?? 'N/A']);
 
             Notification::make()
-                ->title('خطأ في حفظ الحجز')
+                ->title(__('notifications.EditBooking.catchErrorTitle'))
                 ->body($fcmResultError)
                 ->danger()
                 ->send();

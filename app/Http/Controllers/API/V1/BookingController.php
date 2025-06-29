@@ -126,19 +126,19 @@ class BookingController extends Controller
             $secretary = $workspace->secretary; // Use the workspace's secretary relationship
 
             // Determine the locale from the request's Accept-Language header or fallback to 'en'
-            $locale = app()->getLocale();
-            $spaceName = $workspace->name[$locale] ?? $workspace->name['en'] ?? 'Unknown Workspace';
+            // $locale = app()->getLocale();
+            // $spaceName = $workspace->name[$locale] ?? $workspace->name['en'] ?? 'Unknown Workspace';
 
             if (!$secretary) {
-                Log::warning('No secretary found for workspace', [
-                    'workspace_id' => $workspace->id,
-                    'booking_id' => $booking->id,
-                ]);
+                // Log::warning('No secretary found for workspace', [
+                //     'workspace_id' => $workspace->id,
+                //     'booking_id' => $booking->id,
+                // ]);
             } else {
                 $notificationService->sendWorkspaceReservationNotification(
                     $secretary, // Recipient (secretary)
                     $sender,    // Sender (app user)
-                    $spaceName, // Space name
+                    $workspace,
                     true,       // Secretary notification
                     $booking->id // Reservation ID
                 );
@@ -160,10 +160,10 @@ class BookingController extends Controller
             //     'locale' => $locale,
             // ]);
         } catch (\Exception $e) {
-            Log::error('Failed to send workspace reservation notifications', [
-                'booking_id' => $booking->id,
-                'error' => $e->getMessage(),
-            ]);
+            // Log::error('Failed to send workspace reservation notifications', [
+            //     'booking_id' => $booking->id,
+            //     'error' => $e->getMessage(),
+            // ]);
         }
         return $this->apiResponse(new BookingResource($booking), __('messages.success'), 200);
     }

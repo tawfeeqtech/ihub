@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use Filament\Actions\Action;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -17,6 +18,9 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Session;
+use Kenepa\TranslationManager\TranslationManagerPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -28,9 +32,9 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Hex('#4CAF50'), // لون أخضر فاتح (يمكن تغييره حسب الذوق)
             ])
-            // ->viteTheme('resources/js/app.js')
+
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -41,8 +45,8 @@ class AdminPanelProvider extends PanelProvider
                 // Widgets\AccountWidget::class,
                 // Widgets\FilamentInfoWidget::class,
                 // \App\Filament\Widgets\UnreadMessagesWidget::class,
-
             ])
+            // ->defaultLocale(fn() => auth()->user()?->locale ?? 'en')
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -53,39 +57,13 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                // \App\Http\Middleware\SyncUserLocaleWithFilament::class,
             ])
-            ->databaseNotifications(true) // أو فقط ->databaseNotifications();
+            ->databaseNotifications(true)
             ->databaseNotificationsPolling('15s')
             ->authMiddleware([
                 Authenticate::class,
                 \App\Http\Middleware\EnsureUserIsAdmin::class,
-            ]);
-        // ->renderHook(
-        //     'panels::body.end',
-        //     fn(): string => <<<HTML
-        //     <script>
-        //         console.log('panels::body.end');
-
-        //         document.addEventListener('livewire:initialized', function () {
-        //         console.log('livewire:initialized');
-        //         Livewire.hook('message.processed', (message, component) => {
-        //             console.log('message.processed');
-        //             if (message.updateQueue.some(update => 
-        //                 update.type === 'callMethod' && 
-        //                 update.payload.method === 'dispatchBrowserEvent' && 
-        //                 update.payload.params[0] === 'notificationReceived'
-        //             )) {
-        //                 const notificationTitle = document.querySelector('.fi-no-notification .fi-no-title')?.innerText;
-        //                 if (notificationTitle && notificationTitle.includes('There is a service request')) {
-        //                     console.log('Playing bell sound for:', notificationTitle);
-        //                     const audio = new Audio('/sounds/bell.mp3');
-        //                     audio.play().catch(error => console.error('Audio playback failed:', error));
-        //                 }
-        //             }
-        //         });
-        //     });
-        //     </script>
-        //     HTML
-        // );
+            ])->plugin(TranslationManagerPlugin::make());
     }
 }

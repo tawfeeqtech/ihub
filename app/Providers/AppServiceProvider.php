@@ -5,6 +5,9 @@ namespace App\Providers;
 use App\Models\Booking;
 use App\Observers\BookingObserver;
 use App\Services\NotificationService;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\ServiceProvider;
 use Kreait\Firebase\Contract\Messaging;
 
@@ -32,5 +35,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Booking::observe(BookingObserver::class);
+
+        // if (Auth::check()) {
+        //     App::setLocale(Auth::user()->locale);
+        // } elseif (Session::has('locale')) {
+        //     App::setLocale(Session::get('locale'));
+        // }
     }
 }

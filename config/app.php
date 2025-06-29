@@ -81,6 +81,7 @@ return [
         'ar' => 'ar',
         'en' => 'en',
     ],
+    'available_locales' => ['en', 'ar'],
 
     'locale' => env('APP_LOCALE', 'en'),
 
