@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Widgets\AdminBookingsByStatusChart;
 use Filament\Actions\Action;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -18,9 +19,20 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Session;
 use Kenepa\TranslationManager\TranslationManagerPlugin;
+
+use App\Filament\Widgets\AdminBookingsChart;
+use App\Filament\Widgets\AdminConversationsActivityChart;
+use App\Filament\Widgets\AdminPackagesByWorkspaceChart;
+use App\Filament\Widgets\AdminServiceRequestsByStatusChart;
+use App\Filament\Widgets\AdminServicesByWorkspaceChart;
+use App\Filament\Widgets\AdminUsersGrowthChart;
+use App\Filament\Widgets\AdminWorkspacesTrendChart;
+use App\Filament\Widgets\SecretaryBookingsChart;
+use App\Filament\Widgets\SecretaryConversationsActivityChart;
+use App\Filament\Widgets\SecretaryPackagesOverTimeChart;
+use App\Filament\Widgets\SecretaryServiceRequestsByStatusChart;
+use App\Filament\Widgets\SecretaryServicesOverTimeChart;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -42,6 +54,21 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
+                // AdminStatsOverview::class,
+                AdminBookingsChart::class,
+                AdminUsersGrowthChart::class,
+                AdminWorkspacesTrendChart::class,
+                AdminBookingsByStatusChart::class,
+                AdminConversationsActivityChart::class,
+                AdminPackagesByWorkspaceChart::class,
+                AdminServiceRequestsByStatusChart::class,
+                AdminServicesByWorkspaceChart::class,
+                SecretaryBookingsChart::class,
+                SecretaryConversationsActivityChart::class,
+                SecretaryPackagesOverTimeChart::class,
+                SecretaryServiceRequestsByStatusChart::class,
+                SecretaryServicesOverTimeChart::class,
+
                 // Widgets\AccountWidget::class,
                 // Widgets\FilamentInfoWidget::class,
                 // \App\Filament\Widgets\UnreadMessagesWidget::class,

@@ -84,4 +84,44 @@ return [
 
     'ListPackages.alert' => 'alert',
     'ListPackages.body' => 'No more packages can be added. You can only edit existing values.',
+
+    'Widgets.Bookings.datasets.label' => 'Bookings',
+
+    'Widgets.AdminBookingsByStatusChart.heading' => 'Bookings by Status',
+    'Widgets' => [
+        'AdminBookingsByStatusChart' => [
+            'labels' => [
+                'pending' => 'pending',
+                'confirmed' => 'confirmed',
+                'cancelled' => 'cancelled',
+            ],
+        ],
+        'AdminServiceRequestsByStatusChart' => [
+            'labels' => [
+                'pending' => 'pending',
+                'in_progress' => 'in progress',
+                'completed'  => 'completed',
+                'rejected' => 'rejected'
+            ],
+        ],
+    ],
+
+    'Widgets.AdminBookingsChart.heading' => 'Bookings Over Time',
+    'Widgets.AdminConversationsActivityChart.heading' => 'Conversations Activity Over Time',
+    'Widgets.AdminConversationsActivityChart.datasets.label' => 'New Conversations',
+
+    'Widgets.AdminPackagesByWorkspaceChart.heading' => 'Packages Distribution by Workspace',
+    'Widgets.AdminPackagesByWorkspaceChart.datasets.label' => 'Packages',
+
+    'Widgets.AdminServiceRequestsByStatusChart.heading' => 'Service Requests by Status',
+    'Widgets.AdminServiceRequestsByStatusChart.datasets.label' => 'Service Requests',
+
+    'Widgets.AdminServicesByWorkspaceChart.heading' => 'Services Distribution by Workspace',
+    'Widgets.AdminServicesByWorkspaceChart.datasets.label' => 'Services',
+
+    'Widgets.AdminUsersGrowthChart.heading' => 'Users Growth Over Time',
+    'Widgets.AdminUsersGrowthChart.datasets.label' => 'New Users',
+
+    'Widgets.AdminWorkspacesTrendChart.heading' => 'Workspaces Creation Trend',
+    'Widgets.AdminWorkspacesTrendChart.datasets.label' => 'New Workspaces',
 ];

@@ -30,10 +30,14 @@ class User extends Authenticatable
         'specialty',
         'password',
         'phone_verification_code',
-        'device_token'
+        'device_token',
+        'workspace_id'
     ];
 
-
+    public function hasRole(string $role): bool
+    {
+        return $this->role === $role;
+    }
     /**
      * The attributes that should be hidden for serialization.
      *

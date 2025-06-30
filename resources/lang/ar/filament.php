@@ -82,4 +82,44 @@ return [
     'ListPackages.alert' => 'تنبيه',
     'ListPackages.body' => 'لا يمكن إضافة المزيد من الباقات. يمكنك تعديل القيم الحالية فقط.',
 
+    'Widgets.AdminBookingsByStatusChart.heading' => 'الحجوزات حسب الحالة',
+    'Widgets.Bookings.datasets.label' => 'الحجوزات',
+
+
+    'Widgets' => [
+        'AdminBookingsByStatusChart' => [
+            'labels' => [
+                'pending' => 'قيد الانتظار',
+                'confirmed' => 'تم التأكيد',
+                'cancelled' => 'أُلغيت',
+            ],
+        ],
+        'AdminServiceRequestsByStatusChart' => [
+            'labels' => [
+                'pending' => 'قيد الانتظار',
+                'in_progress' => 'جاري العمل',
+                'completed'  => 'مكتمل',
+                'rejected' => 'مرفوض'
+            ],
+        ],
+    ],
+
+    'Widgets.AdminBookingsChart.heading' => 'الحجوزات بمرور الوقت',
+    'Widgets.AdminConversationsActivityChart.heading' => 'نشاط المحادثات بمرور الوقت',
+    'Widgets.AdminConversationsActivityChart.datasets.label' => 'محادثات جديدة',
+
+    'Widgets.AdminPackagesByWorkspaceChart.heading' => 'توزيع الباقات حسب مساحة العمل',
+    'Widgets.AdminPackagesByWorkspaceChart.datasets.label' => 'الباقات',
+
+    'Widgets.AdminServiceRequestsByStatusChart.heading' => 'طلبات الخدمة حسب الحالة',
+    'Widgets.AdminServiceRequestsByStatusChart.datasets.label' => 'طلبات الخدمة',
+
+    'Widgets.AdminServicesByWorkspaceChart.heading' => 'توزيع الخدمات حسب مساحة العمل',
+    'Widgets.AdminServicesByWorkspaceChart.datasets.label' => 'خدمات',
+
+    'Widgets.AdminUsersGrowthChart.heading' => 'نمو المستخدمين بمرور الوقت',
+    'Widgets.AdminUsersGrowthChart.datasets.label' => 'المستخدمون الجدد',
+
+    'Widgets.AdminWorkspacesTrendChart.heading' => 'اتجاه إنشاء مساحات العمل',
+    'Widgets.AdminWorkspacesTrendChart.datasets.label' => 'مساحات عمل جديدة',
 ];

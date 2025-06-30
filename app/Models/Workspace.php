@@ -34,7 +34,24 @@ class Workspace extends Model
         });
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
+
+    public function conversations()
+    {
+        return $this->hasMany(Conversation::class);
+    }
+    public function serviceRequests()
+    {
+        return $this->hasMany(ServiceRequest::class);
+    }
     public function images()
     {
         return $this->hasMany(WorkspaceImage::class);

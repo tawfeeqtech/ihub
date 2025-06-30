@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\BookingStatus;
 use Illuminate\Database\Eloquent\Model;
 
 class Booking extends Model
@@ -16,6 +17,10 @@ class Booking extends Model
         'start_at',
         'end_at',
         'status',
+    ];
+
+    protected $casts = [
+        'status' => BookingStatus::class,
     ];
 
     // العلاقات
