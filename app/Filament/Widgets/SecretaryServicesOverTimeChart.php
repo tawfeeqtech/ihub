@@ -8,7 +8,12 @@ use Illuminate\Support\Facades\Auth;
 
 class SecretaryServicesOverTimeChart extends ChartWidget
 {
-    protected static ?string $heading = 'Services Over Time';
+    protected static ?string $heading = null;
+
+    public function getHeading(): string
+    {
+        return __('filament.Widgets.SecretaryServicesOverTimeChart.heading');
+    }
     protected static ?string $pollingInterval = null;
 
     protected function getData(): array
@@ -32,7 +37,7 @@ class SecretaryServicesOverTimeChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'New Services',
+                    'label' => __('filament.Widgets.SecretaryServicesOverTimeChart.datasets.label'),
                     'data' => $services->pluck('count')->toArray(),
                     'backgroundColor' => '#4BC0C4',
                     'borderColor' => '#4BC0C4',

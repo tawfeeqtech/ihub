@@ -30,7 +30,6 @@ use App\Filament\Widgets\AdminUsersGrowthChart;
 use App\Filament\Widgets\AdminWorkspacesTrendChart;
 use App\Filament\Widgets\SecretaryBookingsChart;
 use App\Filament\Widgets\SecretaryConversationsActivityChart;
-use App\Filament\Widgets\SecretaryPackagesOverTimeChart;
 use App\Filament\Widgets\SecretaryServiceRequestsByStatusChart;
 use App\Filament\Widgets\SecretaryServicesOverTimeChart;
 
@@ -65,7 +64,6 @@ class AdminPanelProvider extends PanelProvider
                 AdminServicesByWorkspaceChart::class,
                 SecretaryBookingsChart::class,
                 SecretaryConversationsActivityChart::class,
-                SecretaryPackagesOverTimeChart::class,
                 SecretaryServiceRequestsByStatusChart::class,
                 SecretaryServicesOverTimeChart::class,
 

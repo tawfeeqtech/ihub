@@ -124,4 +124,16 @@ return [
 
     'Widgets.AdminWorkspacesTrendChart.heading' => 'Workspaces Creation Trend',
     'Widgets.AdminWorkspacesTrendChart.datasets.label' => 'New Workspaces',
+
+    'Widgets.SecretaryBookingsChart.heading' => 'Workspace Bookings Over Time',
+    'Widgets.SecretaryBookingsChart.datasets.label' => 'Bookings',
+
+    'Widgets.SecretaryConversationsActivityChart.heading' => 'Conversations Activity Over Time',
+    'Widgets.SecretaryConversationsActivityChart.datasets.label' => 'New Conversations',
+
+    'Widgets.SecretaryServiceRequestsByStatusChart.heading' => 'Workspace Service Requests by Status',
+    'Widgets.SecretaryServiceRequestsByStatusChart.datasets.label' => 'Service Requests',
+
+    'Widgets.SecretaryServicesOverTimeChart.heading' => 'Services Over Time',
+    'Widgets.SecretaryServicesOverTimeChart.datasets.label' => 'New Services',
 ];

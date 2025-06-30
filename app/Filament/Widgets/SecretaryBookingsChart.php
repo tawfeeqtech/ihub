@@ -8,7 +8,12 @@ use Illuminate\Support\Facades\Auth;
 
 class SecretaryBookingsChart extends ChartWidget
 {
-    protected static ?string $heading = 'Workspace Bookings Over Time';
+    protected static ?string $heading = null;
+
+    public function getHeading(): string
+    {
+        return __('filament.Widgets.SecretaryBookingsChart.heading');
+    }
     protected static ?string $pollingInterval = null;
 
     protected function getData(): array
@@ -32,7 +37,7 @@ class SecretaryBookingsChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Bookings',
+                    'label' => __('filament.Widgets.SecretaryBookingsChart.datasets.label'),
                     'data' => $bookings->pluck('count')->toArray(),
                     'backgroundColor' => '#FF6384',
                     'borderColor' => '#FF6384',

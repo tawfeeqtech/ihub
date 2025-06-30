@@ -122,4 +122,16 @@ return [
 
     'Widgets.AdminWorkspacesTrendChart.heading' => 'اتجاه إنشاء مساحات العمل',
     'Widgets.AdminWorkspacesTrendChart.datasets.label' => 'مساحات عمل جديدة',
+
+    'Widgets.SecretaryBookingsChart.heading' => 'حجوزات مساحات العمل بمرور الوقت',
+    'Widgets.SecretaryBookingsChart.datasets.label' => 'الحجوزات',
+
+    'Widgets.SecretaryConversationsActivityChart.heading' => 'نشاط المحادثات بمرور الوقت',
+    'Widgets.SecretaryConversationsActivityChart.datasets.label' => 'محادثات جديدة',
+
+    'Widgets.SecretaryServiceRequestsByStatusChart.heading' => 'طلبات خدمة مساحة العمل حسب الحالة',
+    'Widgets.SecretaryServiceRequestsByStatusChart.datasets.label' => 'طلبات الخدمة',
+
+    'Widgets.SecretaryServicesOverTimeChart.heading' => 'الخدمات على مر الزمن',
+    'Widgets.SecretaryServicesOverTimeChart.datasets.label' => 'خدمات جديدة',
 ];

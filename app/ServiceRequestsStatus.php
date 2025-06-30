@@ -13,4 +13,14 @@ enum ServiceRequestsStatus: string
     {
         return __('filament.Widgets.AdminServiceRequestsByStatusChart.labels.' . $this->value);
     }
+
+    public function color(): string
+    {
+        return match ($this) {
+            self::Pending => 'warning',
+            self::InProgress => 'info',
+            self::Completed => 'success',
+            self::Rejected => 'danger',
+        };
+    }
 }

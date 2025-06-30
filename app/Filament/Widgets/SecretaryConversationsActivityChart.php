@@ -8,7 +8,12 @@ use Illuminate\Support\Facades\Auth;
 
 class SecretaryConversationsActivityChart extends ChartWidget
 {
-    protected static ?string $heading = 'Conversations Activity Over Time';
+    protected static ?string $heading = null;
+
+    public function getHeading(): string
+    {
+        return __('filament.Widgets.SecretaryConversationsActivityChart.heading');
+    }
     protected static ?string $pollingInterval = null;
 
     protected function getData(): array
@@ -32,7 +37,7 @@ class SecretaryConversationsActivityChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'New Conversations',
+                    'label' => __('filament.Widgets.SecretaryConversationsActivityChart.heading'),
                     'data' => $conversations->pluck('count')->toArray(),
                     'backgroundColor' => '#36A2EB',
                     'borderColor' => '#36A2EB',

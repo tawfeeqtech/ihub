@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\ServiceRequestsStatus;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -44,12 +45,11 @@ class ServiceRequestStatusUpdated extends Notification
 
     protected function translateStatus($status): string
     {
-        return match ($status) {
-            'pending' => 'قيد الانتظار',
-            'in_progress' => 'جارٍ التنفيذ',
-            'completed' => 'تم التنفيذ',
-            'rejected' => 'مرفوض',
-            default => $status,
-        };
+        if ($status instanceof ServiceRequestsStatus) {
+            return $status->label();
+        }
+
+        // fallback للأنواع الأخرى
+        return (string) $status;
     }
 }

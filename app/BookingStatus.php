@@ -12,4 +12,13 @@ enum BookingStatus: string
     {
         return __('filament.Widgets.AdminBookingsByStatusChart.labels.' . $this->value);
     }
+
+    public function color(): string
+    {
+        return match ($this) {
+            self::Pending => 'warning',    // أصفر
+            self::Confirmed => 'success',  // أخضر
+            self::Cancelled => 'danger',   // أحمر
+        };
+    }
 }

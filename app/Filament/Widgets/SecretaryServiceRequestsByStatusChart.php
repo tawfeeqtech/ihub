@@ -8,7 +8,12 @@ use Illuminate\Support\Facades\Auth;
 
 class SecretaryServiceRequestsByStatusChart extends ChartWidget
 {
-    protected static ?string $heading = 'Workspace Service Requests by Status';
+    protected static ?string $heading = null;
+
+    public function getHeading(): string
+    {
+        return __('filament.Widgets.SecretaryServiceRequestsByStatusChart.heading');
+    }
     protected static ?string $pollingInterval = null;
 
     protected function getData(): array
@@ -31,7 +36,7 @@ class SecretaryServiceRequestsByStatusChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Service Requests',
+                    'label' => __('filament.Widgets.SecretaryServiceRequestsByStatusChart.datasets.label'),
                     'data' => $serviceRequests->pluck('count')->toArray(),
                     'backgroundColor' => ['#36A2EB', '#FF6384', '#FFCE56'],
                 ],

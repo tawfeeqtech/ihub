@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\BookingStatus;
 use App\Filament\Resources\BookingResource\Pages;
 use App\Filament\Resources\BookingResource\RelationManagers;
 use App\Models\Booking;
@@ -102,12 +103,12 @@ class BookingResource extends Resource
                 Tables\Columns\TextColumn::make('user.name')->label(__('filament.table.username')),
                 Tables\Columns\TextColumn::make('workspace.name.' . $currentLocale)->label(__('filament.booking.table.workspace')),
                 Tables\Columns\TextColumn::make('package.name')->label(__('filament.booking.table.package')),
-                Tables\Columns\TextColumn::make('status')->label(__('filament.table.status'))->formatStateUsing(fn(?string $state) =>  $state ? __("filament.BookingResource.form.status.{$state}") : '-')->badge()->color(fn(?string $state): string => match ($state) {
-                    'pending' => 'warning',   // لون أصفر
-                    'confirmed' => 'success', // لون أخضر
-                    'cancelled' => 'danger',  // لون أحمر
-                    default => 'gray',        // لون افتراضي إذا لم يكن هناك حالة
-                }),
+                Tables\Columns\TextColumn::make('status')
+                    ->label(__('filament.table.status'))
+                    ->formatStateUsing(fn(?BookingStatus $state) => $state?->label() ?? '-')
+                    ->badge()
+                    ->color(fn(?BookingStatus $state) => $state?->color() ?? 'gray')
+
                 // ImageColumn::make('payment_attachment')
                 //     ->disk('public')
                 //     ->directory('payment_attachments')
