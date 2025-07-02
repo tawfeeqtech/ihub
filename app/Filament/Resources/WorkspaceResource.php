@@ -27,7 +27,26 @@ class WorkspaceResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-building-office';
     protected static ?int $navigationSort = 6;
 
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.WorkspaceResource.label');
+    }
 
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.WorkspaceResource.label');
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+    public static function getNavigationBadgeColor(): string | array | null
+    {
+        $count = static::getNavigationBadge();
+
+        return $count > 0 ? 'primary' : 'gray';
+    }
     public static function canAccess(): bool
     {
         return FilamentAccess::isAdmin();
@@ -39,20 +58,20 @@ class WorkspaceResource extends Resource
 
         return $form
             ->schema([
-                Section::make('معلومات عامة')
+                Section::make(__('filament.WorkspaceResource.form.GeneralInformation'))
                     ->schema([
                         Repeater::make('name_translations')
-                            ->label('الاسم متعدد اللغات')
-                            ->addActionLabel('إضافة لغة أخرى')
+                            ->label(__('filament.WorkspaceResource.form.name_translations.label'))
+                            ->addActionLabel(__('filament.WorkspaceResource.form.name_translations.addActionLabel'))
                             ->schema([
                                 Select::make('locale')
-                                    ->label('اللغة')
+                                    ->label(__('filament.Service.form.locale'))
                                     ->options(fn() => $languages)
                                     ->required()
                                     ->columnSpan(1),
 
                                 TextInput::make('value')
-                                    ->label('الاسم')
+                                    ->label(__('filament.WorkspaceResource.table.name'))
                                     ->required()
                                     ->columnSpan(1),
                             ])
@@ -65,17 +84,17 @@ class WorkspaceResource extends Resource
 
 
                         Repeater::make('location_translations')
-                            ->label('العنوان متعدد اللغات')
-                            ->addActionLabel('إضافة لغة أخرى')
+                            ->label(__('filament.WorkspaceResource.form.location_translations.label'))
+                            ->addActionLabel(__('filament.Service.form.addActionLabel'))
                             ->schema([
                                 Select::make('locale')
-                                    ->label('اللغة')
+                                    ->label(__('filament.Service.form.locale'))
                                     ->options(fn() => $languages)
                                     ->required()
                                     ->columnSpan(1),
 
                                 TextInput::make('value')
-                                    ->label('العنوان')
+                                    ->label(__('filament.WorkspaceResource.form.location_translations.title'))
                                     ->required()
                                     ->columnSpan(1),
                             ])
@@ -88,17 +107,17 @@ class WorkspaceResource extends Resource
 
 
                         Repeater::make('description_translations')
-                            ->label('الوصف متعدد اللغات')
-                            ->addActionLabel('إضافة لغة أخرى')
+                            ->label(__('filament.WorkspaceResource.form.description_translations.label'))
+                            ->addActionLabel(__('filament.Service.form.addActionLabel'))
                             ->schema([
                                 Select::make('locale')
-                                    ->label('اللغة')
+                                    ->label(__('filament.Service.form.locale'))
                                     ->options(fn() => $languages)
                                     ->required()
                                     ->columnSpan(1),
 
                                 Textarea::make('value')
-                                    ->label('الوصف')
+                                    ->label(__('filament.WorkspaceResource.form.description_translations.title'))
                                     ->required()
                                     ->columnSpan(1),
                             ])
@@ -111,21 +130,21 @@ class WorkspaceResource extends Resource
 
                     ]),
 
-                Section::make('معلومات الدفع')
+                Section::make(__('filament.WorkspaceResource.form.payment_information.title'))
                     ->schema([
                         Toggle::make('bank_payment_supported')
-                            ->label('هل تدعم التحويل البنكي؟')
+                            ->label(__('filament.WorkspaceResource.form.bank_payment_supported.label'))
                             ->default(false)
                             ->reactive(),
 
                         Grid::make(2)->schema([
                             TextInput::make('bank_account_number')
-                                ->label('رقم الحساب البنكي')
+                                ->label(__('filament.WorkspaceResource.form.bank_account_number.label'))
                                 ->nullable()
                                 ->visible(fn($livewire) => ($livewire->data['bank_payment_supported'] ?? false) === true),
 
                             TextInput::make('mobile_payment_number')
-                                ->label('رقم الجوال البنكي')
+                                ->label(__('filament.WorkspaceResource.form.mobile_payment_number.label'))
                                 ->nullable()
                                 ->visible(fn($livewire) => ($livewire->data['bank_payment_supported'] ?? false) === true),
                         ]),
@@ -138,11 +157,11 @@ class WorkspaceResource extends Resource
                 Repeater::make('features')
                     ->schema([
                         TextInput::make('value')
-                            ->label('الميزة')
+                            ->label(__('filament.WorkspaceResource.form.features.value.label'))
                             ->required()->columnSpan('full'),
                     ])
-                    ->label('مميزات المساحة')
-                    ->addActionLabel('أضف ميزة')
+                    ->label(__('filament.WorkspaceResource.form.features.label'))
+                    ->addActionLabel(__('filament.WorkspaceResource.form.features.addActionLabel'))
                     ->default([])
                     ->columns(4)
                     ->grid(4)
@@ -153,17 +172,19 @@ class WorkspaceResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $currentLocale = auth()->user()?->current_locale;
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->searchable(),
-                Tables\Columns\TextColumn::make('location')->searchable(),
+                Tables\Columns\TextColumn::make('name.' . $currentLocale)->label(__('filament.WorkspaceResource.table.name'))->searchable(),
+                Tables\Columns\TextColumn::make('location.' . $currentLocale)->label(__('filament.WorkspaceResource.table.location'))->searchable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Action::make('رفع الصور')
+                Action::make('uploadImage')
+                    ->label(__('filament.WorkspaceResource.table.uploadImage'))
                     ->icon('heroicon-o-photo')
                     ->url(fn(Workspace $record) => route('admin.upload-images.create', $record->id))
                     ->color('success'),

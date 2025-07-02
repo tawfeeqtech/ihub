@@ -24,6 +24,31 @@ return [
         ],
     ],
 
+    'WorkspaceResource.label' => 'Workspaces',
+    'WorkspaceResource.form.GeneralInformation' => 'General Information',
+    'WorkspaceResource.form.name_translations.label' => 'Multilingual name',
+    'WorkspaceResource.form.name_translations.addActionLabel' => 'Add another language',
+
+    'WorkspaceResource.form.location_translations.label' => 'Multilingual title',
+    'WorkspaceResource.form.location_translations.title' => 'title',
+    'WorkspaceResource.form.description_translations.label' => 'Multilingual description',
+    'WorkspaceResource.form.description_translations.title' => 'description',
+
+    'WorkspaceResource.form.payment_information.title' => 'Payment information',
+    'WorkspaceResource.form.bank_payment_supported.label' => 'Do you support bank transfer ?',
+    'WorkspaceResource.form.bank_account_number.label' => 'Bank account number',
+    'WorkspaceResource.form.mobile_payment_number.label' => 'Bank mobile number',
+
+    'WorkspaceResource.form.features.value.label' => 'Feature',
+    'WorkspaceResource.form.features.label' => 'Workspace features',
+    'WorkspaceResource.form.features.addActionLabel' => 'Add a feature',
+
+
+    'WorkspaceResource.table.name' => 'name',
+    'WorkspaceResource.table.location' => 'location',
+    'WorkspaceResource.table.uploadImage' => 'Upload a new photo',
+
+
     'ServiceRequest.table.status.in_progress' => 'in progress',
     'ServiceRequest.table.status.complete' => 'complete',
     'ServiceRequest.table.status.reject' => 'rejected',

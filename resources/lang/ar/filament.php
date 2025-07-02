@@ -55,6 +55,31 @@ return [
 
 
 
+    'WorkspaceResource.label' => 'مساحات العمل',
+    'WorkspaceResource.form.GeneralInformation' => 'معلومات عامة',
+    'WorkspaceResource.form.name_translations.label' => 'الاسم متعدد اللغات',
+    'WorkspaceResource.form.name_translations.addActionLabel' => 'إضافة لغة أخرى',
+    'WorkspaceResource.form.description_translations.label' => 'الوصف متعدد اللغات',
+    'WorkspaceResource.form.description_translations.title' => 'الوصف',
+
+    'WorkspaceResource.form.location_translations.title' => 'العنوان',
+
+
+    'WorkspaceResource.form.location_translations.label' => 'العنوان متعدد اللغات',
+
+    'WorkspaceResource.form.payment_information.title' => 'معلومات الدفع',
+    'WorkspaceResource.form.bank_payment_supported.label' => 'هل تدعم التحويل البنكي؟',
+    'WorkspaceResource.form.bank_account_number.label' => 'رقم الحساب البنكي',
+    'WorkspaceResource.form.mobile_payment_number.label' => 'رقم الجوال البنكي',
+
+    'WorkspaceResource.form.features.value.label' => 'الميزة',
+    'WorkspaceResource.form.features.label' => 'مميزات المساحة',
+    'WorkspaceResource.form.features.addActionLabel' => 'أضف ميزة',
+
+
+    'WorkspaceResource.table.name' => 'الاسم',
+    'WorkspaceResource.table.location' => 'العنوان',
+    'WorkspaceResource.table.uploadImage' => 'رفع صورة جديدة',
 
 
 
