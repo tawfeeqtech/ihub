@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\JsonSearchable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Workspace extends Model
 {
@@ -11,11 +12,16 @@ class Workspace extends Model
     protected $fillable = [
         'name',
         'location',
+        'bank_payment_supported',
         'bank_account_number',
         'mobile_payment_number',
         'features',
         'description',
         'logo',
+        'governorate_id',
+        'region_id',
+        'has_evening_shift',
+        'has_free',
     ];
 
     protected $casts = [
@@ -23,16 +29,28 @@ class Workspace extends Model
         'location' => 'array',
         'description' => 'array',
         'features' => 'array',
+        'bank_payment_supported' => 'boolean',
+        'has_evening_shift' => 'boolean',
     ];
 
     public $translatable = ['name', 'location', 'description'];
 
-    protected static function booted()
+    public function governorate(): BelongsTo
     {
-        static::creating(function ($workspace) {
-            logger()->info('جاري إنشاء Workspace', request()->all());
-        });
+        return $this->belongsTo(Governorate::class);
     }
+
+    public function region(): BelongsTo
+    {
+        return $this->belongsTo(Region::class);
+    }
+
+    // protected static function booted()
+    // {
+    //     static::creating(function ($workspace) {
+    //         logger()->info('جاري إنشاء Workspace', request()->all());
+    //     });
+    // }
 
     public function user()
     {
@@ -66,7 +84,12 @@ class Workspace extends Model
     {
         return $this->hasOne(User::class, 'workspace_id', 'id')->where('role', 'secretary');
     }
-
+    public function getTranslatedNameAttribute($locale = null)
+    {
+        $locale = $locale ?? app()->getLocale();
+        $name = json_decode($this->attributes['name'], true);
+        return $name[$locale] ?? $name['ar'] ?? '';
+    }
     public function services()
     {
         return $this->hasMany(Service::class);

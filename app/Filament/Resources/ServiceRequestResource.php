@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ServiceRequestResource\Pages;
+use App\Helpers\FilamentAccess;
 use App\Models\ServiceRequest;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -24,7 +25,7 @@ class ServiceRequestResource extends Resource
 {
     protected static ?string $model = ServiceRequest::class;
     protected static ?string $navigationIcon = 'heroicon-o-inbox-arrow-down';
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 7;
 
     public static function getPluralModelLabel(): string
     {
@@ -63,6 +64,11 @@ class ServiceRequestResource extends Resource
     public static function canDelete(Model $record): bool
     {
         return auth()->user()->role !== 'secretary';
+    }
+
+    public static function canAccess(): bool
+    {
+        return FilamentAccess::isSecretary();
     }
 
     public static function getNavigationBadge(): ?string

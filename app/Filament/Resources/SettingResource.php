@@ -22,11 +22,36 @@ class SettingResource extends Resource
     protected static ?string $model = Setting::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-adjustments-horizontal';
-    protected static ?int $navigationSort = 8;
+    protected static ?int $navigationSort = 10;
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.settings');
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.settings');
+    }
+    public static function getLabel(): ?string
+    {
+        return __('filament.setting');
+    }
 
     public static function canAccess(): bool
     {
         return FilamentAccess::isAdmin();
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+    public static function getNavigationBadgeColor(): string | array | null
+    {
+        $count = static::getNavigationBadge();
+
+        return $count > 0 ? 'primary' : 'gray';
     }
 
     public static function form(Form $form): Form

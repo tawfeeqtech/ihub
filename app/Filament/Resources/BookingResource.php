@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\BookingStatus;
 use App\Filament\Resources\BookingResource\Pages;
 use App\Filament\Resources\BookingResource\RelationManagers;
+use App\Helpers\FilamentAccess;
 use App\Models\Booking;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -23,9 +24,12 @@ class BookingResource extends Resource
     protected static ?string $model = Booking::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 6;
 
-
+    public static function canAccess(): bool
+    {
+        return FilamentAccess::isSecretary();
+    }
     public static function getPluralModelLabel(): string
     {
         return __('filament.booking.sidebar.label'); // مثال: "الحجوزات"
@@ -43,7 +47,7 @@ class BookingResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::where('status', '!=', 'confirmed')->count();
+        return static::getModel()::where('status', '!=', 'confirmed')->where('user_id', auth()->user()->id)->count();
 
         // return static::getModel()::count();
     }

@@ -7,6 +7,7 @@ use App\Models\Conversation;
 use App\Models\Message; // استيراد موديل Message
 use App\Models\User; // استيراد موديل User
 use App\Events\MessageSent; // استيراد الحدث MessageSent
+use App\Helpers\FilamentAccess;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -25,7 +26,12 @@ class ConversationResource extends Resource
     protected static ?string $model = Conversation::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-left-right';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 5;
+
+    public static function canAccess(): bool
+    {
+        return FilamentAccess::isSecretary();
+    }
 
     public static function getPluralModelLabel(): string
     {
@@ -49,7 +55,7 @@ class ConversationResource extends Resource
         if (Auth::user()->role === 'secretary') {
             return $query->where('secretary_id', Auth::user()->id);
         }
-
+        dd($query);
         return $query;
     }
 

@@ -35,29 +35,58 @@ return Application::configure(basePath: dirname(__DIR__))
         };
 
         // Validation Error (422)
+        // $exceptions->render(function (\Illuminate\Validation\ValidationException $e, $request) use ($responder) {
+        //     if ($request->expectsJson()) {
+        //         // استخراج كل رسائل الخطأ ودمجها في جملة واحدة
+        //         $fields = array_keys($e->errors());
+        //         // تحويل الحقول لأسماء مفهومة
+        //         $translatedFields = collect($fields)->map(function ($field) {
+        //             return match ($field) {
+        //                 // 'phone' => 'الهاتف',
+        //                 // 'password' => 'كلمة المرور',
+        //                 // أضف باقي الحقول هنا إذا احتجت
+        //                 default => $field,
+        //             };
+        //         })->implode('، ');
+
+        //         // الرسالة النهائية
+        //         $message = $translatedFields . " error";
+        //         return $responder->apiResponse(
+        //             null,
+        //             $message,
+        //             \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY
+        //         );
+        //     }
+        // });
+
         $exceptions->render(function (\Illuminate\Validation\ValidationException $e, $request) use ($responder) {
             if ($request->expectsJson()) {
-                // استخراج كل رسائل الخطأ ودمجها في جملة واحدة
-                $fields = array_keys($e->errors());
-                // تحويل الحقول لأسماء مفهومة
-                $translatedFields = collect($fields)->map(function ($field) {
-                    return match ($field) {
-                        // 'phone' => 'الهاتف',
-                        // 'password' => 'كلمة المرور',
-                        // أضف باقي الحقول هنا إذا احتجت
-                        default => $field,
-                    };
-                })->implode('، ');
+                // استخراج الأخطاء
+                $errors = $e->errors();
 
-                // الرسالة النهائية
-                $message = $translatedFields . " error";
+                // تنسيق الرسائل بحيث يظهر اسم الحقل مرة واحدة فقط
+                $errorMessage = collect($errors)->map(function ($messages, $field) {
+                    // دمج رسائل الخطأ لكل حقل في سلسلة واحدة
+                    return $field . ': ' . implode(', ', $messages);
+                })->implode('; '); // فصل الأخطاء بين الحقول بفاصلة منقوطة
+
                 return $responder->apiResponse(
-                    null,
-                    $message,
+                    null, // تعيين data إلى null
+                    $errorMessage ?: 'Validation error', // رسالة الخطأ المنسقة، أو رسالة افتراضية إذا لم تكن هناك أخطاء
                     \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY
                 );
             }
         });
+
+        // $exceptions->render(function (\Illuminate\Validation\ValidationException $e, $request) use ($responder) {
+        //     if ($request->expectsJson()) {
+        //         return $responder->apiResponse(
+        //             ['errors' => $e->errors()],
+        //             'Validation error',
+        //             \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY
+        //         );
+        //     }
+        // });
 
         // Unauthenticated (401)
         $exceptions->render(function (\Illuminate\Auth\AuthenticationException $e, $request) use ($responder) {

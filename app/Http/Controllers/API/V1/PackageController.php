@@ -20,6 +20,9 @@ class PackageController extends Controller
     public function index($workspaceId)
     {
         $workspace = Workspace::with('packages')->findOrFail($workspaceId);
+        if ($workspace->packages->isEmpty()) {
+            return $this->apiResponse(null, __('messages.success'), 200);
+        }
         return $this->apiResponse(new WorkspacePackagesResource($workspace), __('messages.success'), 200);
     }
 }

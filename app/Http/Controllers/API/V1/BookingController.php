@@ -80,7 +80,7 @@ class BookingController extends Controller
             return $this->apiResponse(null, "الباقة المحددة لا تنتمي إلى مساحة العمل المحددة", 422);
         }
         // إذا كانت الباقة "ساعة"
-        if ($package->name === 'ساعة') {
+        if ($package->name === 'hour') {
             if (!$request->filled('time')) {
                 return $this->apiResponse(null, "يجب إدخال الوقت لباقات الساعة", 422);
             }
@@ -92,9 +92,9 @@ class BookingController extends Controller
             $startAt = Carbon::parse($validated['date'])->startOfDay();
 
             $endAt = match ($package->name) {
-                'يوم' => $startAt->copy()->addDays($package->duration),
-                'أسبوع' => $startAt->copy()->addWeeks($package->duration),
-                'شهر' => $startAt->copy()->addMonths($package->duration),
+                'day' => $startAt->copy()->addDays($package->duration),
+                'week' => $startAt->copy()->addWeeks($package->duration),
+                'month' => $startAt->copy()->addMonths($package->duration),
                 default => $startAt->copy()->addDays(1),
             };
         }

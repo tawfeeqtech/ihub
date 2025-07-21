@@ -72,6 +72,9 @@ return [
     'WorkspaceResource.form.bank_account_number.label' => 'رقم الحساب البنكي',
     'WorkspaceResource.form.mobile_payment_number.label' => 'رقم الجوال البنكي',
 
+    'WorkspaceResource.table.has_evening_shift' => 'هل متاح الدوام المسائي؟',
+    'WorkspaceResource.table.has_free' => 'هل المساحة مجانية؟',
+
     'WorkspaceResource.form.features.value.label' => 'الميزة',
     'WorkspaceResource.form.features.label' => 'مميزات المساحة',
     'WorkspaceResource.form.features.addActionLabel' => 'أضف ميزة',
@@ -82,7 +85,18 @@ return [
     'WorkspaceResource.table.uploadImage' => 'رفع صورة جديدة',
 
 
+    'governorate' => 'محافظة',
+    'governorates' => 'المحافظات',
 
+    'region' => 'منطقة',
+    'regions' => 'المناطق',
+    'numberRegions' => 'عدد المناطق',
+
+    'users' => 'المستخدمين',
+    'user' => 'مستخدم',
+
+    'settings' => 'الاعدادات',
+    'setting' => 'اعدادات',
 
 
     'BookingResource.form.seat_number' => 'رقم المقعد',

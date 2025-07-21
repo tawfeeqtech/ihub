@@ -43,10 +43,26 @@ return [
     'WorkspaceResource.form.features.label' => 'Workspace features',
     'WorkspaceResource.form.features.addActionLabel' => 'Add a feature',
 
+    'governorate' => 'governorate',
+    'governorates' => 'Governorates',
+    'region' => 'region',
+    'regions' => 'Regions',
+
+
+    'users' => 'Users',
+    'user' => 'User',
+
+    'settings' => 'Settings',
+    'setting' => 'Setting',
+
+    'numberRegions' => 'Number of regions',
 
     'WorkspaceResource.table.name' => 'name',
     'WorkspaceResource.table.location' => 'location',
     'WorkspaceResource.table.uploadImage' => 'Upload a new photo',
+
+    'WorkspaceResource.table.has_evening_shift' => 'evening shift',
+    'WorkspaceResource.table.has_free' => 'Is the space free?',
 
 
     'ServiceRequest.table.status.in_progress' => 'in progress',

@@ -56,8 +56,8 @@ class MessageController extends Controller
         ]);
 
         $sender = auth()->user(); // App user
-        $recipient = User::find($request->receiver_id); // Secretary
-
+        $recipient = User::find($conversation->secretary_id);
+        // dd($recipient);
         $messageData = [
             'conversation_id' => $conversationId,
             'sender_id' => $sender->id,

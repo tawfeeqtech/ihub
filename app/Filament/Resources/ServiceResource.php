@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ServiceResource\Pages;
 use App\Filament\Resources\ServiceResource\RelationManagers;
+use App\Helpers\FilamentAccess;
 use App\Models\Service;
 use App\Traits\TranslatableColumn;
 use Closure;
@@ -69,7 +70,10 @@ class ServiceResource extends Resource
         return __('filament.Service.label');
     }
 
-
+    public static function canAccess(): bool
+    {
+        return FilamentAccess::isSecretary();
+    }
     public static function form(Form $form): Form
     {
         $languages = config('app.supported_locales', ['ar', 'en']);

@@ -22,15 +22,36 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
-    protected static ?int $navigationSort = 7;
+    protected static ?int $navigationSort = 1;
+    public static function getPluralModelLabel(): string
+    {
+        return __('filament.users');
+    }
 
+    public static function getNavigationLabel(): string
+    {
+        return __('filament.users');
+    }
+    public static function getLabel(): ?string
+    {
+        return __('filament.user');
+    }
 
     public static function canAccess(): bool
     {
         return FilamentAccess::isAdmin();
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+    public static function getNavigationBadgeColor(): string | array | null
+    {
+        $count = static::getNavigationBadge();
 
+        return $count > 0 ? 'primary' : 'gray';
+    }
     public static function form(Form $form): Form
     {
         return $form
@@ -50,6 +71,8 @@ class UserResource extends Resource
 
                 Forms\Components\Select::make('workspace_id')
                     ->relationship('workspace', 'name')
+                    ->getOptionLabelFromRecordUsing(fn($record) => $record->translated_name) // هنا السحر
+
                     ->required(fn($livewire) => $livewire->data['role'] ?? '' === 'secretary' || request()->input('role') === 'secretary')
                     ->visible(fn($livewire) => ($livewire->data['role'] ?? '') === 'secretary' || request()->input('role') === 'secretary')
                     ->label('مساحة العمل المرتبطة')

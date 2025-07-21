@@ -30,6 +30,7 @@ class BookingResource extends JsonResource
             // 'status' => $this->status,
             'id' => $this->id,
             'workspace_name' => $this->workspace->name ?? null,
+            'workspace_id' => $this->workspace->id ?? null,
             'package_name' => $this->package->name ?? null,
             'start_at' => $this->start_at,
             'end_at' => $this->end_at,
