@@ -18,7 +18,8 @@ use App\Http\Controllers\API\V1\{
     ServiceController,
     ServiceRequestController,
     FcmController,
-    SettingController
+    SettingController,
+    GovernorateController
 };
 use Illuminate\Support\Facades\Broadcast;
 
@@ -50,6 +51,7 @@ Route::prefix('v1')->group(function () {
 
     Route::middleware('throttle:public-api')->group(function () {
         Route::get('/workspaces', [WorkspaceController::class, 'index']);
+        Route::get('/governorates', [GovernorateController::class, 'index']);
         Route::get('/workspaces/{workspace}', [WorkspaceController::class, 'show']);
         Route::get('/workspaces/{workspace}/packages', [PackageController::class, 'index']);
         Route::get('/workspaces/{workspace}/services', [ServiceController::class, 'index']);

@@ -9,7 +9,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Tables\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
 
 
@@ -23,7 +22,6 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Hidden;
 use Illuminate\Support\Facades\Log;
 use Filament\Forms\Components\FileUpload;
-use Illuminate\Support\Facades\Storage;
 
 class WorkspaceResource extends Resource
 {
@@ -60,10 +58,7 @@ class WorkspaceResource extends Resource
 
         return $count > 0 ? 'primary' : 'gray';
     }
-    // public static function canAccess(): bool
-    // {
-    //     return FilamentAccess::isAdmin();
-    // }
+
     public static function canCreate(): bool
     {
         return FilamentAccess::isAdmin();
@@ -111,9 +106,9 @@ class WorkspaceResource extends Resource
 
                         Grid::make(4)
                         ->columns([
-                            'default' => 1, // عدد الأعمدة على الشاشات الصغيرة (مثل الهواتف)
-                            'sm' => 2,      // عدد الأعمدة على الشاشات المتوسطة
-                            'md' => 4,      // عدد الأعمدة على الشاشات الكبيرة
+                            'default' => 1,
+                            'sm' => 2,
+                            'md' => 4,
                         ])
                             ->schema([
 
@@ -204,19 +199,37 @@ class WorkspaceResource extends Resource
                     ]),
 
 
+                // Repeater::make('features')
+                //     ->schema([
+                //         TextInput::make('value')
+                //             ->label(__('filament.WorkspaceResource.form.features.value.label'))
+                //             ->required()->columnSpan('full'),
+                //     ])
+                //     ->label(__('filament.WorkspaceResource.form.features.label'))
+                //     ->addActionLabel(__('filament.WorkspaceResource.form.features.addActionLabel'))
+                //     ->default([])
+                //     ->columns(4)
+                //     ->grid(4)
+                //     ->columnSpan('full')
+                //     ->itemLabel(null),
+
                 Repeater::make('features')
-                    ->schema([
-                        TextInput::make('value')
-                            ->label(__('filament.WorkspaceResource.form.features.value.label'))
-                            ->required()->columnSpan('full'),
-                    ])
-                    ->label(__('filament.WorkspaceResource.form.features.label'))
-                    ->addActionLabel(__('filament.WorkspaceResource.form.features.addActionLabel'))
-                    ->default([])
-                    ->columns(4)
-                    ->grid(4)
-                    ->columnSpan('full')
-                    ->itemLabel(null),
+                ->label(__('filament.WorkspaceResource.form.features.label'))
+                ->addActionLabel(__('filament.WorkspaceResource.form.features.addActionLabel'))
+                ->schema([
+                    TextInput::make('ar')
+                        ->label(__('filament.WorkspaceResource.form.features.ar'))
+                        ->required()
+                        ->columnSpan(1),
+                    TextInput::make('en')
+                        ->label(__('filament.WorkspaceResource.form.features.en'))
+                        ->required()
+                        ->columnSpan(1),
+                ])
+                ->default([['ar' => '', 'en' => '']])
+                ->columns(2)
+                ->grid(2)
+                ->columnSpan('full'),
 
                 FileUpload::make('logo')
                     ->label(__('filament.logo'))
@@ -248,11 +261,8 @@ class WorkspaceResource extends Resource
     {
         $currentLocale = auth()->user()?->current_locale;
         return $table
-            // ->query(Region::with('governorate'))
             ->columns([
                 Tables\Columns\TextColumn::make('name.' . $currentLocale)->label(__('filament.WorkspaceResource.table.name'))->searchable(),
-
-                // Tables\Columns\TextColumn::make('location.' . $currentLocale)->label(__('filament.WorkspaceResource.table.location'))->searchable(),
 
                 Tables\Columns\TextColumn::make('governorate.name.' . $currentLocale)
                     ->label(__('filament.governorate'))
@@ -272,11 +282,6 @@ class WorkspaceResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                // Action::make('uploadImage')
-                //     ->label(__('filament.WorkspaceResource.table.uploadImage'))
-                //     ->icon('heroicon-o-photo')
-                //     ->url(fn(Workspace $record) => route('admin.upload-images.create', $record->id))
-                //     ->color('success'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

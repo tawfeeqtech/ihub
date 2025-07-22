@@ -22,8 +22,16 @@ class WorkspaceShowResource extends JsonResource
             'location' => $this->location[$lang] ?? $this->location['en'] ?? '',
             'description' => $this->description[$lang] ?? $this->description['en'] ?? '',
             'logo' => $this->logo ? asset('storage/' . $this->logo) : null,
-            'images' => WorkspaceImageResource::collection($this->whenLoaded('images')), // <--- استخدمه هنا أيضاً
-            'features' => $this->features ?? [],
+            'images' => WorkspaceImageResource::collection($this->whenLoaded('images')),
+            'features' => collect($this->features ?? [])->map(fn($feature) => $feature[$lang] ?? $feature['en'] ?? '')->filter()->values()->all(),
+            'governorate' => [
+                'id' => $this->governorate_id,
+                'name' => $this->governorate ? $this->governorate->getTranslatedNameAttribute($lang) : '',
+            ],
+            'region' => [
+                'id' => $this->region_id,
+                'name' => $this->region ? $this->region->getTranslatedNameAttribute($lang) : '',
+            ],
             'short_services' => $this->services
                 ->pluck('category')
                 ->unique(fn($item) => $item[$lang] ?? $item['en'] ?? $item['ar'] ?? null)

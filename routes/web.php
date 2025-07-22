@@ -60,7 +60,7 @@ Route::middleware(['auth'])->group(function () {
 
 Route::get('/test-firebase', function () {
     try {
-        $filePath = base_path() . '\storage\app\firebase\firebase-credentials.json';
+        $filePath = base_path() . '/storage/app/firebase/firebase-credentials.json';
         if (!file_exists($filePath)) {
             return response()->json(['error' => 'File does not exist at: ' . $filePath], 500);
         }

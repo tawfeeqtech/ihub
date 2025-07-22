@@ -4,10 +4,7 @@ namespace App\Filament\Resources\WorkspaceResource\Pages;
 
 use App\Filament\Resources\WorkspaceResource;
 use App\Traits\TranslatableFormMutator;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
-use App\Models\Governorate;
-use App\Models\Region;
 use Filament\Forms\Components\FileUpload;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -25,7 +22,7 @@ class CreateWorkspace extends CreateRecord
                 ->label(__('filament.logo'))
                 ->image()
                 ->disk('public')
-                ->directory('temp/logos') // Use a temporary directory
+                ->directory('temp/logos')
                 ->maxSize(2048)
                 ->acceptedFileTypes(['image/jpeg', 'image/png'])
                 ->nullable()
@@ -36,7 +33,7 @@ class CreateWorkspace extends CreateRecord
                 ->multiple()
                 ->image()
                 ->disk('public')
-                ->directory('temp/images') // Use a temporary directory
+                ->directory('temp/images')
                 ->maxSize(2048)
                 ->acceptedFileTypes(['image/jpeg', 'image/png'])
                 ->enableReordering()
@@ -49,26 +46,18 @@ class CreateWorkspace extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data = $this->convertAllTranslatables($data);
-        Log::info('Form data before create: ', [
-            'logo' => $data['logo'] ?? null,
-            'workspace_images' => $data['workspace_images'] ?? null,
-        ]);
-
         $this->formData = $data;
-
         return $data;
     }
 
     protected function afterCreate(): void
     {
-        // Move logo file to workspace-specific directory
         if (isset($this->formData['logo']) && $this->formData['logo']) {
             $newLogoPath = $this->moveFileToWorkspaceDirectory($this->formData['logo'], $this->record->id, 'logos');
             $this->formData['logo'] = $newLogoPath;
             $this->record->update(['logo' => $newLogoPath]);
         }
 
-        // Move workspace images to workspace-specific directory
         if (isset($this->formData['workspace_images']) && is_array($this->formData['workspace_images'])) {
             $newImagePaths = [];
             foreach ($this->formData['workspace_images'] as $image) {
@@ -81,7 +70,6 @@ class CreateWorkspace extends CreateRecord
             $this->formData['workspace_images'] = $newImagePaths;
         }
 
-        // Clean up temporary directories if they are empty
         $this->cleanUpTempDirectories();
     }
 
@@ -89,16 +77,13 @@ class CreateWorkspace extends CreateRecord
     {
         $data = $this->revertAllTranslatables($data);
         $data['workspace_images'] = $this->record?->images->pluck('image')->toArray() ?? [];
+        $data['features'] = $this->record?->features ?? [['ar' => '', 'en' => '']];
         return $data;
     }
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
         $data = $this->convertAllTranslatables($data);
-        Log::info('Form data before save: ', [
-            'logo' => $data['logo'] ?? null,
-            'workspace_images' => $data['workspace_images'] ?? null,
-        ]);
         $this->formData = $data;
         return $data;
     }
@@ -115,7 +100,6 @@ class CreateWorkspace extends CreateRecord
             }
         }
 
-        // Clean up temporary directories if they are empty
         $this->cleanUpTempDirectories();
     }
 
@@ -125,10 +109,8 @@ class CreateWorkspace extends CreateRecord
         $fileName = basename($filePath);
         $newPath = "{$newDirectory}/{$fileName}";
 
-        // Ensure the new directory exists
         Storage::disk('public')->makeDirectory($newDirectory);
 
-        // Move the file from temp or old directory to the new workspace-specific directory
         if (Storage::disk('public')->exists($filePath)) {
             Storage::disk('public')->move($filePath, $newPath);
         }
@@ -138,7 +120,6 @@ class CreateWorkspace extends CreateRecord
 
     protected function cleanUpTempDirectories(): void
     {
-        // Delete temporary directories if they are empty
         $tempDirs = ['temp/logos', 'temp/images'];
         foreach ($tempDirs as $dir) {
             if (Storage::disk('public')->exists($dir) && empty(Storage::disk('public')->files($dir))) {

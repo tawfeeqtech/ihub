@@ -51,7 +51,7 @@ class BookingController extends Controller
 
         // السماح فقط لصاحب الحجز أو الأدمن أو السكرتير المرتبط بنفس المساحة
         if (
-            $user->id !== $booking->user_id &&
+            (int) $user->id != (int) $booking->user_id &&
             !in_array($user->role, ['admin', 'secretary']) ||
             ($user->role === 'secretary' && $user->workspace_id !== $booking->workspace_id)
         ) {
@@ -86,15 +86,16 @@ class BookingController extends Controller
             }
 
             $startAt = Carbon::parse($validated['date'] . ' ' . $validated['time']);
-            $hours = $validated['number_of_hours'] ?? 1;
+            $hours =(int) $validated['number_of_hours'] ?? 1;
             $endAt = $startAt->copy()->addHours($hours);
         } else {
             $startAt = Carbon::parse($validated['date'])->startOfDay();
+            $duration = (int) $package->duration; // تحويل duration إلى int
 
             $endAt = match ($package->name) {
-                'day' => $startAt->copy()->addDays($package->duration),
-                'week' => $startAt->copy()->addWeeks($package->duration),
-                'month' => $startAt->copy()->addMonths($package->duration),
+                'day' => $startAt->copy()->addDays($duration),
+                'week' => $startAt->copy()->addWeeks($duration),
+                'month' => $startAt->copy()->addMonths($duration),
                 default => $startAt->copy()->addDays(1),
             };
         }

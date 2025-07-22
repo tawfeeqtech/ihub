@@ -56,33 +56,33 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')->required(),
-                Forms\Components\TextInput::make('phone')->required(),
-                Forms\Components\TextInput::make('email')->nullable(),
+                Forms\Components\TextInput::make('name')->required()->label(__('filament.UserResource.form.name.label')),
+                Forms\Components\TextInput::make('phone')->required()->label(__('filament.UserResource.form.phone.label')),
+                Forms\Components\TextInput::make('email')->nullable()->label(__('filament.UserResource.form.email.label')),
                 Forms\Components\Select::make('role')
                     ->options([
                         'user' => 'User',
                         'secretary' => 'Secretary',
                         'admin' => 'Admin',
                     ])->reactive()
-                    ->required(),
-                Forms\Components\TextInput::make('specialty')->nullable()
+                    ->required()->label(__('filament.UserResource.form.role.label')),
+                Forms\Components\TextInput::make('specialty')->label(__('filament.UserResource.form.specialty.label'))->nullable()
                     ->visible(fn($livewire) => ($livewire->data['role'] ?? '') === 'user' || request()->input('role') === 'user'),
 
                 Forms\Components\Select::make('workspace_id')
                     ->relationship('workspace', 'name')
-                    ->getOptionLabelFromRecordUsing(fn($record) => $record->translated_name) // هنا السحر
+                    ->getOptionLabelFromRecordUsing(fn($record) => $record->translated_name)
 
                     ->required(fn($livewire) => $livewire->data['role'] ?? '' === 'secretary' || request()->input('role') === 'secretary')
                     ->visible(fn($livewire) => ($livewire->data['role'] ?? '') === 'secretary' || request()->input('role') === 'secretary')
-                    ->label('مساحة العمل المرتبطة')
+                    ->label(__('filament.UserResource.form.relationshipWorkspace.label'))
                     ->searchable(),
 
                 Forms\Components\TextInput::make('password')
                     ->password()
                     ->dehydrateStateUsing(fn($state) => Hash::make($state))
                     ->dehydrated(fn($state) => filled($state))
-                    ->label('Password'),
+                    ->label(__('filament.UserResource.form.password.label')),
             ]);
     }
 
@@ -90,10 +90,10 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextColumn::make('phone'),
-                Tables\Columns\TextColumn::make('email'),
-                Tables\Columns\TextColumn::make('role'),
+                Tables\Columns\TextColumn::make('name')->label(__('filament.UserResource.form.name.label')),
+                Tables\Columns\TextColumn::make('phone')->label(__('filament.UserResource.form.phone.label')),
+                Tables\Columns\TextColumn::make('email')->label(__('filament.UserResource.form.email.label')),
+                Tables\Columns\TextColumn::make('role')->label(__('filament.UserResource.form.role.label')),
             ])
             ->filters([
                 //

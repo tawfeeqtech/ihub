@@ -20,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->singleton(Messaging::class, function ($app) {
             $factory = (new \Kreait\Firebase\Factory())
-                ->withServiceAccount(base_path() . '\storage\app\firebase\firebase-credentials.json');
+                ->withServiceAccount(base_path() . '/storage/app/firebase/firebase-credentials.json');
             return $factory->createMessaging();
         });
 

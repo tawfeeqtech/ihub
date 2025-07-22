@@ -21,7 +21,7 @@ class NotificationService
     public function __construct(Messaging $messaging)
     {
         $this->messaging = $messaging;
-        $this->credentialsPath = base_path() . '\storage\app\firebase\firebase-credentials.json';
+        $this->credentialsPath = base_path() . '/storage/app/firebase/firebase-credentials.json';
         // Log::info('NotificationService initialized', [
         //     'firebase_credentials' => $this->credentialsPath,
         // ]);

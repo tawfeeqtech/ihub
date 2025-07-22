@@ -43,6 +43,18 @@ return [
     'WorkspaceResource.form.features.label' => 'Workspace features',
     'WorkspaceResource.form.features.addActionLabel' => 'Add a feature',
 
+    'WorkspaceResource.form.features.ar' => 'Featured in Arabic',
+    'WorkspaceResource.form.features.en' => 'Featured in English',
+
+    'UserResource.form.name.label' => 'name',
+    'UserResource.form.phone.label' => 'phone',
+    'UserResource.form.email.label' => 'email',
+    'UserResource.form.role.label' => 'roles',
+    'UserResource.form.specialty.label' => 'specialty',
+    'UserResource.form.password.label' => 'password',
+    'UserResource.form.relationshipWorkspace.label' => 'Associated Workspace',
+
+
     'governorate' => 'governorate',
     'governorates' => 'Governorates',
     'region' => 'region',

@@ -84,6 +84,17 @@ return [
     'WorkspaceResource.table.location' => 'العنوان',
     'WorkspaceResource.table.uploadImage' => 'رفع صورة جديدة',
 
+    'WorkspaceResource.form.features.ar' => 'المميزة بالعربية',
+    'WorkspaceResource.form.features.en' => 'المميزة بالإنجليزية',
+
+    'UserResource.form.name.label' => 'الاسم',
+    'UserResource.form.phone.label' => 'رقم الهاتف',
+    'UserResource.form.email.label' => 'البريد الالكتروني',
+    'UserResource.form.role.label' => 'الدور',
+    'UserResource.form.specialty.label' => 'التخصص',
+    'UserResource.form.password.label' => 'كلمة المرور',
+    'UserResource.form.relationshipWorkspace.label' => 'مساحة العمل المرتبطة',
+
 
     'governorate' => 'محافظة',
     'governorates' => 'المحافظات',
