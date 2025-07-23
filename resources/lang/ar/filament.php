@@ -64,6 +64,32 @@ return [
 
     'WorkspaceResource.form.location_translations.title' => 'العنوان',
 
+    'SettingResource.form.key.title' => 'نوع المحتوى',
+
+    'SettingResource.Numberofitems' => 'عدد العناصر',
+
+    'SettingResource.contactinformation' => 'معلومات التواصل',
+    'SettingResource.links' => 'روابط',
+
+    'SettingResource.about' => 'حول التطبيق',
+    'SettingResource.terms' => 'الشروط والأحكام',
+    'SettingResource.unique' => 'هذا النوع من الإعدادات موجود بالفعل.',
+    'SettingResource.Basicinformation' => 'المعلومات الأساسية',
+    'SettingResource.Maincontent' => 'المحتوى الأساسي',
+    'SettingResource.Additem' => 'إضافة عنصر',
+    'SettingResource.Text' => 'النص',
+    'SettingResource.Addcontactinformation' => 'إضافة معلومة تواصل',
+    'SettingResource.Socialmedialinks' => 'روابط التواصل الاجتماعي',
+    'SettingResource.Communicationlinks' => 'روابط التواصل',
+    'SettingResource.Addalink' => 'إضافة رابط',
+    'SettingResource.Linkname' => 'اسم الرابط',
+    'SettingResource.Communicationlink' => 'رابط التواصل',
+    'SettingResource.Link' => 'الرابط',
+
+    'logo' => 'الشعار',
+    'workspace_images' => 'صورة المساحة',
+
+
 
     'WorkspaceResource.form.location_translations.label' => 'العنوان متعدد اللغات',
 

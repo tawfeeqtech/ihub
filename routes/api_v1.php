@@ -1,8 +1,8 @@
 <?php
 // php artisan queue:work
 
-use Illuminate\Cache\RateLimiting\Limit;
-use Illuminate\Support\Facades\RateLimiter;
+// use Illuminate\Cache\RateLimiting\Limit;
+// use Illuminate\Support\Facades\RateLimiter;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,17 +23,17 @@ use App\Http\Controllers\API\V1\{
 };
 use Illuminate\Support\Facades\Broadcast;
 
-RateLimiter::for('auth', function ($request) {
-    return Limit::perMinute(10)->by($request->ip());
-});
+// RateLimiter::for('auth', function ($request) {
+//     return Limit::perMinute(10)->by($request->ip());
+// });
 
-RateLimiter::for('public-api', function ($request) {
-    return Limit::perMinute(60)->by($request->ip());
-});
+// RateLimiter::for('public-api', function ($request) {
+//     return Limit::perMinute(60)->by($request->ip());
+// });
 
-RateLimiter::for('user-api', function ($request) {
-    return Limit::perMinute(100)->by(optional($request->user())->id ?: $request->ip());
-});
+// RateLimiter::for('user-api', function ($request) {
+//     return Limit::perMinute(100)->by(optional($request->user())->id ?: $request->ip());
+// });
 
 Route::prefix('v1')->group(function () {
 

@@ -33,6 +33,30 @@ return [
     'WorkspaceResource.form.location_translations.title' => 'title',
     'WorkspaceResource.form.description_translations.label' => 'Multilingual description',
     'WorkspaceResource.form.description_translations.title' => 'description',
+    'SettingResource.form.key.title' => 'Content type',
+    'SettingResource.Numberofitems' => 'Number of items',
+
+    'SettingResource.contactinformation' => 'Contact information',
+    'SettingResource.links' => 'links',
+
+    'SettingResource.about' => 'About the app',
+    'SettingResource.terms' => 'Terms and Conditions',
+    'SettingResource.unique' => 'This type of setting already exists.',
+    'SettingResource.Basicinformation' => 'Basic information',
+    'SettingResource.Maincontent' => 'Main content',
+    'SettingResource.Additem' => 'Add item',
+    'SettingResource.Text' => 'Text',
+    'SettingResource.Addcontactinformation' => 'Add contact information',
+    'SettingResource.Socialmedialinks' => 'Social media links',
+    'SettingResource.Communicationlinks' => 'Communication links',
+    'SettingResource.Addalink' => 'Add a link',
+    'SettingResource.Linkname' => 'Link name',
+    'SettingResource.Communicationlink' => 'Communication link',
+    'SettingResource.Link' => 'Link',
+
+    'logo' => 'logo',
+    'workspace_images' => 'workspace images',
+
 
     'WorkspaceResource.form.payment_information.title' => 'Payment information',
     'WorkspaceResource.form.bank_payment_supported.label' => 'Do you support bank transfer ?',

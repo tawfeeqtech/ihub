@@ -68,60 +68,166 @@ class SettingResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('key')
-                    ->label('نوع المحتوى')
+                    ->label(__('filament.WorkspaceResource.form.description_translations.title'))
                     ->options([
-                        'about' => 'حول التطبيق',
-                        'terms' => 'الشروط والأحكام',
+                        'about' => __("filament.SettingResource.about"),
+                        'terms' => __("filament.SettingResource.terms"),
                     ])->required()
                     ->unique(ignoreRecord: true)
+                    ->reactive()
+                    ->afterStateUpdated(function ($state, callable $set) {
+                       if ($state === 'terms') {
+                            $set('value.contacts', null);
+                            $set('value.links', null);
+                        }
+                    })
                     ->validationMessages([
-                        'unique' => 'هذا النوع من الإعدادات موجود بالفعل.',
+                        'unique' => __("filament.SettingResource.unique"),
                     ]),
 
-                Forms\Components\Repeater::make('value')
-                    ->label('المحتوى متعدد اللغات')
-                    ->addActionLabel('إضافة عنصر')
+                Forms\Components\Section::make(__("filament.SettingResource.Basicinformation"))
                     ->schema([
-                        Forms\Components\Repeater::make('key_translations')
-                            ->label('العنوان (النص الكبير الغامق)')
+                        Forms\Components\Repeater::make('value.info')
+                            ->label(__("filament.SettingResource.Maincontent"))
+                            ->addActionLabel(__("filament.SettingResource.Additem"))
                             ->schema([
-                                Forms\Components\Select::make('locale')
-                                    ->label('اللغة')
-                                    ->options(array_combine($languages, $languages))
-                                    ->required()
-                                    ->columnSpan(1),
-                                Forms\Components\TextInput::make('value')
-                                    ->label('النص')
-                                    ->required()
-                                    ->columnSpan(1),
+                                Forms\Components\Repeater::make('key_translations')
+                                    ->label(__("filament.WorkspaceResource.form.location_translations.title"))
+                                    ->schema([
+                                        Forms\Components\Select::make('locale')
+                                            ->label(__("filament.Service.form.locale"))
+                                            ->options(array_combine($languages, $languages))
+                                            ->required()
+                                            ->columnSpan(1),
+                                        Forms\Components\TextInput::make('value')
+                                            ->label(__("filament.SettingResource.Text"))
+                                            ->required()
+                                            ->columnSpan(1),
+                                    ])
+                                    ->default([['locale' => 'ar', 'value' => ''], ['locale' => 'en', 'value' => '']])
+                                    ->columns(2)
+                                    ->grid(2)
+                                    ->columnSpan('full'),
+                                Forms\Components\Repeater::make('value_translations')
+                                    ->label(__("filament.WorkspaceResource.form.description_translations.title"))
+                                    ->schema([
+                                        Forms\Components\Select::make('locale')
+                                            ->label(__("filament.Service.form.locale"))
+                                            ->options(array_combine($languages, $languages))
+                                            ->required()
+                                            ->columnSpan(1),
+                                        Forms\Components\Textarea::make('value')
+                                            ->label(__("filament.SettingResource.Text"))
+                                            ->required()
+                                            ->columnSpan(1),
+                                    ])
+                                    ->default([['locale' => 'ar', 'value' => ''], ['locale' => 'en', 'value' => '']])
+                                    ->columns(2)
+                                    ->grid(2)
+                                    ->columnSpan('full'),
                             ])
-                            ->default([['locale' => 'ar', 'value' => '']])
-                            ->columns(2)
-                            ->grid(2)
+                            ->default([['key_translations' => [['locale' => 'ar', 'value' => ''], ['locale' => 'en', 'value' => '']], 'value_translations' => [['locale' => 'ar', 'value' => ''], ['locale' => 'en', 'value' => '']]]])
+                            ->columns(1)
+                            ->grid(1)
                             ->columnSpan('full'),
+                    ]),
 
-                        Forms\Components\Repeater::make('value_translations')
-                            ->label('الوصف (النص الصغير)')
+                Forms\Components\Section::make(__("filament.SettingResource.contactinformation"))
+                    ->schema([
+                        Forms\Components\Repeater::make('value.contacts')
+                            ->label(__("filament.SettingResource.contactinformation"))
+                            ->addActionLabel(__("filament.SettingResource.Addcontactinformation"))
                             ->schema([
-                                Forms\Components\Select::make('locale')
-                                    ->label('اللغة')
-                                    ->options(array_combine($languages, $languages))
-                                    ->required()
-                                    ->columnSpan(1),
-                                Forms\Components\Textarea::make('value')
-                                    ->label('النص')
-                                    ->required()
-                                    ->columnSpan(1),
+                                Forms\Components\Repeater::make('key_translations')
+                                    ->label(__("filament.WorkspaceResource.form.location_translations.title"))
+                                    ->schema([
+                                        Forms\Components\Select::make('locale')
+                                            ->label(__("filament.Service.form.locale"))
+                                            ->options(array_combine($languages, $languages))
+                                            ->required()
+                                            ->columnSpan(1),
+                                        Forms\Components\TextInput::make('value')
+                                            ->label(__("filament.SettingResource.Text"))
+                                            ->required()
+                                            ->columnSpan(1),
+                                    ])
+                                    ->default([['locale' => 'ar', 'value' => ''], ['locale' => 'en', 'value' => '']])
+                                    ->columns(2)
+                                    ->grid(2)
+                                    ->columnSpan('full'),
+                                Forms\Components\Repeater::make('value_translations')
+                                    ->label(__("filament.WorkspaceResource.form.description_translations.title"))
+                                    ->schema([
+                                        Forms\Components\Select::make('locale')
+                                            ->label(__("filament.Service.form.locale"))
+                                            ->options(array_combine($languages, $languages))
+                                            ->required()
+                                            ->columnSpan(1),
+                                        Forms\Components\Textarea::make('value')
+                                            ->label(__("filament.SettingResource.Text"))
+                                            ->required()
+                                            ->columnSpan(1),
+                                    ])
+                                    ->default([['locale' => 'ar', 'value' => ''], ['locale' => 'en', 'value' => '']])
+                                    ->columns(2)
+                                    ->grid(2)
+                                    ->columnSpan('full'),
                             ])
-                            ->default([['locale' => 'ar', 'value' => '']])
-                            ->columns(2)
-                            ->grid(2)
+                            ->default([['key_translations' => [['locale' => 'ar', 'value' => ''], ['locale' => 'en', 'value' => '']], 'value_translations' => [['locale' => 'ar', 'value' => ''], ['locale' => 'en', 'value' => '']]]])
+                            ->columns(1)
+                            ->grid(1)
                             ->columnSpan('full'),
                     ])
-                    ->default([['key_translations' => [['locale' => 'ar', 'value' => '']], 'value_translations' => [['locale' => 'ar', 'value' => '']]]])
-                    ->columns(1)
-                    ->grid(1)
-                    ->columnSpan('full'),
+                    ->hidden(fn ($get) => $get('key') === 'terms'),
+
+                    Forms\Components\Section::make(__("filament.SettingResource.Socialmedialinks"))
+                    ->schema([
+                        Forms\Components\Repeater::make('value.links')
+                            ->label(__("filament.SettingResource.Communicationlinks"))
+                            ->addActionLabel(__("filament.SettingResource.Addalink"))
+                            ->schema([
+                                Forms\Components\Repeater::make('key_translations')
+                                    ->label(__("filament.SettingResource.Linkname"))
+                                    ->schema([
+                                        Forms\Components\Select::make('locale')
+                                            ->label(__("filament.Service.form.locale"))
+                                            ->options(array_combine($languages, $languages))
+                                            ->required()
+                                            ->columnSpan(1),
+                                        Forms\Components\TextInput::make('value')
+                                            ->label(__("filament.SettingResource.Text"))
+                                            ->required()
+                                            ->columnSpan(1),
+                                    ])
+                                    ->default([['locale' => 'ar', 'value' => ''], ['locale' => 'en', 'value' => '']])
+                                    ->columns(2)
+                                    ->grid(2)
+                                    ->columnSpan('full'),
+                                Forms\Components\Repeater::make('value_translations')
+                                    ->label(__("filament.SettingResource.Communicationlink"))
+                                    ->schema([
+                                        Forms\Components\Select::make('locale')
+                                            ->label(__("filament.Service.form.locale"))
+                                            ->options(array_combine($languages, $languages))
+                                            ->required()
+                                            ->columnSpan(1),
+                                        Forms\Components\TextInput::make('value')
+                                            ->label(__("filament.SettingResource.Link"))
+                                            ->required()
+                                            ->url()
+                                            ->columnSpan(1),
+                                    ])
+                                    ->default([['locale' => 'ar', 'value' => ''], ['locale' => 'en', 'value' => '']])
+                                    ->columns(2)
+                                    ->grid(2)
+                                    ->columnSpan('full'),
+                            ])
+                            ->default([['key_translations' => [['locale' => 'ar', 'value' => ''], ['locale' => 'en', 'value' => '']], 'value_translations' => [['locale' => 'ar', 'value' => ''], ['locale' => 'en', 'value' => '']]]])
+                            ->columns(1)
+                            ->grid(1)
+                            ->columnSpan('full'),
+                    ])
+                    ->hidden(fn ($get) => $get('key') === 'terms'),
             ]);
     }
 
@@ -130,7 +236,7 @@ class SettingResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('key')
-                    ->label('نوع المحتوى')
+                    ->label(__('filament.SettingResource.form.key.title'))
                     ->formatStateUsing(function ($state) {
                         return __('filament.' . $state);
                     })->badge()
@@ -138,13 +244,13 @@ class SettingResource extends Resource
                     ->sortable()
                     ->searchable(),
 
-                TextColumn::make('translated_name')
-                ->label('الوصف')
-                ->formatStateUsing(fn ($state) => Str::limit($state, 100, '...'))
-                ->html()
-                ->wrap()
-                ->description(fn ($record) => 'عدد العناصر: ' . $record->item_count),
-            ])
+                Tables\Columns\TextColumn::make('translated_name')
+                    ->label(__('filament.WorkspaceResource.form.description_translations.title'))
+                    ->formatStateUsing(fn ($state) => Str::limit($state, 100, '...'))
+                    ->html()
+                    ->wrap()
+                    ->description(fn ($record) => __('filament.SettingResource.Numberofitems').': ' . $record->item_count . ($record->contacts ? ', '. __('filament.SettingResource.contactinformation') .': ' . count($record->contacts) : '') . ($record->links ? ', '.__('filament.SettingResource.links').': ' . count($record->links) : '')),
+                    ])
             ->filters([
                 //
             ])

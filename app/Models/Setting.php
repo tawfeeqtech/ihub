@@ -10,6 +10,54 @@ class Setting extends Model
     protected $casts = [
         'value' => 'array',
     ];
+    public function setValueAttribute($value)
+    {
+        if (is_array($value)) {
+            $this->attributes['value'] = json_encode($value, JSON_UNESCAPED_UNICODE);
+        } elseif (is_string($value)) {
+            $decoded = json_decode(stripslashes($value), true);
+            $this->attributes['value'] = json_encode($decoded ?? $value, JSON_UNESCAPED_UNICODE);
+        }
+    }
+
+    public function getTranslatedNameAttribute($locale = null)
+    {
+        $locale = $locale ?? app()->getLocale();
+        $value = $this->value;
+
+        if (is_string($value)) {
+            $value = json_decode(stripslashes($value), true) ?? [];
+        }
+
+        $firstItem = collect($value['info'] ?? [])->first();
+        return data_get($firstItem, "value.{$locale}", data_get($firstItem, 'value.en', 'غير متوفر'));
+    }
+
+    public function getItemCountAttribute()
+    {
+        $value = $this->value;
+        if (is_string($value)) {
+            $value = json_decode(stripslashes($value), true) ?? [];
+        }
+        return count($value['info'] ?? []);
+    }
+
+    public function getContactsAttribute()
+    {
+        $value = $this->value;
+        if (is_string($value)) {
+            $value = json_decode(stripslashes($value), true) ?? [];
+        }
+        return $value['contacts'] ?? null;
+    }
+    public function getLinksAttribute()
+    {
+        $value = $this->value;
+        if (is_string($value)) {
+            $value = json_decode(stripslashes($value), true) ?? [];
+        }
+        return $value['links'] ?? null;
+    }
     // public function getTranslatedDescriptionAttribute()
     // {
     //     $value = $this->value;
@@ -42,35 +90,37 @@ class Setting extends Model
     //     return data_get($firstItem, "value.{$locale}", 'غير متوفر');
     // }
 
-    public function setValueAttribute($value)
-    {
-        if (is_array($value)) {
-            $this->attributes['value'] = json_encode($value, JSON_UNESCAPED_UNICODE);
-        } elseif (is_string($value)) {
-            $decoded = json_decode(stripslashes($value), true);
-            $this->attributes['value'] = json_encode($decoded ?? $value, JSON_UNESCAPED_UNICODE);
-        }
-    }
-    public function getTranslatedNameAttribute($locale = null)
-    {
-        $locale = $locale ?? app()->getLocale();
-        $value = $this->value;
+    // public function setValueAttribute($value)
+    // {
+    //     if (is_array($value)) {
+    //         $this->attributes['value'] = json_encode($value, JSON_UNESCAPED_UNICODE);
+    //     } elseif (is_string($value)) {
+    //         $decoded = json_decode(stripslashes($value), true);
+    //         $this->attributes['value'] = json_encode($decoded ?? $value, JSON_UNESCAPED_UNICODE);
+    //     }
+    // }
+    // public function getTranslatedNameAttribute($locale = null)
+    // {
+    //     $locale = $locale ?? app()->getLocale();
+    //     $value = $this->value;
 
-        if (is_string($value)) {
-            $value = json_decode(stripslashes($value), true) ?? [];
-        }
+    //     if (is_string($value)) {
+    //         $value = json_decode(stripslashes($value), true) ?? [];
+    //     }
 
-        $firstItem = collect($value)->first();
-        return data_get($firstItem, "value.{$locale}", data_get($firstItem, 'value.en', 'غير متوفر'));
-    }
+    //     $firstItem = collect($value)->first();
+    //     return data_get($firstItem, "value.{$locale}", data_get($firstItem, 'value.en', 'غير متوفر'));
+    // }
 
-    // accessor إضافي لعدد العناصر (اختياري)
-    public function getItemCountAttribute()
-    {
-        $value = $this->value;
-        if (is_string($value)) {
-            $value = json_decode(stripslashes($value), true) ?? [];
-        }
-        return count($value);
-    }
+    // // accessor إضافي لعدد العناصر (اختياري)
+    // public function getItemCountAttribute()
+    // {
+    //     $value = $this->value;
+    //     if (is_string($value)) {
+    //         $value = json_decode(stripslashes($value), true) ?? [];
+    //     }
+    //     return count($value);
+    // }
+
+
 }
