@@ -13,7 +13,7 @@ class EditSetting extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
-        // تحويل البيانات إلى صيغة مناسبة
+        // تحويل البيانات إلى صيغة مناسبة للحفظ في قاعدة البيانات
         $data['value'] = array_map(function ($item) {
             $keyTranslations = collect($item['key_translations'])->pluck('value', 'locale')->all();
             $valueTranslations = collect($item['value_translations'])->pluck('value', 'locale')->all();
@@ -23,8 +23,31 @@ class EditSetting extends EditRecord
             ];
         }, $data['value']);
 
-        // التأكد من أن البيانات تُخزن كـ JSON صالح
         $data['value'] = json_encode($data['value'], JSON_UNESCAPED_UNICODE);
+
+        return $data;
+    }
+
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        // تحويل البيانات من قاعدة البيانات إلى صيغة النموذج
+        $value = $this->record->value; // البيانات من قاعدة البيانات (مصفوفة بسبب $casts)
+
+        // تحويل البيانات إلى صيغة Repeater
+        $data['value'] = collect($value)->map(function ($item) {
+            $keyTranslations = collect($item['key'])->map(function ($value, $locale) {
+                return ['locale' => $locale, 'value' => $value];
+            })->values()->all();
+
+            $valueTranslations = collect($item['value'])->map(function ($value, $locale) {
+                return ['locale' => $locale, 'value' => $value];
+            })->values()->all();
+
+            return [
+                'key_translations' => $keyTranslations,
+                'value_translations' => $valueTranslations,
+            ];
+        })->all();
 
         return $data;
     }
