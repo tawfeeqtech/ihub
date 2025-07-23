@@ -19,12 +19,19 @@ class SettingController extends Controller
             return $this->apiResponse(null, __('messages.not_found'), 404);
         }
 
-        $lang = App::getLocale(); // <-- اللغة الحالية حسب Accept-Language
+        $lang = App::getLocale();
+        $value = $setting->value;
+        if (is_string($value)) {
+            $value = json_decode(stripslashes($value), true) ?? [];
+        }
 
-        $data = [
-            'key' => $setting->key,
-            'content' => $setting->value[$lang] ?? $setting->value['en'] ?? '', // <-- ترجمة ذكية
-        ];
+        $data = collect($value)->map(function ($item) use ($lang) {
+            return [
+                'key' => data_get($item, "key.{$lang}", data_get($item, 'key.en', 'غير متوفر')),
+                'description' => data_get($item, "value.{$lang}", data_get($item, 'value.en', 'غير متوفر')),
+            ];
+        })->all();
+
 
         return $this->apiResponse($data, __('messages.success'), 200);
     }

@@ -54,6 +54,8 @@ return [
     'UserResource.form.password.label' => 'password',
     'UserResource.form.relationshipWorkspace.label' => 'Associated Workspace',
 
+    'about' => 'About the app',
+    'terms' => 'Terms and Conditions',
 
     'governorate' => 'governorate',
     'governorates' => 'Governorates',

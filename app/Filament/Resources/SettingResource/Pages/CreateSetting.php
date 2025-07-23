@@ -10,6 +10,18 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateSetting extends CreateRecord
 {
     protected static string $resource = SettingResource::class;
-    use TranslatableFormMutator;
-    protected array $translatableFields = ['value'];
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        $data['value'] = array_map(function ($item) {
+            $keyTranslations = collect($item['key_translations'])->pluck('value', 'locale')->all();
+            $valueTranslations = collect($item['value_translations'])->pluck('value', 'locale')->all();
+            return [
+                'key' => $keyTranslations,
+                'value' => $valueTranslations,
+            ];
+        }, $data['value']);
+
+        $data['value'] = json_encode($data['value'], JSON_UNESCAPED_UNICODE);
+        return $data;
+    }
 }

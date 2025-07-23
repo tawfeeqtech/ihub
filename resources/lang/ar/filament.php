@@ -79,6 +79,8 @@ return [
     'WorkspaceResource.form.features.label' => 'مميزات المساحة',
     'WorkspaceResource.form.features.addActionLabel' => 'أضف ميزة',
 
+    'about' => 'حول التطبيق',
+    'terms' => 'الشروط والأحكام',
 
     'WorkspaceResource.table.name' => 'الاسم',
     'WorkspaceResource.table.location' => 'العنوان',

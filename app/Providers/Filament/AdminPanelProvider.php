@@ -32,6 +32,7 @@ use App\Filament\Widgets\SecretaryBookingsChart;
 use App\Filament\Widgets\SecretaryConversationsActivityChart;
 use App\Filament\Widgets\SecretaryServiceRequestsByStatusChart;
 use App\Filament\Widgets\SecretaryServicesOverTimeChart;
+use App\Http\Middleware\SetAppLocaleFromHeader;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -82,6 +83,7 @@ class AdminPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                SetAppLocaleFromHeader::class
                 // \App\Http\Middleware\SyncUserLocaleWithFilament::class,
             ])
             ->databaseNotifications(true)

@@ -12,13 +12,11 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class SettingResource extends Resource
 {
-
     protected static ?string $model = Setting::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-adjustments-horizontal';
@@ -33,6 +31,7 @@ class SettingResource extends Resource
     {
         return __('filament.settings');
     }
+
     public static function getLabel(): ?string
     {
         return __('filament.setting');
@@ -47,16 +46,23 @@ class SettingResource extends Resource
     {
         return static::getModel()::count();
     }
+
     public static function getNavigationBadgeColor(): string | array | null
     {
         $count = static::getNavigationBadge();
-
         return $count > 0 ? 'primary' : 'gray';
     }
 
+    public static function canCreate(): bool
+    {
+        $used = Setting::pluck('key')->toArray();
+        $all = ['about', 'terms'];
+        return count(array_diff($all, $used)) > 0;
+    }
+
+
     public static function form(Form $form): Form
     {
-
         $languages = config('app.supported_locales', ['ar', 'en']);
 
         return $form
@@ -66,27 +72,55 @@ class SettingResource extends Resource
                     ->options([
                         'about' => 'حول التطبيق',
                         'terms' => 'الشروط والأحكام',
-                    ])
-                    ->required(),
+                    ])->required()
+                    ->unique(ignoreRecord: true)
+                    ->validationMessages([
+                        'unique' => 'هذا النوع من الإعدادات موجود بالفعل.',
+                    ]),
 
-                Forms\Components\Repeater::make('value_translations')
+                Forms\Components\Repeater::make('value')
                     ->label('المحتوى متعدد اللغات')
-                    ->addActionLabel('إضافة لغة')
+                    ->addActionLabel('إضافة عنصر')
                     ->schema([
-                        Forms\Components\Select::make('locale')
-                            ->label('اللغة')
-                            ->options($languages)
-                            ->required()->columnSpan('full'),
+                        Forms\Components\Repeater::make('key_translations')
+                            ->label('العنوان (النص الكبير الغامق)')
+                            ->schema([
+                                Forms\Components\Select::make('locale')
+                                    ->label('اللغة')
+                                    ->options(array_combine($languages, $languages))
+                                    ->required()
+                                    ->columnSpan(1),
+                                Forms\Components\TextInput::make('value')
+                                    ->label('النص')
+                                    ->required()
+                                    ->columnSpan(1),
+                            ])
+                            ->default([['locale' => 'ar', 'value' => '']])
+                            ->columns(2)
+                            ->grid(2)
+                            ->columnSpan('full'),
 
-                        Forms\Components\Textarea::make('value')
-                            ->label('المحتوى')
-                            ->columnSpan('full')
-                            ->required(),
+                        Forms\Components\Repeater::make('value_translations')
+                            ->label('الوصف (النص الصغير)')
+                            ->schema([
+                                Forms\Components\Select::make('locale')
+                                    ->label('اللغة')
+                                    ->options(array_combine($languages, $languages))
+                                    ->required()
+                                    ->columnSpan(1),
+                                Forms\Components\Textarea::make('value')
+                                    ->label('النص')
+                                    ->required()
+                                    ->columnSpan(1),
+                            ])
+                            ->default([['locale' => 'ar', 'value' => '']])
+                            ->columns(2)
+                            ->grid(2)
+                            ->columnSpan('full'),
                     ])
-                    ->default([
-                        ['locale' => 'ar', 'value' => ''],
-                    ])
-                    ->columns(2)->grid(2)
+                    ->default([['key_translations' => [['locale' => 'ar', 'value' => '']], 'value_translations' => [['locale' => 'ar', 'value' => '']]]])
+                    ->columns(1)
+                    ->grid(1)
                     ->columnSpan('full'),
             ]);
     }
@@ -96,19 +130,20 @@ class SettingResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('key')
-                    ->label('title'),
-
-                TextColumn::make('value')
-                    ->label('description')
+                    ->label('نوع المحتوى')
                     ->formatStateUsing(function ($state) {
-                        if (!is_array($state)) {
-                            return $state;
-                        }
-                        return collect($state)
-                            ->map(fn($val, $locale) => strtoupper($locale) . ": " . $val)
-                            ->implode(' | ');
-                    })->wrap()
-                    ->limit(80),
+                        return __('filament.' . $state);
+                    })->badge()
+                    ->color(fn ($state) => $state === 'about' ? 'info' : 'warning')
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('translated_name')
+                ->label('الوصف')
+                ->formatStateUsing(fn ($state) => Str::limit($state, 100, '...'))
+                ->html()
+                ->wrap()
+                ->description(fn ($record) => 'عدد العناصر: ' . $record->item_count),
             ])
             ->filters([
                 //
@@ -118,9 +153,9 @@ class SettingResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
+                Tables\Actions\DeleteBulkAction::make(),
+            ]),
+        ]);
     }
 
     public static function getRelations(): array
