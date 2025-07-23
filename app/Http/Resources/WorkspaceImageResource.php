@@ -14,6 +14,6 @@ class WorkspaceImageResource extends JsonResource
      */
     public function toArray(Request $request): string
     {
-        return asset($this->image);
+        return asset('storage/' .$this->image);
     }
 }
