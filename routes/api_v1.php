@@ -12,8 +12,8 @@ use App\Http\Controllers\API\V1\{
     PackageController,
     WorkspaceController,
     BookingController,
-    ConversationController,
-    MessageController,
+    // ConversationController,
+    // MessageController,
     ProfileController,
     ServiceController,
     ServiceRequestController,
@@ -71,11 +71,11 @@ Route::prefix('v1')->group(function () {
         Route::post('/bookings/{booking}/service-requests', [ServiceRequestController::class, 'store']);
 
 
-        Route::post('/conversations', [ConversationController::class, 'store']);
-        Route::get('/conversations', [ConversationController::class, 'index']);
-        Route::delete('/conversations/{id}', [ConversationController::class, 'destroy']);
-        Route::get('/conversations/{conversation}/messages', [MessageController::class, 'index']);
-        Route::post('/conversations/{conversation}/messages', [MessageController::class, 'store']);
+        // Route::post('/conversations', [ConversationController::class, 'store']);
+        // Route::get('/conversations', [ConversationController::class, 'index']);
+        // Route::delete('/conversations/{id}', [ConversationController::class, 'destroy']);
+        // Route::get('/conversations/{conversation}/messages', [MessageController::class, 'index']);
+        // Route::post('/conversations/{conversation}/messages', [MessageController::class, 'store']);
 
         // Route::get('/notifications', fn(Request $r) => $r->user()->notifications()->latest()->get());
         // Route::patch('/notifications/mark-all-read', fn(Request $r) => tap($r->user()->unreadNotifications)->markAsRead());
