@@ -20,8 +20,10 @@ use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Hidden;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\FileUpload;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Builder;
 
 class WorkspaceResource extends Resource
 {
@@ -50,13 +52,25 @@ class WorkspaceResource extends Resource
         if (FilamentAccess::isAdmin()) {
             return static::getModel()::count();
         }
-        return static::getModel()::where('id', auth()->user()->workspace_id)->count();
+        if (FilamentAccess::isSecretary()) {
+            return static::getModel()::where('id', Auth::user()->workspace_id)->count();
+        }
+
+        return '0';
     }
     public static function getNavigationBadgeColor(): string | array | null
     {
         $count = static::getNavigationBadge();
 
         return $count > 0 ? 'primary' : 'gray';
+    }
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        if (FilamentAccess::isSecretary()) {
+            return $query->where('id', Auth::user()->workspace_id);
+        }
+        return $query;
     }
 
     public static function canCreate(): bool
@@ -198,21 +212,6 @@ class WorkspaceResource extends Resource
                         ]),
                     ]),
 
-
-                // Repeater::make('features')
-                //     ->schema([
-                //         TextInput::make('value')
-                //             ->label(__('filament.WorkspaceResource.form.features.value.label'))
-                //             ->required()->columnSpan('full'),
-                //     ])
-                //     ->label(__('filament.WorkspaceResource.form.features.label'))
-                //     ->addActionLabel(__('filament.WorkspaceResource.form.features.addActionLabel'))
-                //     ->default([])
-                //     ->columns(4)
-                //     ->grid(4)
-                //     ->columnSpan('full')
-                //     ->itemLabel(null),
-
                 Repeater::make('features')
                 ->label(__('filament.WorkspaceResource.form.features.label'))
                 ->addActionLabel(__('filament.WorkspaceResource.form.features.addActionLabel'))
@@ -259,8 +258,14 @@ class WorkspaceResource extends Resource
 
     public static function table(Table $table): Table
     {
-        $currentLocale = auth()->user()?->current_locale;
+        $currentLocale = Auth::user()?->current_locale;
+        $query = static::getModel()::query();
+
+        if (!FilamentAccess::isAdmin() && FilamentAccess::isSecretary()) {
+            $query->where('id', Auth::user()->workspace_id);
+        }
         return $table
+            ->query($query)
             ->columns([
                 Tables\Columns\TextColumn::make('name.' . $currentLocale)->label(__('filament.WorkspaceResource.table.name'))->searchable(),
 

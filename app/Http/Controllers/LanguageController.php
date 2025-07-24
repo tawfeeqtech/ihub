@@ -21,9 +21,9 @@ class LanguageController extends Controller
         // تحديث اللغة في قاعدة البيانات إذا المستخدم مسجل دخوله
         if (Auth::check()) {
             $user = Auth::user();
-            Log::info('before: ' . $user->locale);
+            // Log::info('before: ' . $user->locale);
             $user->locale = $locale;
-            Log::info('after:' . $user->locale);
+            // Log::info('after:' . $user->locale);
             $user->save();
         }
 
