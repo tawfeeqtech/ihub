@@ -33,6 +33,7 @@ use App\Filament\Widgets\SecretaryConversationsActivityChart;
 use App\Filament\Widgets\SecretaryServiceRequestsByStatusChart;
 use App\Filament\Widgets\SecretaryServicesOverTimeChart;
 use App\Http\Middleware\SetAppLocaleFromHeader;
+use Filament\Navigation\NavigationItem;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -45,6 +46,14 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->colors([
                 'primary' => Color::Hex('#4CAF50'), // لون أخضر فاتح (يمكن تغييره حسب الذوق)
+            ])
+           ->navigationItems([
+                NavigationItem::make('الانتقال إلى الموقع')
+                    // استخدم url('/') بدلاً من route('home')
+                    ->url(url('/'), shouldOpenInNewTab: true)
+                    ->icon('heroicon-o-globe-alt')
+                    ->group('Links')
+                    ->sort(-1),
             ])
 
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')

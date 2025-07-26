@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__ . '/../routes/console.php',
         channels: __DIR__ . '/../routes/channels.php',
         api: [
+            __DIR__ . '/../routes/api.php',
             __DIR__ . '/../routes/api_v1.php',
             // __DIR__ . '/../routes/api_v2.php',
         ],
@@ -23,6 +24,9 @@ return Application::configure(basePath: dirname(__DIR__))
 
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->append(\App\Http\Middleware\SetAppLocaleFromHeader::class);
+        $middleware->web(append: [
+            \App\Http\Middleware\SetLocale::class,
+        ]);
         // $middleware->web([\App\Http\Middleware\SyncUserLocaleWithFilament::class]);
         // $middleware->web(append: [
         //     SetAppLocale::class,

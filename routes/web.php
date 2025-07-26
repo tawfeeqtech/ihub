@@ -1,14 +1,24 @@
 <?php
 
-// use App\Http\Controllers\Api\V1\DeviceTokenController;
-use App\Http\Controllers\WorkspaceImageController;
+
+use App\Http\Controllers\WorkspaceController;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Session;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+Route::get('/', [WorkspaceController::class, 'index'])->name('home');
+Route::get('/workspaces', [WorkspaceController::class, 'workspaces'])->name('workspaces');
+Route::get('/workspaces/{workspace}', [WorkspaceController::class, 'show'])->name('workspaces.show');
+
+Route::get('language/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'ar'])) {
+        Session::put('locale', $locale);
+    }
+    return redirect()->back();
+})->name('language.switcher');
 
 // Route::get('/check', function () {
 //     $filePath = 'test.txt';
@@ -24,17 +34,17 @@ Broadcast::routes(['middleware' => ['web', 'auth']]);
 // Broadcast::routes(); // تم إزالة الـ middleware بشكل كامل مؤقتاً
 Route::get('select-language/{code}', [App\Http\Controllers\LanguageController::class, 'changeLanguage'])->name('translation-manager.switch');
 
-Route::middleware(['auth'])->group(function () {
-    // Route::post('/store-token', [DeviceTokenController::class, 'store']);
+// Route::middleware(['auth'])->group(function () {
+//     // Route::post('/store-token', [DeviceTokenController::class, 'store']);
 
 
-    Route::get('/admin/workspaces/{workspace}/upload-images', [WorkspaceImageController::class, 'create'])
-        ->name('admin.upload-images.create');
-    Route::post('/admin/workspaces/{workspace}/upload-images', [WorkspaceImageController::class, 'store'])
-        ->name('admin.upload-images.store');
-    Route::delete('/admin/workspaces/images/{image}', [WorkspaceImageController::class, 'destroy'])
-        ->name('admin.workspace-images.destroy');
-});
+//     Route::get('/admin/workspaces/{workspace}/upload-images', [WorkspaceImageController::class, 'create'])
+//         ->name('admin.upload-images.create');
+//     Route::post('/admin/workspaces/{workspace}/upload-images', [WorkspaceImageController::class, 'store'])
+//         ->name('admin.upload-images.store');
+//     Route::delete('/admin/workspaces/images/{image}', [WorkspaceImageController::class, 'destroy'])
+//         ->name('admin.workspace-images.destroy');
+// });
 
 // Route::get('/test-firebase', function () {
 //     try {
@@ -58,19 +68,19 @@ Route::middleware(['auth'])->group(function () {
 //     }
 // });
 
-Route::get('/test-firebase', function () {
-    try {
-        $filePath = base_path() . '/storage/app/firebase/firebase-credentials.json';
-        if (!file_exists($filePath)) {
-            return response()->json(['error' => 'File does not exist at: ' . $filePath], 500);
-        }
-        if (!is_readable($filePath)) {
-            return response()->json(['error' => 'File is not readable at: ' . $filePath], 500);
-        }
-        $factory = (new \Kreait\Firebase\Factory())->withServiceAccount($filePath);
-        $messaging = $factory->createMessaging(); // Use createMessaging() instead of create()
-        return response()->json(['message' => 'Firebase initialized successfully', 'ss' => $messaging]);
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()], 500);
-    }
-});
+// Route::get('/test-firebase', function () {
+//     try {
+//         $filePath = base_path() . '/storage/app/firebase/firebase-credentials.json';
+//         if (!file_exists($filePath)) {
+//             return response()->json(['error' => 'File does not exist at: ' . $filePath], 500);
+//         }
+//         if (!is_readable($filePath)) {
+//             return response()->json(['error' => 'File is not readable at: ' . $filePath], 500);
+//         }
+//         $factory = (new \Kreait\Firebase\Factory())->withServiceAccount($filePath);
+//         $messaging = $factory->createMessaging(); // Use createMessaging() instead of create()
+//         return response()->json(['message' => 'Firebase initialized successfully', 'ss' => $messaging]);
+//     } catch (\Exception $e) {
+//         return response()->json(['error' => $e->getMessage()], 500);
+//     }
+// });

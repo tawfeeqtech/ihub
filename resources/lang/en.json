@@ -1,5 +1,70 @@
 {
-  "Welcome": "Welcome",
-  "Login": "Login successful",
-  "User not found": "User not found"
+    "Home": "Home",
+    "Workspaces": "Workspaces",
+    "Discover Your Perfect Workspace": "Discover Your Perfect Workspace",
+    "Discover Your Perfect Workspace description": "Manage your time across various workspaces, explore different types, and discover your reasons. This app lists Gaza’s workspaces, their services, and manages reservations and full processes.",
+    "Explore Workspaces": "Explore Workspaces",
+    "Workspace Name": "Workspace Name",
+    "Governorate": "Governorate",
+    "Find the Perfect Space": "Find the Perfect Space",
+    "Find the Perfect section-header": "Use our advanced filter to pinpoint the workspace that matches your exact needs.",
+    "Select Governorate": "Select Governorate",
+    "Region": "Region",
+    "filter-group name": "Workspace Name, e.g., GhayaHub",
+    "Select Region": "Select Region",
+    "Free Workspace": "Free Workspace",
+    "Evening Shift": "Evening Shift",
+    "Bank Payment Supported": "Bank Payment Supported",
+    "Search": "Search",
+    "Manage workspaces on the go": "Manage workspaces on the go",
+    "Latest Workspaces": "Latest Workspaces",
+    "Download Our App": "Download Our App",
+    "Get the app from your favorite store": "Get the app from your favorite store",
+    "&copy; 2025 Your Company. All rights reserved.": "&copy; 2025 Your Company. All rights reserved.",
+    "Find Your Workspace": "Find Your Workspace",
+    "No workspaces found.": "No workspaces found.",
+    "Description": "Description",
+    "Location": "Location",
+    "Features": "Features",
+    "No images available.": "No images available.",
+    "View More": "View More",
+    "Our Amazing Features": "Our Amazing Features",
+    "Manage Workspaces": "Manage Workspaces",
+    "Manage Workspaces description": "The app lets users discover diverse workspaces, view available services, and pick what best fits their personal or team needs.",
+    "Time Management and Organization": "Time Management and Organization",
+    "Time Management and Organization description": "The app helps users manage their time in the workspace by tracking when they start, how much is left, and planning efficiently.",
+
+    "Easily Meeting Needs": "Easily Meeting Needs",
+    "Easily Meeting Needs description": "The app lets users easily request available workspace services, ensuring fast, smooth, and convenient responses every time.",
+
+    "Package Discovery": "Package Discovery",
+    "Package Discovery description": "Users can explore packages in each workspace, check hours and pricing, then book the one that best fits their needs easily.",
+
+    "Workspace Management": "Workspace Management",
+    "Workspace Management description": "For workspace admins, I Hubs offers smooth management via a dashboard that makes controlling and tracking operations simple.",
+
+    "An Ideal Operating System": "An Ideal Operating System",
+    "An Ideal Operating System description": "I Hubs workspaces feature strong organization and efficient management, creating a professional image that attracts more clients.",
+
+    "Our Vision": "Our Vision",
+    "Vision": "Vision",
+
+    "Smarter Workspaces. Better Productivity": "Smarter Workspaces. Better Productivity",
+    "Our Vision description1": "Empowering Workspaces, Redefining Productivity At I Hubs, our vision is to transform how people experience and interact with shared workspaces. We believe in building a smart and seamless system that allows users to explore available workspaces, manage their time well.",
+    "Our Vision description2": "This efficiency extends to accessing services effortlessly. We provide tools for users and workspace providers, ensuring they stay organized, make informed decisions, and enjoy productive environments. Intuitive service access and clear package info are key.",
+    "Learn More About Our Mission": "Learn More About Our Mission",
+
+    "About Us": "About Us",
+    "Who We Are: Innovators at Heart": "Who We Are: Innovators at Heart",
+    "About Us description1": "I Hubs is a smart workspace management platform designed to enhance the coworking experience for both users and space providers. We connect people with the right workspaces by offering real-time insights into available spaces, services, packages, and time management tools — all in one place.",
+    "About Us description2": "Our platform makes it easy for users to find, book, and manage their workspace needs with efficiency and clarity. At the same time, we empower workspace owners with a powerful dashboard to manage bookings, services, and customer engagement effortlessly.",
+
+    "Our Mission": "Our Mission",
+    "Our Mission description": "At I Hubs, we believe that productivity starts with a well-organized environment — and we’re here to make that experience seamless, smart, and accessible for everyone.",
+    "Meet Our Team": "Meet Our Team",
+    "Powerd by": "Powerd by",
+
+
+    "Explore and manage workspaces with ease" : "Explore and manage workspaces with ease"
+
 }

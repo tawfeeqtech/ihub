@@ -17,15 +17,24 @@ class SetLocale
      */
     public function handle(Request $request, Closure $next)
     {
-        // $locale = Session::get('locale', config('app.locale'));
-        // if (in_array($locale, config('app.available_locales', ['en']))) {
-        //     App::setLocale($locale);
-        // }
 
-        $locale = $request->user() ? $request->user()->locale : Session::get('locale', config('app.locale'));
-        if (in_array($locale, config('app.available_locales', ['en']))) {
+        $locale = null;
+
+        // 1. الأولوية الأولى: التحقق من وجود لغة في الـ Session
+        if (Session::has('locale')) {
+            $locale = Session::get('locale');
+        }
+        elseif ($request->user()) {
+            $locale = $request->user()->locale;
+
+        }
+
+        // إذا لم يتم تحديد لغة، استخدم اللغة الافتراضية من ملف الإعدادات
+        $locale = $locale ?: config('app.locale');
+
+        // تحقق من أن اللغة مدعومة قبل تعيينها
+        if (in_array($locale, config('app.available_locales', ['en', 'ar']))) {
             App::setLocale($locale);
-            Log::info('SetLocale: ' . $locale);
         }
 
         return $next($request);

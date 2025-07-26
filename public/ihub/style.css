@@ -1,0 +1,1467 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+.container {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+
+p {
+  font-size: 1.25rem;
+  opacity: 0.9;
+  margin-bottom: 2rem;
+  color: rgb(214, 214, 214);
+}
+
+/* ================== navbar Section ================== */
+
+/*=============================================
+=            Language Switcher Styles         =
+=============================================*/
+
+/* This new container helps group elements on the right side */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* Space between switcher and hamburger icon */
+}
+
+.language-switcher {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* 8px */
+  background-color: #f1f3f5;
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+}
+
+/* Styling for the links (inactive languages) */
+.language-switcher a {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #868e96;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.language-switcher a:hover {
+  color: #2d6c5b;
+}
+
+/* Styling for the span (active language) */
+.language-switcher span {
+  font-size: 0.9rem;
+  font-weight: 700; /* Bold */
+  color: #2d6c5b; /* Main brand color */
+  cursor: default;
+}
+
+/* A small vertical line to separate the languages */
+.lang-separator {
+  width: 1px;
+  height: 14px;
+  background-color: #dee2e6;
+}
+
+
+/*=============================================
+=            Mobile Adjustments               =
+=============================================*/
+
+@media (max-width: 768px) {
+  /* On mobile, reduce the gap next to the hamburger icon */
+  .nav-right {
+    gap: 0.5rem;
+  }
+
+  /* You can optionally hide the switcher on very small screens if needed */
+  /*
+  @media (max-width: 360px) {
+    .language-switcher {
+      display: none;
+    }
+  }
+  */
+}
+
+.navbar {
+  padding: 20px;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.8); /* Added transparency for better blur effect */
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* .container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+} */
+
+.nav-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo img {
+  width: 70px;
+  height: 40px;
+}
+
+/* Navigation Links */
+.nav-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-links a {
+  color: #6b6b6b;
+  text-decoration: none;
+  font-weight: 500;
+  position: relative;
+  padding: 5px 0;
+  transition: color 0.3s ease, width 0.3s ease;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0%;
+  height: 2px;
+  background-color: #2d6c5b;
+  transition: width 0.3s ease-in-out;
+}
+
+.nav-links a:hover {
+  color: #2d6c5b;
+}
+
+.nav-links a:hover::after,
+.nav-links a.active::after {
+  width: 100%;
+}
+
+/* Menu Toggle (Hamburger Icon) */
+.menu-toggle {
+  display: none; /* Hidden by default on large screens */
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  z-index: 1001;
+}
+
+.menu-toggle span {
+  display: block;
+  width: 25px;
+  height: 3px;
+  background-color: #2d6c5b; /* Use background-color */
+  margin: 5px 0;
+  transition: all 0.3s ease-in-out;
+}
+
+/* --- Responsive Styles for Mobile --- */
+/* --- Responsive Styles for Mobile (New Design) --- */
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: block;
+  }
+
+  /* Animate Hamburger to 'X' */
+  .menu-toggle.active span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+  .menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+  }
+  .menu-toggle.active span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
+
+  .nav-links {
+    position: absolute;
+    top: 85px; /* Adjust based on your navbar height */
+    left: 0;
+    width: 100%;
+
+    /* New Design Styles */
+    background-color: #ffffff;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    border-radius: 0 0 10px 10px;
+
+    /* Animation: Make it slide down smoothly */
+    display: flex; /* Required for transform to work */
+    flex-direction: column;
+    align-items: center;
+
+    opacity: 0;
+    transform: translateY(-10px);
+    visibility: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+  }
+
+  .nav-links.active {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+  }
+
+  .nav-links a {
+    width: 100%;
+    padding: 1.2rem 1.5rem;
+    text-align: center;
+    font-size: 1rem;
+    color: #495057;
+    border-bottom: 1px solid #f1f3f5; /* Subtle separator */
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  /* Remove border from the last link */
+  .nav-links a:last-child {
+    border-bottom: none;
+  }
+
+  /* On mobile, we don't need the underline animation */
+  .nav-links a::after {
+    display: none;
+  }
+
+  /* New hover effect for links */
+  .nav-links a:hover {
+    background-color: #f8f9fa; /* Light gray background on hover */
+    color: #2d6c5b; /* Main brand color for text on hover */
+  }
+}
+/* Styling for the new "Explore Workspaces" button */
+.hero-cta-container {
+  margin-top: 2rem;
+}
+
+.cta-button {
+  display: inline-block; /* Allows padding and margins */
+  background-color: #ffffff;
+  color: #2d6c5b;
+  padding: 0.9rem 2rem;
+  border-radius: 9999px; /* Pill shape */
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 700;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cta-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+
+
+
+/*==========================================================
+=            hero Section            =
+==========================================================*/
+.hero {
+    background: linear-gradient(135deg, #215245 0%, #2d6c5b 100%);
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 2rem 0;
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("Image/modern-office-interior.jpg");
+    background-size: cover;
+    background-position: center;
+    opacity: 0.15;
+    z-index: 0;
+}
+
+.hero > * {
+    position: relative;
+    z-index: 1;
+}
+
+h1 {
+  width: 500px;
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+.hero-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.hero-text {
+  color: white;
+}
+
+
+.oval-wrapper {
+  margin-top: 100px;
+  position: relative;
+  width: 500px;
+  padding-top: 140%;
+  margin-left: 50px;
+}
+
+.star-ring {
+  position: absolute;
+  inset: -40px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50% / 35%;
+}
+
+.star {
+  position: absolute;
+  color: rgba(255, 255, 255, 0.15);
+  font-size: 1.25rem;
+}
+
+.star:nth-child(1) {
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.star:nth-child(2) {
+  top: 25%;
+  right: 10%;
+}
+.star:nth-child(3) {
+  top: 50%;
+  right: 2%;
+  transform: translateY(-50%);
+}
+.star:nth-child(4) {
+  bottom: 25%;
+  right: 10%;
+}
+.star:nth-child(5) {
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.star:nth-child(6) {
+  bottom: 25%;
+  left: 10%;
+}
+.star:nth-child(7) {
+  top: 50%;
+  left: 2%;
+  transform: translateY(-50%);
+}
+.star:nth-child(8) {
+  top: 25%;
+  left: 10%;
+}
+
+.oval-container {
+    position: absolute;
+    inset: 0;
+    border-radius: 50% / 35%;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.oval-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+@media (max-width: 1024px) {
+h1 {
+  font-size: 3rem;
+}
+
+.hero-content {
+  gap: 3rem;
+}
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+.hero-content {
+  grid-template-columns: 1fr;
+  text-align: center;
+}
+
+.hero-text {
+  order: 1;
+}
+
+
+
+h1 {
+  font-size: 2.5rem;
+}
+
+.oval-wrapper {
+  padding-top: 120%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+}
+
+
+
+/*==========================================================
+=            Styling for the New Filter Section            =
+==========================================================*/
+.filter-section {
+  background-color: #f8f9fa; /* Light gray background */
+  padding: 5rem 0;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.section-header h2 {
+  font-size: 2.5rem;
+  color: #1a4a40;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.section-header p {
+  font-size: 1.1rem;
+  color: #6c757d;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Re-styling the filter form for a light background */
+.workspace-filter-form .filter-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr) auto;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.workspace-filter-form .filter-group input,
+.workspace-filter-form .filter-group select {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.workspace-filter-form .filter-group input:focus,
+.workspace-filter-form .filter-group select:focus {
+  outline: none;
+  border-color: #2d6c5b;
+  box-shadow: 0 0 0 4px rgba(45, 108, 91, 0.15);
+}
+
+.workspace-filter-form .search-button {
+  background-color: #2d6c5b;
+  color: white;
+  height: 60px;
+  width: 60px;
+  border-radius: 8px;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.workspace-filter-form .search-button:hover {
+    background-color: #1a4a40;
+}
+
+.workspace-filter-form .checkbox-grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.workspace-filter-form .checkbox-group label {
+  color: #343a40;
+  font-weight: 500;
+}
+
+/* Responsive adjustments for the new filter section */
+@media (max-width: 992px) {
+  .workspace-filter-form .filter-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .workspace-filter-form .search-button {
+    grid-column: 1 / -1; /* Full width */
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .workspace-filter-form .filter-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ================== Features Section ================== */
+
+.features-section {
+background-color: #ffffff; /* خلفية بيضاء للقسم */
+padding: 80px 0; /* مساحة داخلية علوية وسفلية */
+/* min-height: 100vh; */ /* لضمان أن يأخذ القسم مساحة كافية في الشاشة */
+}
+
+.features-section {
+  background-color: #ffffff; /* الخلفية البيضاء الأساسية للقسم */
+  padding: 80px 0;
+position: relative; /* ضروري لتحديد موضع العناصر الفرعية بشكل صحيح إذا استخدمنا pseudo-elements لاحقًا، وجيد للخلفيات المعقدة */
+overflow: hidden; /* لمنع أي عناصر SVG قد تمتد خارج الحدود من التسبب في ظهور شريط تمرير */
+
+/* أيقونات SVG زخرفية للخلفية */
+/* SVG 1: نمط دوائر */
+/* SVG 2: نمط علامات زائد */
+/* SVG 3: نمط نقاط/أشكال مجردة */
+  background-image: url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><g fill="%23EAF1EF"><circle cx="20" cy="20" r="15"/><circle cx="60" cy="30" r="8"/><circle cx="35" cy="70" r="18"/></g></svg>'),
+  url('data:image/svg+xml;utf8,<svg width="80" height="80" xmlns="http://www.w3.org/2000/svg"><g stroke="%23DCE6E3" stroke-width="2.5"><path d="M15 30h20M25 20v20"/><path d="M50 55h15M57.5 47.5v15"/></g></svg>'),
+  url('data:image/svg+xml;utf8,<svg width="120" height="120" xmlns="http://www.w3.org/2000/svg"><g fill="%23F0F5F4"><ellipse cx="25" cy="35" rx="8" ry="12"/><ellipse cx="70" cy="60" rx="18" ry="10"/><ellipse cx="45" cy="95" rx="15" ry="9"/></g></svg>');
+
+  background-repeat: no-repeat, no-repeat, no-repeat;
+
+  background-position:
+      /* SVG 1 Positions: (يمكنك تعديل هذه القيم لتناسب تصميمك) */ top
+  60px left 5%,
+  /* نسخة أولى من نمط الدوائر */ /* SVG 2 Positions: */ top 20% right 5%,
+  /* نسخة أولى من نمط علامات الزائد */ /* SVG 3 Positions: */ bottom 30% left
+    20%; /* نسخة أولى من نمط النقاط */
+/* يمكنك إضافة المزيد من المواقع لكل SVG إذا أردت تكرارها بشكل مخصص */
+/* مثال: top 60px left 5%, top 70% right 10%, ... */
+
+background-size: 90px auto, /* حجم نمط الدوائر */ 70px auto,
+  /* حجم نمط علامات الزائد */ 100px auto; /* حجم نمط النقاط */
+}
+
+.section-title {
+  text-align: center;
+font-size: 2.8rem; /* حجم خط عنوان القسم */
+  font-weight: 700;
+color: #2d6c5b; /* لون داكن ليتناسب مع الخلفية البيضاء */
+margin-bottom: 4rem; /* مسافة أسفل العنوان */
+padding-top: 20px; /* مسافة إضافية لتجنب التداخل مع شريط التنقل الثابت عند الانتقال المباشر */
+}
+
+.features-content {
+  display: grid;
+grid-template-columns: 0.8fr 1.2fr; /* العمود الأيسر أصغر للموكاب، والأيمن أكبر للميزات */
+gap: 4rem; /* المسافة بين عمود الموكاب وقائمة الميزات */
+align-items: center; /* محاذاة العناصر في المنتصف عمودياً */
+}
+
+.features-mockup {
+
+display: flex;
+justify-content: center; /* توسيط الموكاب أفقياً */
+align-items: center; /* توسيط الموكاب عمودياً */
+}
+
+.features-mockup img {
+max-width: 100%; /* لضمان أن الصورة لا تتجاوز عرض حاويتها */
+height: auto;
+border-radius: 25px; /* حواف دائرية اختيارية للموكاب */
+box-shadow: 0 15px 35px rgba(0, 0, 0, 0.085); /* ظل خفيف لإعطاء عمق */
+}
+
+.features-list {
+display: grid;
+/* تقسيم الميزات إلى عمودين لتوزيع أفضل للـ 6 ميزات */
+grid-template-columns: repeat(2, 1fr);
+gap: 2.5rem; /* المسافة بين عناصر الميزات */
+}
+
+.feature-item {
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.085); /* ظل خفيف لإعطاء عمق */
+display: flex; /* Use flexbox for layout */
+align-items: flex-start; /* Align items to the top */
+gap: 1.25rem; /* Space between icon container and text content */
+padding: 1.5rem; /* مساحة داخلية لكل ميزة */
+border-radius: 12px; /* حواف دائرية لعناصر الميزات */
+background-color: #f9f9f9; /* خلفية فاتحة جداً لتمييز العناصر قليلاً */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-item:hover {
+transform: translateY(-5px);
+box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+}
+
+.feature-icon-container {
+/* This container helps in case you want to add background or specific sizing to the icon area */
+/* For now, it mainly serves as a flex item */
+}
+
+.feature-icon {
+font-size: 1.8rem; /* Adjust size of the icon */
+color: #686868; /* Icon color - using your theme color */
+margin-top: 0.1em; /* Small top margin for better visual alignment with the first line of title */
+flex-shrink: 0; /* Prevents the icon from shrinking if text is long */
+}
+
+.feature-item i :hover {
+  color: #2d6c5b;
+}
+
+.feature-text-content {
+flex-grow: 1; /* Allows the text content to take up remaining space */
+}
+
+.feature-text-content h3 {
+font-size: 1.4rem; /* حجم عنوان الميزة */
+font-weight: 600;
+color: #2d6c5b; /* استخدام لون من ألوان هويتك البصرية */
+margin-bottom: 0.75rem; /* مسافة أسفل عنوان الميزة */
+}
+
+.feature-text-content p {
+font-size: 0.9rem; /* خط أصغر للوصف */
+color: #555555; /* لون أفتح للوصف */
+line-height: 1.6; /* ارتفاع سطر مناسب للقراءة */
+margin-bottom: 0; /* إزالة أي هامش سفلي افتراضي للفقرة */
+}
+
+/* الفقرات داخل قسم الميزات فقط - تأكيد على أن هذا النمط يطبق */
+.features-section .feature-text-content p {
+font-size: 0.9rem;
+color: #555555;
+opacity: 1;
+margin-bottom: 0;
+}
+
+/* ================== تعديلات الاستجابة لقسم الميزات ================== */
+@media (max-width: 1024px) {
+.features-content {
+  grid-template-columns: 1fr; /* عرض الموكاب والميزات في عمود واحد */
+  gap: 3rem;
+  text-align: center; /* توسيط النصوص في هذا العرض */
+}
+
+.features-mockup {
+  order: -1; /* جعل الموكاب يظهر أولاً */
+  margin-bottom: 2.5rem; /* مسافة أسفل الموكاب */
+}
+
+.features-mockup img {
+  max-width: 380px; /* تعديل حجم الموكاب ليناسب الشاشات الأصغر */
+}
+
+.features-list {
+  grid-template-columns: repeat(
+  2,
+  1fr
+  ); /* الحفاظ على عمودين للميزات إذا كان العرض يسمح */
+  gap: 2rem;
+}
+.feature-item {
+  /* إذا تم توسيط المحتوى العام للـ features-content، قد تحتاج لضمان محاذاة النص لليسار داخل كل feature-item */
+  text-align: left;
+  }
+}
+
+@media (max-width: 768px) {
+.section-title {
+  font-size: 2.2rem;
+  margin-bottom: 3rem;
+}
+.features-list {
+  grid-template-columns: 1fr; /* عمود واحد للميزات في الشاشات الصغيرة */
+  gap: 1.5rem;
+}
+.feature-text-content h3 {
+  /* تم تغيير المسمى من .feature-item h3 */
+  font-size: 1.25rem;
+}
+.feature-text-content p {
+  /* تم تغيير المسمى من .feature-item p */
+  font-size: 0.85rem;
+}
+.features-mockup img {
+  max-width: 320px;
+}
+}
+
+@media (max-width: 480px) {
+.features-section {
+  padding: 60px 0;
+}
+.features-mockup img {
+  max-width: 280px;
+}
+.feature-item {
+  padding: 1.2rem;
+  /* Optional: if you want icon and text to stack on very small screens */
+  /* flex-direction: column;
+      align-items: center;
+      text-align: center; */
+}
+.feature-icon {
+  font-size: 1.6rem; /* Slightly smaller icons on very small screens */
+}
+/* .feature-icon-container {
+      margin-bottom: 0.75rem; /* Space below icon if stacked */
+/* } */
+.feature-text-content h3 {
+  /* تم تغيير المسمى من .feature-item h3 */
+  font-size: 1.15rem;
+}
+}
+
+
+/* ================== Vision Section ================== */
+.vision-section {
+background-color: #ffffff; /* خلفية بيضاء نقية */
+padding: 100px 0;
+position: relative;
+overflow: hidden; /* لإخفاء أي عناصر تتجاوز الحدود وللسماح بالـ SVGs خارج الحدود */
+color: #333333; /* لون نص أساسي */
+}
+
+/* Background SVGs for Vision Section */
+.vision-section {
+background-image:
+  /* SVG 1: دوائر متقطعة / نقاط بسيطة - لون فاتح جداً */
+  url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><g fill="%23f7fbf9" opacity="0.8"><circle cx="10" cy="10" r="5"/><circle cx="50" cy="50" r="8"/><circle cx="90" cy="90" r="5"/><circle cx="10" cy="90" r="6"/><circle cx="90" cy="10" r="7"/></g></svg>'),
+  /* SVG 2: شكل سهم / مثلث مجرد - لون فاتح جداً */
+  url('data:image/svg+xml;utf8,<svg width="80" height="80" xmlns="http://www.w3.org/2000/svg"><polygon points="10 40, 70 10, 70 70" fill="%23eef7f5" opacity="0.6"/></svg>'),
+  /* SVG 3: خطوط منحنية / مموجة بسيطة - لون فاتح جداً */
+  url('data:image/svg+xml;utf8,<svg width="120" height="120" xmlns="http://www.w3.org/2000/svg"><path d="M10 60 C30 20, 90 20, 110 60 S90 100, 10 60" stroke="%23e2f0ed" stroke-width="2" fill="none" opacity="0.7"/></svg>');
+
+background-repeat: no-repeat, no-repeat, no-repeat; /* عدم تكرار الـ SVGs */
+background-position:
+  top 5% left 15%,     /* موقع SVG 1: دوائر */
+  bottom 10% right 8%, /* موقع SVG 2: سهم */
+  top 30% right 2%;    /* موقع SVG 3: خطوط منحنية */
+
+background-size:
+  90px auto,  /* حجم SVG 1 */
+  70px auto,  /* حجم SVG 2 */
+  110px auto; /* حجم SVG 3 */
+
+animation: floatBackgroundSVGs 60s linear infinite alternate; /* حركة خفيفة للخلفية */
+}
+
+/* Keyframe Animation for Background SVGs */
+@keyframes floatBackgroundSVGs {
+0% {
+  background-position:
+    top 5% left 15%,
+    bottom 10% right 8%,
+    top 30% right 2%;
+}
+100% {
+  background-position:
+    top 7% left 17%,
+    bottom 8% right 10%,
+    top 32% right 0%;
+}
+}
+
+.vision-content {
+display: grid;
+grid-template-columns: 1fr 1.3fr; /* عمود للنص وعمود أكبر للصور */
+gap: 5rem; /* مسافة كبيرة بين النص والصور */
+align-items: center; /* محاذاة رأسية للعناصر */
+}
+
+.vision-text-block {
+padding: 20px; /* بادينج داخلي للنص */
+animation: fadeInRight 1s ease-out forwards; /* انيميشن عند التحميل */
+}
+
+.vision-text-block h3 {
+font-size: 2.8rem; /* عنوان كبير وجذاب */
+font-weight: 800; /* سميك جداً */
+color: #1e5a4d; /* لون أخضر داكن من اللوحة */
+margin-bottom: 1.5rem;
+line-height: 1.2; /* مسافة أسطر مريحة للعنوان */
+}
+
+.vision-text-block p {
+font-size: 1.15rem; /* حجم نص مناسب للقراءة */
+line-height: 1.8; /* مسافة أسطر مريحة */
+color: #555555;
+margin-bottom: 1.2rem;
+}
+
+
+
+
+/* Primary Button Styling */
+.btn-primary {
+display: inline-block; /* ليتصرف كبلوك لكن يحافظ على عرض محتواه */
+background-color: #2d6c5b; /* لون ذهبي بارز */
+color: #fff; /* لون النص الأخضر الداكن */
+padding: 15px 30px;
+border-radius: 50px; /* زر دائري الحواف */
+text-decoration: none; /* إزالة خط تحت النص */
+font-weight: 600;
+font-size: 1.05rem;
+transition: all 0.3s ease; /* انيميشن ناعم للانتقال */
+box-shadow: 0 15px 35px rgba(0, 0, 0, 0.085); /* ظل خفيف لإعطاء عمق */
+}
+
+.btn-primary:hover {
+  box-shadow: 0 15px 35px #33776528; /* ظل خفيف لإعطاء عمق */
+background-color: #154f40; /* ذهبي أغمق عند التمرير */
+transform: translateY(-3px); /* رفع خفيف */
+}
+
+.vision-image-gallery {
+display: grid;
+grid-template-columns: repeat(2, 1fr); /* عمودين للصور */
+gap: 1.5rem; /* مسافة بين الصور */
+align-items: center;
+position: relative;
+transform: rotateZ(-3deg); /* ميلان خفيف للمجموعة */
+animation: zoomInImageGallery 1s ease-out forwards; /* انيميشن عند التحميل */
+padding: 10px; /* لخلق مساحة للظل والتأثير حول الصور */
+}
+
+.gallery-item {
+border-radius: 20px; /* حواف دائرية للصور */
+overflow: hidden; /* لضمان عدم تجاوز الصورة للحواف */
+box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* ظل ناعم */
+transition: transform 0.4s ease, box-shadow 0.4s ease;
+position: relative;
+}
+
+/* طبقة تراكب خفيفة على الصور عند التمرير */
+.gallery-item::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(45, 108, 91, 0.05), rgba(255, 215, 0, 0.05)); /* تدرج لوني خفيف */
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.gallery-item:hover::after {
+  opacity: 1; /* إظهار التراكب عند التمرير */
+}
+
+.gallery-item:hover {
+transform: translateY(-5px) scale(1.02); /* رفع وتكبير خفيف عند التمرير */
+box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2); /* ظل أوضح */
+}
+
+.gallery-item img {
+width: 100%;
+height: 100%;
+object-fit: cover; /* لضمان تغطية الصورة للمساحة دون تشويه */
+display: block;
+}
+
+/* أحجام مختلفة للصور لخلق تنوع بصري */
+.gallery-item-large {
+grid-column: 1 / span 2; /* صورة كبيرة تمتد على عمودين */
+height: 450px; /* ارتفاع ثابت للصورة الكبيرة */
+}
+
+.gallery-item-small {
+height: 280px; /* ارتفاع ثابت للصور الصغيرة */
+}
+
+/* Keyframe Animations for Vision Section */
+@keyframes fadeInRight {
+  from {
+      opacity: 0;
+      transform: translateX(-50px);
+  }
+  to {
+      opacity: 1;
+      transform: translateX(0);
+  }
+}
+
+@keyframes zoomInImageGallery {
+  from {
+      opacity: 0;
+      transform: scale(0.9) rotateZ(-3deg);
+  }
+  to {
+      opacity: 1;
+      transform: scale(1) rotateZ(3deg);
+  }
+}
+
+/* Responsive adjustments for Vision Section */
+@media (max-width: 1024px) {
+.vision-content {
+  grid-template-columns: 1fr; /* عمود واحد في الشاشات اللوحية */
+  gap: 3rem;
+}
+.vision-text-block {
+  text-align: center; /* توسيط النص */
+}
+.vision-text-block h3 {
+  font-size: 2.5rem;
+}
+.vision-image-gallery {
+  transform: rotateZ(0deg); /* إزالة الميلان */
+  margin-top: 2rem;
+}
+.gallery-item-large {
+  height: 400px;
+}
+.gallery-item-small {
+  height: 250px;
+}
+}
+
+@media (max-width: 768px) {
+.vision-section {
+  padding: 80px 0;
+}
+.vision-text-block h3 {
+  font-size: 2rem;
+}
+.vision-text-block p {
+  font-size: 1.05rem;
+}
+.btn-primary {
+  padding: 12px 25px;
+  font-size: 1rem;
+}
+.vision-image-gallery {
+  grid-template-columns: 1fr; /* عمود واحد للصور في الشاشات الصغيرة جداً */
+  gap: 1rem;
+  padding: 0; /* إزالة البادينج */
+}
+.gallery-item-large {
+  height: 350px;
+}
+.gallery-item-small {
+  height: 200px;
+}
+}
+
+@media (max-width: 480px) {
+.vision-section {
+  padding: 60px 0;
+}
+.vision-text-block h3 {
+  font-size: 1.8rem;
+}
+.vision-text-block p {
+  font-size: 0.95rem;
+}
+.btn-primary {
+  padding: 10px 20px;
+  font-size: 0.9rem;
+}
+.gallery-item-large {
+  height: 280px;
+}
+.gallery-item-small {
+  height: 180px;
+}
+}
+
+/* ================== About Us Section ================== */
+.about-section {
+  background-color: #f8fcfb; /* خلفية بيضاء ناعمة جداً، أغمق قليلاً من الأبيض النقي لإحساس بالعمق */
+  padding: 120px 0; /* بادينج أكبر لإعطاء مساحة للتنفس */
+  position: relative;
+  overflow: hidden;
+  color: #333333;
+}
+
+/* Background SVGs for About Section */
+.about-section {
+  background-image:
+    /* SVG 1: شبكة نقاط ناعمة */
+    url('data:image/svg+xml;utf8,<svg width="150" height="150" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="dot-pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.5" fill="%23eef7f5"/></pattern></defs><rect x="0" y="0" width="100%" height="100%" fill="url(#dot-pattern)"/></svg>'),
+    /* SVG 2: أشكال هندسية شفافة مائلة (مثلثات / مربعات) */
+    url('data:image/svg+xml;utf8,<svg width="120" height="120" xmlns="http://www.w3.org/2000/svg"><g fill="%23e2f0ed" opacity="0.6" transform="rotate(45 60 60)"><rect x="10" y="10" width="40" height="40"/><polygon points="70 10, 110 50, 70 90"/></g></svg>');
+
+  background-repeat: repeat, no-repeat; /* شبكة النقاط تتكرر، الأشكال لا */
+  background-position:
+    0 0, /* شبكة النقاط تبدأ من الزاوية */
+    bottom 10% left 5%; /* موقع الأشكال المائلة */
+
+  background-size:
+    auto, /* حجم شبكة النقاط (تعتمد على حجم النمط) */
+    100px auto; /* حجم الأشكال المائلة */
+
+  animation: floatBackgroundAboutSVGs 70s linear infinite alternate; /* حركة خفيفة */
+}
+
+@keyframes floatBackgroundAboutSVGs {
+  0% {
+    background-position:
+      0 0,
+      bottom 10% left 5%;
+  }
+  100% {
+    background-position:
+      20px 20px, /* تحريك بسيط لشبكة النقاط */
+      bottom 12% left 7%; /* تحريك بسيط للأشكال */
+  }
+}
+
+
+.about-content {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr; /* صورة أكبر قليلاً، نص أصغر نسبياً */
+  gap: 5rem; /* مسافة جيدة بين الكتل */
+  align-items: center; /* محاذاة رأسية */
+}
+
+.about-image-block {
+  position: relative;
+  border-radius: 25px; /* حواف دائرية للكتلة */
+  overflow: hidden;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1); /* ظل ناعم وواضح */
+  transform: rotateZ(3deg); /* ميلان خفيف للكتلة بأكملها */
+  animation: zoomInAboutBlock 1s ease-out forwards; /* انيميشن عند التحميل */
+  background-color: #ffffff; /* لتجنب الشفافية في بعض الحالات */
+  padding: 15px; /* مسافة داخلية للظل حول الصورة */
+}
+
+.about-image-block img {
+  width: 100%;
+  height: 480px; /* ارتفاع ثابت للصورة */
+  object-fit: cover; /* لضمان تغطية الصورة للمساحة */
+  border-radius: 18px; /* حواف دائرية للصورة داخل الكتلة */
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.about-image-block:hover img {
+    transform: scale(1.03); /* تكبير خفيف للصورة عند التمرير */
+}
+
+.about-stats {
+  position: absolute;
+  bottom: 20px; /* موقع الإحصائيات */
+  left: 50%;
+  transform: translateX(-50%); /* توسيط */
+  display: flex;
+  background-color: rgba(255, 255, 255, 0.95); /* خلفية بيضاء شفافة */
+  backdrop-filter: blur(8px); /* تأثير ضبابي */
+  border-radius: 15px;
+  padding: 15px 25px;
+  gap: 30px; /* مسافة بين الإحصائيات */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* ظل واضح */
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  animation: fadeIn 1.5s ease-out forwards 0.5s; /* تظهر ببطء بعد تأخير */
+}
+
+.stat-item {
+  text-align: center;
+  color: #1e5a4d;
+}
+
+.stat-icon {
+  font-size: 2.2rem; /* حجم أيقونة كبير */
+  margin-bottom: 5px;
+  color: #2d6c5b; /* لون أخضر */
+}
+
+.stat-number {
+  display: block;
+  font-size: 1.8rem; /* رقم كبير وواضح */
+  font-weight: 700;
+  color: #ffd700; /* لون ذهبي بارز */
+  line-height: 1;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.9rem;
+  color: #555555;
+  font-weight: 500;
+}
+
+/* New: Social Links in About Section */
+.social-links-about {
+  position: absolute; /* وضع مطلق داخل about-image-block */
+  bottom: 20px; /* نفس مستوى الإحصائيات، لكن في الجانب المقابل أو أسفل قليلاً */
+  right: 20px;
+  z-index: 10; /* للتأكد من أنها تظهر فوق الصورة والظلال */
+  animation: fadeIn 1.5s ease-out forwards 0.8s; /* تظهر ببطء بعد تأخير أطول */
+}
+
+.social-links-about a {
+  text-decoration-line: none;
+  display: inline-flex; /* لكي يتم توسيط الأيقونة داخل الدائرة */
+  justify-content: center;
+  align-items: center;
+  width: 55px; /* حجم الدائرة */
+  height: 55px;
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); /* ألوان انستغرام المتدرجة */
+  border-radius: 50%; /* لجعلها دائرية */
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.social-links-about a:hover {
+  transform: translateY(-5px) scale(1.05); /* تأثير رفع وتكبير خفيف عند التمرير */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.social-links-about .social-icon {
+  color: #ffffff; /* لون الأيقونة أبيض */
+  font-size: 1.8rem; /* حجم الأيقونة */
+}
+
+.about-text-block {
+  padding: 20px;
+  animation: fadeInLeft 1s ease-out forwards; /* انيميشن عند التحميل */
+}
+
+.about-text-block h3 {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #1e5a4d;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.about-text-block p {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: #555555;
+  margin-bottom: 1.2rem;
+}
+
+.mission-statement {
+  background-color: #f7fbf9; /* خلفية فاتحة جداً للمهمة */
+  border-left: 5px solid #2d6c5b; /* خط جانبي أخضر */
+  padding: 20px;
+  margin: 30px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+}
+
+.mission-statement h4 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2d6c5b;
+  margin-bottom: 10px;
+}
+
+.mission-statement p {
+  font-size: 1.05rem;
+  color: #666666;
+  line-height: 1.6;
+  margin-bottom: 0; /* إزالة هامش الفقرة الأخيرة */
+}
+
+/* Keyframe Animations for About Section */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInLeft {
+  from {
+  opacity: 0;
+  transform: translateX(50px);
+  }
+  to {
+  opacity: 1;
+  transform: translateX(0);
+  }
+}
+
+@keyframes zoomInAboutBlock {
+  from {
+      opacity: 0;
+      transform: scale(0.9) rotateZ(3deg);
+  }
+  to {
+      opacity: 1;
+      transform: scale(1) rotateZ(3deg);
+  }
+}
+@media (max-width: 1024px) {
+  .about-content {
+    grid-template-columns: 1fr; /* عمود واحد في الشاشات اللوحية */
+  gap: 3.5rem;
+  }
+  .about-image-block {
+    order: -1; /* لجعل الصورة تظهر أولاً في الترتيب الرأسي */
+  margin-bottom: 2rem;
+    transform: rotateZ(0deg); /* إزالة الميلان */
+  }
+  .about-image-block img {
+  height: 400px;
+  }
+  .about-stats {
+    position: static; /* إزالة الوضع المطلق ليكون جزءًا من التدفق */
+    transform: none; /* إزالة التحويلات */
+    justify-content: center; /* توسيط الإحصائيات */
+    margin-top: 20px; /* مسافة من الصورة */
+    background-color: rgba(255, 255, 255, 0.98); /* لضمان الوضوح عند الوضع الثابت */
+  }
+  .social-links-about {
+    position: static; /* إزالة الوضع المطلق ليكون جزءًا من التدفق في الشاشات الصغيرة */
+    margin-top: 20px; /* مسافة من الأسفل */
+    text-align: center; /* توسيط العنصر */
+  }
+  .social-links-about a {
+      width: 50px;
+      height: 50px;
+      margin: 0 auto; /* توسيط الرابط نفسه */
+  }
+  .about-text-block {
+    text-align: center; /* توسيط النص */
+  }
+  .about-text-block h3 {
+  font-size: 2.5rem;
+  }
+  .mission-statement {
+    text-align: left; /* الحفاظ على محاذاة اليسار للمهمة */
+    border-left: 5px solid #2d6c5b; /* الحفاظ على الخط */
+  margin-left: auto;
+  margin-right: auto;
+    max-width: 500px; /* تحديد عرض للمهمة في وضع التوسيط */
+  }
+}
+
+@media (max-width: 768px) {
+  .about-section {
+  padding: 80px 0;
+  }
+  .about-image-block {
+  padding: 10px;
+  }
+  .about-image-block img {
+  height: 350px;
+  border-radius: 15px;
+  }
+  .about-stats {
+    flex-wrap: wrap; /* السماح للعناصر بالالتفاف */
+  justify-content: center;
+    gap: 15px 25px; /* مسافة بين الصفوف والأعمدة */
+  padding: 10px 15px;
+  }
+  .stat-icon {
+  font-size: 1.8rem;
+  }
+  .stat-number {
+  font-size: 1.5rem;
+  }
+  .stat-label {
+  font-size: 0.8rem;
+  }
+  .social-links-about a {
+  width: 45px;
+  height: 45px;
+  }
+  .social-links-about .social-icon {
+  font-size: 1.5rem;
+  }
+  .about-text-block h3 {
+  font-size: 2rem;
+  }
+  .about-text-block p {
+  font-size: 1.05rem;
+  }
+  .mission-statement h4 {
+  font-size: 1.25rem;
+  }
+  .mission-statement p {
+  font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-section {
+  padding: 60px 0;
+  }
+  .about-image-block img {
+  height: 280px;
+  }
+  .about-stats {
+  gap: 10px 20px;
+  padding: 8px 12px;
+  }
+  .stat-icon {
+  font-size: 1.5rem;
+  }
+  .stat-number {
+  font-size: 1.2rem;
+  }
+  .stat-label {
+  font-size: 0.75rem;
+  }
+  .social-links-about {
+  margin-top: 15px;
+  }
+  .social-links-about a {
+  width: 40px;
+  height: 40px;
+  }
+  .social-links-about .social-icon {
+  font-size: 1.4rem;
+  }
+  .about-text-block h3 {
+  font-size: 1.8rem;
+  }
+  .about-text-block p {
+  font-size: 0.95rem;
+  }
+}
+@media (max-width: 768px) {
+.hero-content {
+  grid-template-columns: 1fr;
+  text-align: center;
+  padding-top: 60px;
+  padding-bottom: 60px;
+}
+
+.hero-text {
+  order: 1;
+  padding: 0 1rem;
+}
+
+.oval-wrapper {
+  margin: 40px auto 0;
+  padding-top: 110%;
+  max-width: 300px;
+}
+
+h1 {
+  font-size: 2.2rem;
+  width: auto;
+  max-width: 90%;
+  margin: 0 auto 1rem;
+}
+
+p {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+}
+
+@media (max-width: 480px) {
+.store-buttons {
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.store-button {
+  width: 100%;
+  max-width: 250px;
+  padding: 0.75rem 1.25rem;
+}
+
+.store-text span {
+  font-size: 0.7rem;
+}
+
+.store-text strong {
+  font-size: 0.95rem;
+}
+
+.store-icon {
+  font-size: 1.5rem;
+}
+}
+
+@media (max-width: 768px) {
+.hero {
+  height: auto;
+  padding: 80px 0;
+}
+
+.hero::before {
+  height: 100%;
+}
+}
+
+/* ================== Footer Section ================== */
+.main-footer {
+  background-color: #1a4a40; /* لون خلفية داكن يتناسب مع لوحة الألوان */
+  color: #ffffff; /* لون نص فاتح للتباين */
+  padding: 25px 0; /* مسافة داخلية علوية وسفلية */
+  text-align: center; /* توسيط النص */
+  font-size: 0.9rem; /* حجم خط مناسب للعلامة المائية */
+  font-weight: 400; /* وزن خط عادي */
+  position: relative;
+  z-index: 500; /* لضمان ظهوره فوق أي عناصر أخرى إذا لزم الأمر */
+}
+.main-footer p {
+  color: white;
+}
+
+.main-footer .container {
+  /* لضمان أن النص يتبع نفس محاذاة وتوسيط الـ container */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.main-footer p {
+    margin: 0; /* إزالة أي هوامش افتراضية للفقرة */
+}
+
+
+.main-footer a {
+  color: #a7d7c5; /* Keep it white to match the paragraph */
+  text-decoration: none; /* We will create our own underline */
+  position: relative; /* Necessary for the pseudo-element */
+font-weight: 600;
+  transition: color 0.3s ease, text-shadow 0.3s ease; /* Smooth transition */
+
+  padding-bottom: 4px; /* Space for the underline to appear */
+}
+
+/* The custom underline using ::after */
+.main-footer a::after {
+  content: '';
+  position: absolute;
+  width: 0; /* Starts with zero width (hidden) */
+  height: 2px;
+  background-color: #a7d7c5; /* The color of the underline */
+  bottom: 0;
+  left: 50%; /* Start from the center */
+  transform: translateX(-50%);
+  transition: width 0.3s ease-in-out; /* Animate the width */
+}
+
+/* The hover effect */
+.main-footer a:hover::after {
+  width: 100%; /* Expand to full width on hover */
+}
