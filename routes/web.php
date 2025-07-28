@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Session;
 //     return view('welcome');
 // });
 Route::get('/', [WorkspaceController::class, 'index'])->name('home');
-Route::get('/workspaces', [WorkspaceController::class, 'workspaces'])->name('workspaces');
-Route::get('/workspaces/{workspace}', [WorkspaceController::class, 'show'])->name('workspaces.show');
+// Route::get('/workspaces', [WorkspaceController::class, 'workspaces'])->name('workspaces');
+// Route::get('/workspaces/{workspace}', [WorkspaceController::class, 'show'])->name('workspaces.show');
 
 Route::get('language/{locale}', function ($locale) {
     if (in_array($locale, ['en', 'ar'])) {

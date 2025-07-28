@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ __('Home') }}</title>
-      <link rel="stylesheet" href="{{ asset('ihub/Fonts/fontawesome/css/all.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('ihub/Fonts/fontawesome/css/all.min.css') }}" />
 
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('ihub/style.css') }}">
@@ -15,52 +16,69 @@
             background-size: cover;
             background-position: center;
         }
-        .nav-active { @apply bg-green-800 text-white; }
-        .menu-toggle span { @apply bg-green-700; }
-        .menu-toggle.active span:nth-child(1) { @apply rotate-45 translate-x-1 translate-y-1; }
-        .menu-toggle.active span:nth-child(2) { @apply opacity-0; }
-        .menu-toggle.active span:nth-child(3) { @apply -rotate-45 translate-x-1 -translate-y-1; }
+
+        .nav-active {
+            @apply bg-green-800 text-white;
+        }
+
+        .menu-toggle span {
+            @apply bg-green-700;
+        }
+
+        .menu-toggle.active span:nth-child(1) {
+            @apply rotate-45 translate-x-1 translate-y-1;
+        }
+
+        .menu-toggle.active span:nth-child(2) {
+            @apply opacity-0;
+        }
+
+        .menu-toggle.active span:nth-child(3) {
+            @apply -rotate-45 translate-x-1 -translate-y-1;
+        }
     </style>
 </head>
+
 <body class="font-sans text-gray-800">
-<nav class="navbar">
-  <div class="container">
-    <div class="nav-content">
-      <a href="/" class="logo"><img src="{{ asset('ihub/Image/Asset 21.svg') }}" alt="Logo" /></a>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <a href="/" class="logo"><img src="{{ asset('ihub/Image/Asset 21.svg') }}" alt="Logo" /></a>
 
-      <div class="nav-links">
-        <a href="#workspaces">{{ __('Workspaces') }}</a>
-        <a href="#features">{{ __('Features') }}</a>
-        <a href="#vision">{{ __('Vision') }}</a>
-        <a href="#about">{{ __('About Us') }}</a>
-      </div>
+                <div class="nav-links">
+                    {{-- <a href="#workspaces">{{ __('Workspaces') }}</a> --}}
+                    <a href="#home">{{ __('Home') }}</a>
+                    <a href="#features">{{ __('Features') }}</a>
+                    <a href="#vision">{{ __('Vision') }}</a>
+                    <a href="#about">{{ __('About Us') }}</a>
+                </div>
 
-      <div class="nav-right">
-        <div class="language-switcher">
-          @if(app()->getLocale() == 'en')
-            <span>English</span>
-          @else
-            <a href="{{ route('language.switcher', 'en') }}">English</a>
-          @endif
+                <div class="nav-right">
+                    <div class="language-switcher">
+                        @if (app()->getLocale() == 'en')
+                            <span>English</span>
+                        @else
+                            <a href="{{ route('language.switcher', 'en') }}">English</a>
+                        @endif
 
-          <div class="lang-separator"></div>
+                        <div class="lang-separator"></div>
 
-          @if(app()->getLocale() == 'ar')
-            <span>العربية</span>
-          @else
-            <a href="{{ route('language.switcher', 'ar') }}">العربية</a>
-          @endif
+                        @if (app()->getLocale() == 'ar')
+                            <span>العربية</span>
+                        @else
+                            <a href="{{ route('language.switcher', 'ar') }}">العربية</a>
+                        @endif
+                    </div>
+                    <button class="menu-toggle" aria-label="Toggle menu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                </div>
+
+            </div>
         </div>
-        <button class="menu-toggle" aria-label="Toggle menu">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-
-    </div>
-  </div>
-</nav>
+    </nav>
     <!-- Hero Section -->
     {{-- <section class="hero-bg min-h-screen flex items-center pt-20">
         <div class="container mx-auto px-4 text-center text-white">
@@ -108,38 +126,46 @@
         </div>
     </section> --}}
 
-    <section class="hero" id="hero">
+    <section class="hero" id="home">
         <div class="container">
             <div class="hero-content">
-            <div class="hero-text">
-                <h1>{{ __('Discover Your Perfect Workspace') }}</h1>
-
-                <p>
-                {{ __('Discover Your Perfect Workspace description') }}
-                </p>
-
-                <div class="hero-cta-container">
-                <a href="{{ route('workspaces') }}" class="cta-button">
-                    {{ __('Explore Workspaces') }}
-                </a>
+                <div class="hero-text">
+                        <h1>{{ __('Discover Your Perfect Workspace') }}</h1>
+                        <p>
+                            {{ __('Discover Your Perfect Workspace description') }}
+                        </p>
+                        <div class="store-buttons">
+                            <a href="https://play.google.com/store" target="_blank" rel="noopener" class="store-button google">
+                                <i class="fab fa-google-play store-icon"></i>
+                                <div class="store-text">
+                                <span>{{ __('Available on') }}</span>
+                                <strong>Google Play</strong>
+                                </div>
+                            </a>
+                            <a href="https://apps.apple.com" target="_blank" rel="noopener" class="store-button apple">
+                                <i class="fab fa-apple store-icon"></i>
+                                <div class="store-text">
+                                <span>{{ __('Available on') }}</span>
+                                <strong>App Store</strong>
+                                </div>
+                            </a>
+                        </div>
                 </div>
-            </div>
-
-            <div class="oval-wrapper">
-                <div class="star-ring">
-                <span class="star">✦</span> <span class="star">✦</span> <span class="star">✦</span>
-                <span class="star">✦</span> <span class="star">✦</span> <span class="star">✦</span>
-                <span class="star">✦</span> <span class="star">✦</span>
+                <div class="oval-wrapper">
+                    <div class="star-ring">
+                        <span class="star">✦</span> <span class="star">✦</span> <span class="star">✦</span>
+                        <span class="star">✦</span> <span class="star">✦</span> <span class="star">✦</span>
+                        <span class="star">✦</span> <span class="star">✦</span>
+                    </div>
+                    <div class="oval-container">
+                        <img src="{{ asset('ihub/Image/65.png') }}" alt="Door with green frame" loading="lazy" />
+                    </div>
                 </div>
-                <div class="oval-container">
-                <img src="{{ asset('ihub/Image/65.png') }}" alt="Door with green frame" />
-                </div>
-            </div>
             </div>
         </div>
     </section>
 
-    <section class="filter-section">
+    {{-- <section class="filter-section">
         <div class="container">
             <div class="section-header">
             <h2>{{ __('Find the Perfect Space') }}</h2>
@@ -184,10 +210,10 @@
             </div>
             </form>
         </div>
-    </section>
+    </section> --}}
 
     <!-- Latest Workspaces -->
-    <section id='workspaces' class="py-12 bg-gray-50">
+    {{-- <section id='workspaces' class="py-12 bg-gray-50">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold text-center text-green-700 mb-8">{{ __('Latest Workspaces') }}</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -202,10 +228,10 @@
                 @endforeach
             </div>
         </div>
-    </section>
+    </section> --}}
 
     <!-- Download App Section -->
-    <section class="py-12 bg-green-50">
+    {{-- <section class="py-12 bg-green-50">
         <div class="container mx-auto px-4 text-center">
             <h2 class="text-3xl font-bold text-green-700 mb-4">{{ __('Download Our App') }}</h2>
             <p class="text-gray-600 mb-6">{{ __('Manage workspaces on the go') }}</p>
@@ -218,17 +244,14 @@
                 </a>
             </div>
         </div>
-    </section>
+    </section> --}}
 
     <section id="features" class="features-section">
         <div class="container">
             <h2 class="section-title">{{ __('Our Amazing Features') }}</h2>
             <div class="features-content">
                 <div class="features-mockup">
-                    <img
-                        src="{{ asset('ihub/Image/65.png') }}"
-                        alt="Mobile App Mockup showcasing features"
-                    />
+                    <img src="{{ asset('ihub/Image/65.png') }}" alt="Mobile App Mockup showcasing features" />
                 </div>
                 <div class="features-list">
                     <div class="feature-item">
@@ -300,136 +323,128 @@
             </div>
         </div>
     </section>
-    <section id="vision" class="vision-section" >
+    <section id="vision" class="vision-section">
         <div class="container">
-        <h2 class="section-title">{{ __('Our Vision') }}</h2>
-        <div class="vision-content">
-            <div class="vision-text-block">
-            <h3>{{ __('Smarter Workspaces. Better Productivity') }}</h3>
-            <p>{{ __('Our Vision description1') }}</p>
-            <p>{{ __('Our Vision description2') }}</p>
-              <a href="#" class="btn-primary">{{ __('Learn More About Our Mission') }}</a>
+            <h2 class="section-title">{{ __('Our Vision') }}</h2>
+            <div class="vision-content">
+                <div class="vision-text-block">
+                    <h3>{{ __('Smarter Workspaces. Better Productivity') }}</h3>
+                    <p>{{ __('Our Vision description1') }}</p>
+                    <p>{{ __('Our Vision description2') }}</p>
+                    <a href="#" class="btn-primary">{{ __('Learn More About Our Mission') }}</a>
+                </div>
+                <div class="vision-image-gallery">
+                    <div class="gallery-item gallery-item-large">
+                        <img src="{{ asset('ihub/Image/vision-1.png') }}"
+                            alt="Team working together, representing collaboration" />
+                    </div>
+                    <div class="gallery-item gallery-item-small">
+                        <img src="{{ asset('ihub/Image/vision-2.png') }}"
+                            alt="Abstract data visualization, representing insights" />
+                    </div>
+                    <div class="gallery-item gallery-item-small">
+                        <img src="{{ asset('ihub/Image/vision-3.png') }}"
+                            alt="Developer coding on a screen, representing innovation" />
+                    </div>
+                </div>
             </div>
-            <div class="vision-image-gallery">
-            <div class="gallery-item gallery-item-large">
-                <img
-                src="{{ asset('ihub/Image/vision-1.png') }}"
-                alt="Team working together, representing collaboration"
-                />
-            </div>
-            <div class="gallery-item gallery-item-small">
-                <img
-                src="{{ asset('ihub/Image/vision-2.png') }}"
-                alt="Abstract data visualization, representing insights"
-                />
-            </div>
-            <div class="gallery-item gallery-item-small">
-                <img
-                src="{{ asset('ihub/Image/vision-3.png') }}"
-                alt="Developer coding on a screen, representing innovation"
-                />
-            </div>
-            </div>
-        </div>
         </div>
     </section>
 
-    <section id="about" class="about-section" >
+    <section id="about" class="about-section">
         <div class="container">
-        <h2 class="section-title">{{ __('About Us') }}</h2>
-        <div class="about-content">
-            <div class="about-image-block">
-            <img
-                src="{{ asset('ihub/Image/about-us-team.png') }}"
-                alt="Our dedicated team working together"/>
-            <div class="about-stats">
-              <div class="stat-item">
-                <i class="fas fa-users-gear stat-icon"></i>
-                <span class="stat-number">50+</span>
-                <span class="stat-label">Team Members</span>
-              </div>
-              <div class="stat-item">
-                <i class="fas fa-award stat-icon"></i>
-                <span class="stat-number">10+</span>
-                <span class="stat-label">Years Experience</span>
-              </div>
-              <div class="stat-item">
-                <i class="fas fa-code stat-icon"></i>
-                <span class="stat-number">100k+</span>
-                <span class="stat-label">Lines of Code</span>
-              </div>
+            <h2 class="section-title">{{ __('About Us') }}</h2>
+            <div class="about-content">
+                <div class="about-image-block">
+                    <img src="{{ asset('ihub/Image/about-us-team.png') }}"
+                        alt="Our dedicated team working together" />
+                    <div class="about-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-users-gear stat-icon"></i>
+                            <span class="stat-number">50+</span>
+                            <span class="stat-label">Team Members</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-award stat-icon"></i>
+                            <span class="stat-number">10+</span>
+                            <span class="stat-label">Years Experience</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-code stat-icon"></i>
+                            <span class="stat-number">100k+</span>
+                            <span class="stat-label">Lines of Code</span>
+                        </div>
+                    </div>
+                    <div class="social-links-about">
+                        <a href="https://www.instagram.com/ghayatech/" target="_blank"
+                            aria-label="Follow us on Instagram">
+                            <i class="fab fa-instagram social-icon"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="about-text-block">
+                    <h3>{{ __('Who We Are: Innovators at Heart') }}</h3>
+                    <p>
+                        {{ __('About Us description1') }}
+                    </p>
+                    <p>
+                        {{ __('About Us description2') }}
+                    </p>
+                    <div class="mission-statement">
+                        <h4>{{ __('Our Mission') }}</h4>
+                        <p>
+                            {{ __('Our Mission description') }}
+                        </p>
+                    </div>
+                    <a href="https://ghayatech.com/" target="_blank"
+                        class="btn-primary">{{ __('Meet Our Team') }}</a>
+                </div>
             </div>
-            <div class="social-links-about">
-              <a
-                href="https://www.instagram.com/ghayatech/"
-                target="_blank"
-                aria-label="Follow us on Instagram">
-                <i class="fab fa-instagram social-icon"></i>
-              </a>
-            </div>
-          </div>
-          <div class="about-text-block">
-            <h3>{{ __('Who We Are: Innovators at Heart') }}</h3>
-            <p>
-              {{ __('About Us description1') }}
-            </p>
-            <p>
-              {{ __('About Us description2') }}
-            </p>
-            <div class="mission-statement">
-              <h4>{{ __('Our Mission') }}</h4>
-              <p>
-                {{ __('Our Mission description') }}
-              </p>
-            </div>
-            <a href="https://ghayatech.com/" target="_blank" class="btn-primary">{{ __('Meet Our Team') }}</a>
-          </div>
         </div>
-      </div>
     </section>
 
     <!-- Footer -->
     <footer class="main-footer">
-      <div class="container">
-        <p>&copy; <span id="current-year"></span> {{ __('Powerd by') }} <a href="https://ghayatech.com/" target="_blank">GhayaTech</a> </p>
-      </div>
+        <div class="container">
+            <p>&copy; <span id="current-year"></span> {{ __('Powerd by') }} <a href="https://ghayatech.com/"
+                    target="_blank">GhayaTech</a> </p>
+        </div>
     </footer>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-  document.getElementById('current-year').textContent = new Date().getFullYear();
-    const menuToggle = document.querySelector('.menu-toggle');
-    const navLinksContainer = document.querySelector('.nav-links');
-    const allNavLinks = document.querySelectorAll('.nav-links a');
-
-    // --- Desktop Logic: Handle active link state ---
-    allNavLinks.forEach(function(link) {
-      link.addEventListener('click', function(event) {
-        // 1. Remove .active class from all links
-        allNavLinks.forEach(function(navLink) {
-          navLink.classList.remove('active');
-        });
-
-        // 2. Add .active class to the clicked link
-        event.currentTarget.classList.add('active');
-
-        // --- Mobile Logic: Close menu after click ---
-        if (navLinksContainer.classList.contains('active')) {
-          menuToggle.classList.remove('active');
-          navLinksContainer.classList.remove('active');
-        }
-      });
-    });
-
-    // --- Mobile Logic: Toggle menu with hamburger button ---
-    menuToggle.addEventListener('click', function () {
-      menuToggle.classList.toggle('active');
-      navLinksContainer.classList.toggle('active');
-    });
-  });
-</script>
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navLinksContainer = document.querySelector('.nav-links');
+            const allNavLinks = document.querySelectorAll('.nav-links a');
 
+            // --- Desktop Logic: Handle active link state ---
+            allNavLinks.forEach(function(link) {
+                link.addEventListener('click', function(event) {
+                    // 1. Remove .active class from all links
+                    allNavLinks.forEach(function(navLink) {
+                        navLink.classList.remove('active');
+                    });
+
+                    // 2. Add .active class to the clicked link
+                    event.currentTarget.classList.add('active');
+
+                    // --- Mobile Logic: Close menu after click ---
+                    if (navLinksContainer.classList.contains('active')) {
+                        menuToggle.classList.remove('active');
+                        navLinksContainer.classList.remove('active');
+                    }
+                });
+            });
+
+            // --- Mobile Logic: Toggle menu with hamburger button ---
+            menuToggle.addEventListener('click', function() {
+                menuToggle.classList.toggle('active');
+                navLinksContainer.classList.toggle('active');
+            });
+        });
+    </script>
+    <script>
         function updateRegions(select) {
             const governorateId = select.value;
             const regionSelect = document.getElementById('region_id');
@@ -438,10 +453,10 @@
             regionSelect.innerHTML = '<option value="">{{ __('Select Region') }}</option>';
             if (governorateId) {
                 fetch(`/api/regions?governorate_id=${governorateId}`, {
-                    headers: {
-                        'Accept-Language': '{{ app()->getLocale() }}' // إرسال اللغة الحالية
-                    }
-                })
+                        headers: {
+                            'Accept-Language': '{{ app()->getLocale() }}' // إرسال اللغة الحالية
+                        }
+                    })
 
                     .then(response => response.json())
                     .then(data => {
@@ -457,4 +472,5 @@
         }
     </script>
 </body>
+
 </html>
