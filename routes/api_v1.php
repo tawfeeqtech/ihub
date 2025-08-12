@@ -19,7 +19,8 @@ use App\Http\Controllers\API\V1\{
     ServiceRequestController,
     FcmController,
     SettingController,
-    GovernorateController
+    GovernorateController,
+    VersionController
 };
 use Illuminate\Support\Facades\Broadcast;
 
@@ -55,14 +56,14 @@ Route::prefix('v1')->group(function () {
         Route::get('/workspaces/{workspace}', [WorkspaceController::class, 'show']);
         Route::get('/workspaces/{workspace}/packages', [PackageController::class, 'index']);
         Route::get('/workspaces/{workspace}/services', [ServiceController::class, 'index']);
-    });
+        Route::get('/version',[VersionController::class, 'index']);});
 
 
     Route::middleware(['auth:sanctum', 'throttle:user-api'])->group(function () {
 
         Route::get('/users/me', [ProfileController::class, 'show']);
         Route::put('/users/me', [ProfileController::class, 'update']);
-        Route::put('/users/me/avatar', [ProfileController::class, 'uploadProfileImage']);
+        Route::post('/users/me/avatar', [ProfileController::class, 'uploadProfileImage']);
         Route::post('/store-lang', [ProfileController::class, 'updateUserLang']);
 
         Route::apiResource('bookings', BookingController::class)->only(['store', 'show']);

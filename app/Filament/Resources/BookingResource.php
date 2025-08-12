@@ -47,7 +47,7 @@ class BookingResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::where('status', '!=', 'confirmed')->where('user_id', auth()->user()->id)->count();
+        return static::getModel()::where('workspace_id', auth()->user()->workspace_id)->count();
 
         // return static::getModel()::count();
     }

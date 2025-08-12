@@ -31,6 +31,7 @@ class Workspace extends Model
         'features' => 'array',
         'bank_payment_supported' => 'boolean',
         'has_evening_shift' => 'boolean',
+        'has_free' => 'boolean',
     ];
 
     public $translatable = ['name', 'location', 'description'];

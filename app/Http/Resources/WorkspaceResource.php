@@ -23,6 +23,9 @@ class WorkspaceResource extends JsonResource
             'location' => $this->location[$lang] ?? $this->location['en'] ?? '',
             'description' => $this->description[$lang] ?? $this->description['en'] ?? '',
             'logo' => $this->logo ? asset('storage/' . $this->logo) : null,
+            'bank_payment_supported' => $this->bank_payment_supported,
+            'has_evening_shift' => $this->has_evening_shift,
+            'has_free' => $this->has_free,
             'governorate' => [
                 'id' => $this->governorate_id,
                 'name' => $this->governorate ? $this->governorate->getTranslatedNameAttribute($lang) : '',

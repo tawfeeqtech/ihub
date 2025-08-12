@@ -31,7 +31,6 @@ class EditBooking extends EditRecord
     }
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
-
         DB::beginTransaction();
         $fcmResultError = '';
         try {
@@ -57,11 +56,11 @@ class EditBooking extends EditRecord
                 $notificationBody = '';
                 $customData = [
                     'booking_id' => (string) $record->id,
-                    'status' => (string) $record->status,
+                    'status' => (string) $record->status->value,
                     'workspace_name' => (string) $workspaceName,
                 ];
 
-                switch ($record->status) {
+                switch ($record->status->value) {
                     case 'confirmed':
                         $notificationTitle =  __('notifications.notificationTitle.confirmed');
                         $notificationBody = __('notifications.notificationBody.confirmed', [

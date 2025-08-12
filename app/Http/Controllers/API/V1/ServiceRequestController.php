@@ -37,14 +37,12 @@ class ServiceRequestController extends Controller
         try {
             $booking = Booking::findOrFail($bookingId);
             $sender = auth()->user(); // App user
-            if ($booking->user_id !== $sender->id) {
+            if ($booking->user_id != $sender->id) {
                 return $this->apiResponse(null, __('messages.not_authorized'), 403);
             }
-
-            if ($booking->status !== 'confirmed') {
+            if ($booking->status->name !== 'Confirmed') {
                 return $this->apiResponse(null, __('messages.confirmed_request'), 422);
             }
-
             $validated = $request->validate([
                 'type' => 'required|in:seat_change,cafe_request',
                 'details' => 'nullable|string|max:1000',
