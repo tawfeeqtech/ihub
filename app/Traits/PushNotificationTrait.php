@@ -14,16 +14,16 @@ trait PushNotificationTrait
      * @param string $title The title of the notification.
      * @param string $body The body/content of the notification.
      * @param array $data Optional custom data payload.
-     * @return bool True if the notification was sent successfully, false otherwise.
+     * @return bool|array True if the notification was sent successfully, array with error data otherwise.
      */
-    protected function sendFirebasePushNotification(string $fcmToken, string $title, string $body, array $data = []): true|string
+    protected function sendFirebasePushNotification(string $fcmToken, string $title, string $body, array $data = []): true|array
     {
         $credentialsFilePath = storage_path('app/firebase/firebase-credentials.json');
 
         $projectId = config('services.fcm.project_id');
         if (!$projectId) {
             Log::error("Firebase project ID not configured in config/services.php or .env.");
-            return "خطأ في الإعداد: معرف مشروع Firebase غير مهيأ.";
+            return ['error' => ['message' => 'خطأ في الإعداد: معرف مشروع Firebase غير مهيأ.', 'status' => 'CONFIG_ERROR']];
         }
 
         try {
@@ -71,17 +71,15 @@ trait PushNotificationTrait
             $response = curl_exec($ch);
             $err = curl_error($ch);
             curl_close($ch);
-
             if ($response === false) {
                 $errorMessage = "خطأ cURL: " . $err;
                 Log::error("FCM Curl Error: " . $errorMessage);
-                return $errorMessage;
+                return ['error' => ['message' => $errorMessage, 'status' => 'CURL_ERROR']];
             } else {
                 $responseData = json_decode($response, true);
                 if (isset($responseData['error'])) {
-                    $errorMessage = "خطأ استجابة FCM: " . ($responseData['error']['message'] ?? 'خطأ غير معروف في استجابة FCM');
                     Log::error("FCM Error Response: " . json_encode($responseData['error']));
-                    return $errorMessage;
+                    return $responseData; // Return the full error response data
                 } else {
                     Log::info("FCM Notification sent successfully to token: " . $fcmToken);
                     return true;
@@ -90,7 +88,7 @@ trait PushNotificationTrait
         } catch (\Exception $e) {
             $errorMessage = "استثناء FCM: " . $e->getMessage();
             Log::error("FCM Exception: " . $errorMessage);
-            return $errorMessage;
+            return ['error' => ['message' => $errorMessage, 'status' => 'EXCEPTION']];
         }
     }
 }

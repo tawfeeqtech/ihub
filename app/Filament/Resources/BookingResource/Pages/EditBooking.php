@@ -36,7 +36,17 @@ class EditBooking extends EditRecord
         try {
             $record->fill($data)->save();
 
-            $user = $record->user;
+            // Explicitly load the user and workspace to avoid static analysis errors
+            $user = \App\Models\User::find($record->user_id);
+            if (!$user) {
+                throw new Exception('User not found for booking');
+            }
+
+            // Also explicitly load the workspace
+            $workspace = \App\Models\Workspace::find($record->workspace_id);
+            if ($workspace) {
+                $record->setRelation('workspace', $workspace);
+            }
             Log::info("userlocale:: " . $user->locale);
             $userLocale = $user->locale ?? config('app.locale');
             app()->setLocale($user?->current_locale);
@@ -87,6 +97,7 @@ class EditBooking extends EditRecord
                         break;
                 }
 
+                error_log("Attempting to send notification to device token: " . $user->device_token);
 
                 $fcmResult = $this->sendFirebasePushNotification(
                     $user->device_token,
@@ -97,7 +108,42 @@ class EditBooking extends EditRecord
 
                 if ($fcmResult !== true) {
                     $fcmResultError = $fcmResult;
-                    throw new Exception(__('notifications.fcmResultErrorException') . $fcmResult);
+                    error_log("FCM Error for user {$user->id}: " . json_encode($fcmResultError));
+
+                    // Handle various FCM error conditions that indicate an invalid device token
+                    $shouldClearToken = false;
+                    $errorMessage = '';
+
+                    if (is_array($fcmResultError) && isset($fcmResultError['error'])) {
+                        $error = $fcmResultError['error'];
+                        $status = $error['status'] ?? '';
+                        $message = $error['message'] ?? '';
+                        $errorCode = isset($error['details'][0]['errorCode']) ? $error['details'][0]['errorCode'] : '';
+
+                        // Check for conditions that indicate the device token is no longer valid
+                        if ($status === 'NOT_FOUND' ||
+                            $status === 'UNREGISTERED' ||
+                            $errorCode === 'UNREGISTERED' ||
+                            strpos($message, 'Requested entity was not found') !== false) {
+                            $shouldClearToken = true;
+                            $errorMessage = "FCM token invalid: status={$status}, errorCode={$errorCode}";
+                        }
+                    }
+
+                    if ($shouldClearToken) {
+                        // Commit the transaction first to save any other changes
+                        DB::commit();
+
+                        // Clear the device token outside of the transaction
+                        $user->device_token = null;
+                        $user->save();
+                        error_log("Cleared invalid device token for user {$user->id}. {$errorMessage}");
+
+                        // Start a new transaction for the rest of the operation
+                        DB::beginTransaction();
+                    }
+
+                    throw new Exception(__('notifications.fcmResultErrorException') . json_encode($fcmResultError));
                 }
             } else {
                 throw new Exception(__('notifications.ErrorException'));
@@ -121,7 +167,7 @@ class EditBooking extends EditRecord
 
             Notification::make()
                 ->title(__('notifications.EditBooking.catchErrorTitle'))
-                ->body($fcmResultError)
+                ->body(is_array($fcmResultError) ? json_encode($fcmResultError) : $fcmResultError)
                 ->danger()
                 ->send();
 

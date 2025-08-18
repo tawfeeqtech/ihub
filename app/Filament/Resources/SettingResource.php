@@ -214,7 +214,6 @@ class SettingResource extends Resource
                                         Forms\Components\TextInput::make('value')
                                             ->label(__("filament.SettingResource.Link"))
                                             ->required()
-                                            ->url()
                                             ->columnSpan(1),
                                     ])
                                     ->default([['locale' => 'ar', 'value' => ''], ['locale' => 'en', 'value' => '']])

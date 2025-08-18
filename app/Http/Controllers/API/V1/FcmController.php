@@ -22,8 +22,8 @@ class FcmController extends Controller
 
         $user = User::find(auth()->id());
         $user->update(['device_token' => $request->fcm_token]);
-
-        return $this->apiResponse(null, __('messages.device_token'), 200);
+        $data = ['device_token' => $request->fcm_token];
+        return $this->apiResponse($data, __('messages.device_token'), 200);
     }
     // public function testSendNot()
     // {
