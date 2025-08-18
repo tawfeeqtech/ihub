@@ -29,4 +29,9 @@ return [
     'EditBooking.catchErrorTitle' => 'Error saving reservation',
 
     'EditBooking.defaultWorkspaceName' => 'Unspecified',
+
+    'ServiceRequestStatusUpdated' => [
+        'title' => 'Service Request Status Updated',
+        'body' => 'Your service request status has been updated to: ',
+    ],
 ];

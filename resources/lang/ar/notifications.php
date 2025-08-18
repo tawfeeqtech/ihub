@@ -27,5 +27,8 @@ return [
 
     'EditBooking.catchErrorTitle' => 'خطأ في حفظ الحجز',
     'EditBooking.defaultWorkspaceName' => 'غير محددة',
-
+    'ServiceRequestStatusUpdated' => [
+        'title' => 'تم تحديث حالة طلب الخدمة',
+        'body' => 'تم تحديث حالة طلب الخدمة الخاص بك إلى: ',
+    ],
 ];

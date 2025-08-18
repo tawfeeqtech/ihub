@@ -2,8 +2,11 @@
 
 namespace App\Traits;
 
+use App\Models\User;
 use Google\Client;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Support\Str;
 
 trait PushNotificationTrait
 {
@@ -16,8 +19,13 @@ trait PushNotificationTrait
      * @param array $data Optional custom data payload.
      * @return bool|array True if the notification was sent successfully, array with error data otherwise.
      */
-    protected function sendFirebasePushNotification(string $fcmToken, string $title, string $body, array $data = []): true|array
+    protected function sendFirebasePushNotification(User $user, string $title, string $body, array $data = []): true|array
     {
+        $fcmToken = $user->device_token;
+        if (!$fcmToken) {
+            Log::error("User {$user->id} does not have a FCM token.");
+            return ['error' => ['message' => 'المستخدم ليس لديه رمز FCM.', 'status' => 'NO_FCM_TOKEN']];
+        }
         $credentialsFilePath = storage_path('app/firebase/firebase-credentials.json');
 
         $projectId = config('services.fcm.project_id');
@@ -82,6 +90,19 @@ trait PushNotificationTrait
                     return $responseData; // Return the full error response data
                 } else {
                     Log::info("FCM Notification sent successfully to token: " . $fcmToken);
+                    DatabaseNotification::create([
+                        'id' => Str::uuid()->toString(),
+                        'type' => \App\Notifications\FirebaseNotification::class,
+                        'notifiable_type' => 'App\Models\User',
+                        'notifiable_id' => $user->id,
+                        'data' => [
+                            'title' => $title,
+                            'body' => $body,
+                            'data' => $data,
+                        ],
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
                     return true;
                 }
             }

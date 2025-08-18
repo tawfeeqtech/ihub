@@ -47,7 +47,7 @@ class EditBooking extends EditRecord
             if ($workspace) {
                 $record->setRelation('workspace', $workspace);
             }
-            Log::info("userlocale:: " . $user->locale);
+
             $userLocale = $user->locale ?? config('app.locale');
             app()->setLocale($user?->current_locale);
             $workspaceName = __('notifications.EditBooking.defaultWorkspaceName');
@@ -100,7 +100,7 @@ class EditBooking extends EditRecord
                 error_log("Attempting to send notification to device token: " . $user->device_token);
 
                 $fcmResult = $this->sendFirebasePushNotification(
-                    $user->device_token,
+                    $user,
                     $notificationTitle,
                     $notificationBody,
                     $customData

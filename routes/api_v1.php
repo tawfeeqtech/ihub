@@ -20,6 +20,7 @@ use App\Http\Controllers\API\V1\{
     FcmController,
     SettingController,
     GovernorateController,
+    NotificationController,
     VersionController
 };
 use Illuminate\Support\Facades\Broadcast;
@@ -70,6 +71,9 @@ Route::prefix('v1')->group(function () {
         Route::get('/bookings', [BookingController::class, 'index']); // with ?status=
         Route::get('/bookings/{booking}/service-requests', [ServiceRequestController::class, 'index']);
         Route::post('/bookings/{booking}/service-requests', [ServiceRequestController::class, 'store']);
+
+        Route::get('/notifications', [NotificationController::class, 'index']);
+        Route::patch('/notifications/mark-all-read', fn (Request $r) => tap($r->user()->unreadNotifications)->markAsRead());
 
 
         // Route::post('/conversations', [ConversationController::class, 'store']);

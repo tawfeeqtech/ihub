@@ -35,13 +35,26 @@ class ServiceRequestStatusUpdated extends Notification
      *
      * @return array<string, mixed>
      */
+    // public function toArray(object $notifiable): array
+    // {
+    //     return [
+    //         'message' => 'تم تحديث حالة طلبك إلى: ' . $this->translateStatus($this->request->status),
+    //         'request_id' => $this->request->id,
+    //     ];
+    // }
     public function toArray(object $notifiable): array
     {
+        $body = __('notifications.ServiceRequestStatusUpdated.body') . $this->translateStatus($this->request->status);
         return [
-            'message' => 'تم تحديث حالة طلبك إلى: ' . $this->translateStatus($this->request->status),
-            'request_id' => $this->request->id,
+            'title' => __('notifications.ServiceRequestStatusUpdated.title'),
+            'body' => $body,
+            'data' => [
+                'request_id' => $this->request->id,
+                'status' => $this->request->status->value,
+            ],
         ];
     }
+
 
     protected function translateStatus($status): string
     {
