@@ -212,6 +212,8 @@ class WorkspaceResource extends Resource
                         ]),
                     ]),
 
+                TextInput::make('phone')->nullable()->label(__('filament.UserResource.form.phone.label')),
+
                 Repeater::make('features')
                 ->label(__('filament.WorkspaceResource.form.features.label'))
                 ->addActionLabel(__('filament.WorkspaceResource.form.features.addActionLabel'))

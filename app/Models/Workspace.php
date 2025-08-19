@@ -22,6 +22,7 @@ class Workspace extends Model
         'region_id',
         'has_evening_shift',
         'has_free',
+        'phone',
     ];
 
     protected $casts = [

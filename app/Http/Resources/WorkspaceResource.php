@@ -26,6 +26,7 @@ class WorkspaceResource extends JsonResource
             'bank_payment_supported' => $this->bank_payment_supported,
             'has_evening_shift' => $this->has_evening_shift,
             'has_free' => $this->has_free,
+            'phone' => $this->phone,
             'governorate' => [
                 'id' => $this->governorate_id,
                 'name' => $this->governorate ? $this->governorate->getTranslatedNameAttribute($lang) : '',

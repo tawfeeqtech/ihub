@@ -24,6 +24,7 @@ class WorkspaceShowResource extends JsonResource
             'logo' => $this->logo ? asset('storage/' . $this->logo) : null,
             'images' => WorkspaceImageResource::collection($this->whenLoaded('images')),
             'features' => collect($this->features ?? [])->map(fn($feature) => $feature[$lang] ?? $feature['en'] ?? '')->filter()->values()->all(),
+            'phone' => $this->phone,
             'governorate' => [
                 'id' => $this->governorate_id,
                 'name' => $this->governorate ? $this->governorate->getTranslatedNameAttribute($lang) : '',
